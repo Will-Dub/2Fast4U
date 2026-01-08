@@ -1,0 +1,9 @@
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/2Fast4U.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/edit_cache.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/rebuild_cache.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/list_install_components.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/install.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/install/local.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/install/strip.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/2Fast4U_autogen_timestamp_deps.dir
+/home/william/Documents/QtProject/2Fast4U/build/Desktop-Debug/CMakeFiles/2Fast4U_autogen.dir
