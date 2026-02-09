@@ -14,6 +14,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 add_executable(2Fast4U
   main.cpp
+  car.h car.cpp
 )
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
