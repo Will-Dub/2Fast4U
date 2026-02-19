@@ -1,6 +1,8 @@
 #ifndef CAR_H
 #define CAR_H
 
+#include <QDebug>
+
 class Car
 {
 public:
@@ -11,10 +13,15 @@ public:
      * @param dt temp passé
      * @param accel throttle de 0-1
      */
-    void tick(float dt, float accel);
+    void tick(float dt, float accel, float currentTurn);
 
 public:
-    float m_position = 0;
+    float m_positionX = 0;
+    float m_positionY = 0;
+
+    float m_angle = 0.0f;
+    float m_turnSpeed = 2.0f;
+
     float m_velocite = 0;
     float m_acceleration = 0;
     float m_masse = 10;
