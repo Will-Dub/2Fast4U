@@ -28,11 +28,11 @@ void Car::tick(float dt, float accel, float currentTurn)
     }
 
     float velX = m_velocite * std::cos(m_angle);
-    float velY = m_velocite * std::sin(m_angle);
+    float velZ = m_velocite * std::sin(m_angle);
 
     m_positionX += velX * dt;
-    m_positionY += velY * dt;
+    m_positionZ += velZ * dt;
 
     qInfo() << m_positionX;
-    qInfo() << m_positionY;
+    qInfo() << m_positionZ;
 }

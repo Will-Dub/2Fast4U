@@ -53,35 +53,27 @@ int main(int argc, char *argv[])
         //qInfo() << "steering: " << potSteering;
 
         if (reader.isKeyPressed('w')) {
-            if(potAccel < 1){
-                potAccel += ACCEL_SPEED * dt;
-                if(potAccel > 1){
-                    potAccel = 1;
-                }
+            potAccel += ACCEL_SPEED * dt;
+            if(potAccel > 1){
+                potAccel = 1;
             }
         }
         if (reader.isKeyPressed('s')) {
-            if(potAccel > -1){
-                potAccel -= ACCEL_SPEED * dt;
-                if(potAccel < -1){
-                    potAccel = -1;
-                }
+            potAccel -= ACCEL_SPEED * dt;
+            if(potAccel < -1){
+                potAccel = -1;
             }
         }
         if (reader.isKeyPressed('a')) {
-            if(potSteering > -1){
-                potSteering -= STEERING_SPEED * dt;
-                if(potSteering < -1){
-                    potSteering = -1;
-                }
+            potSteering -= STEERING_SPEED * dt;
+            if(potSteering < -1){
+                potSteering = -1;
             }
         }
         if (reader.isKeyPressed('d')) {
-            if(potSteering < 1){
-                potSteering += STEERING_SPEED * dt;
-                if(potSteering > 1){
-                    potSteering = 1;
-                }
+            potSteering += STEERING_SPEED * dt;
+            if(potSteering > 1){
+                potSteering = 1;
             }
         }
 

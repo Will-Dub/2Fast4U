@@ -17,7 +17,7 @@ public:
 
 public:
     float m_positionX = 0;
-    float m_positionY = 0;
+    float m_positionZ = 0;
 
     float m_angle = 0.0f;
     float m_turnSpeed = 2.0f;
