@@ -15,33 +15,38 @@
     -changed redlinetickcounter to a class member so it could be changed
     -rebuilding rev setter sytem entirely
     -set initial gear to 1 (dum dum)
+    -set initial speed to 1 so it would start moving
+    -added engine started or not
+    -added money shift and over-rev explosions
 
 */
 
-
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <math.h>
 
+
 int const refreshRate = 100; //number of executions per second
-int const idleRevs = 800;
-int const moneyShiftRevThreshold = 6000;
-int const redLine = 7000;
-int const maxRevs = 8000;
-int const redLineTickLimit = (refreshRate*10); //sets the number of ticks past redline before engine breaks
+int const idleRevs = 800;   //sets the idle (do not set lower than 800, the powercurve is not defined past that)
+int const moneyShiftRevThreshold = 6000;  //sets the rev limit before shifting will break the gearbox
+int const redLine = 7000;   //sets the redline
+int const maxRevs = 8000;   //sets the max number of revs (do not go higher than 8000, the powercurve is not defined past that)
+int const redLineTimeLimit = 1; //sets the number of seconds past redline before engine breaks
+int const redLineTickLimit = (refreshRate*redLineTimeLimit); //sets the number of ticks past redline before engine breaks
 int const gasPedalDeadZone = 5; //used to adjust throttle % for idle, but also means the beginning of the pedal is a dead zone (does nothing)
-//\_> thinking of removing this to have access to full 100% range (easier math)
-//\_> nvm, will just hard code that part
 float const revAccelerationConstant = 0.2; //set arbitrarily, change this to affect how fast the revs change
 float const drivetrainEfficiency = 0.82; //equivalent to %, refers to loss of power through the powertrain.
-float const tireDiameter = 1.5; //set in feet (cuz ft-lb so force is easily found in lbs)
+float const tireDiameter = 1.25; //set in feet (cuz ft-lb so force is easily found in lbs)
 float const carWeight = 2815; //in pounds, based on Subaru BRZ 2022
-float const gearRatio1 = 3.63;
-float const gearRatio2 = 2.19;
-float const gearRatio3 = 1.54;
-float const gearRatio4 = 1.21;
-float const gearRatio5 = 1.00;
-float const gearRatio6 = 0.77;
-float const gearRatioFinalDrive = 4.20;
+int const defaultGear = 1; //sets the gear by default
+float const gearRatio1 = 3.63; //gear ratio for first gear
+float const gearRatio2 = 2.19; //' '
+float const gearRatio3 = 1.54; //' '
+float const gearRatio4 = 1.21; //' '
+float const gearRatio5 = 1.00; //' '
+float const gearRatio6 = 0.77; //' '
+float const gearRatioFinalDrive = 4.20; //sets the final drive axle ratio
+int const defaultSpeed = 0; //sets the starting speed, set to 1 for debug
 
 class Powertrain
 {
@@ -60,6 +65,9 @@ public:
     void setAcceleration(float acceleration);
     float getSpeed();
     void setSpeed(float speed);
+
+    void setStarted(bool started);
+    bool getStarted();
 
     int getRedLineTickCounter();
     void setRedLineTickCounter(int redLineTickCounter);
@@ -86,7 +94,7 @@ private:
     float m_outputPower;    //IMPORTANT!!!! this is the power at the AXLE, NOT at the wheels
     float m_outputTorque;   //IMPORTANT!!!! this is the torque at the AXLE, NOT at the wheels
     int m_redLineTickCounter;
-
+    bool m_started;
 };
 Powertrain refreshTrigger();
 
