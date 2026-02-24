@@ -1,0 +1,336 @@
+#include "powertrain.h"
+int revDownCounter = 0;
+
+Powertrain::Powertrain() {
+    std::cout << "birth" << std::endl;
+    this->m_revs = idleRevs;
+    this->m_gear = 1; //-> 0 if we implement neutral. Otherwise, set to 1;
+    this->m_throttle = gasPedalDeadZone;
+    this->m_speed = 0;
+    this->m_acceleration = 0;
+    this->m_outputPower = 0;
+    this->m_outputTorque = 0;
+    this->m_redLineTickCounter = 0;
+}
+/*Powertrain::Powertrain(int revs, int gear, int throttle, int speed) {
+    std::cout << "birth" << std::endl;
+    this->m_revs = idleRevs;
+    this->m_gear = 1; //-> 0 if we implement neutral. Otherwise, set to 1;
+    this->m_throttle = gasPedalDeadZone;
+    this->m_speed = 0;
+    this->m_acceleration = 0;
+    this->m_outputPower = 0;
+    this->m_outputTorque = 0;
+    this->m_redLineTickCounter = 0;
+}*/
+
+int Powertrain::getRevs() {
+    return m_revs;
+}
+void Powertrain::setRevs(int revs) {
+    m_revs = revs;
+}
+
+int Powertrain::getThrottle()
+{
+    return m_throttle;
+}
+void Powertrain::setThrottle(int throttle)
+{
+    m_throttle = throttle;
+}
+
+int Powertrain::getGear() {
+    return m_gear;
+}
+void Powertrain::setGear(int gear) {
+    m_gear = gear;
+}
+
+void Powertrain::Shift(int gear) {
+    if (gear < m_gear && getRevs() > moneyShiftRevThreshold)
+    {
+        //[Money shift implementation trigger]
+        std::cout << "KABOOM (money shift)" << std::endl;
+        return;
+    }
+
+}
+
+float Powertrain::getAcceleration() {
+    return m_acceleration;
+}
+
+void Powertrain::setAcceleration(float acceleration) {
+    m_acceleration = acceleration;
+}
+
+float Powertrain::getSpeed()
+{
+    return m_speed;
+}
+
+void Powertrain::setSpeed(float speed)
+{
+    m_speed = speed;
+}
+
+int Powertrain::getRedLineTickCounter()
+{
+    return m_redLineTickCounter;
+}
+
+void Powertrain::setRedLineTickCounter(int redLineTickCounter)
+{
+    m_redLineTickCounter = redLineTickCounter;
+}
+
+float Powertrain::getEnginePower()
+{
+    int powerPosition = (getRevs() - (getRevs() % 100)) / 100;
+    return powerCurve[powerPosition];
+}
+
+float Powertrain::getEngineTorque()
+{
+    return (5252 * getEnginePower() / getRevs());
+}
+
+float Powertrain::getOutputPower()
+{
+    return m_outputPower;
+}
+
+float Powertrain::getOutputTorque()
+{
+    return m_outputTorque;
+}
+
+void Powertrain::setOutputPower(float power)
+{
+    m_outputPower = power;
+}
+
+void Powertrain::setOutputTorque(float torque)
+{
+    m_outputTorque = torque;
+}
+
+
+
+void Powertrain::everyRefresh()
+{
+    std::locale::global(std::locale{ "" });
+
+    int pedalPercent = 0;
+    /*
+    if(-key pressed)
+        pedal percent += 1;
+    */
+    //adjusts throttle opening from how much the pedal is pressed;
+    if (pedalPercent <= gasPedalDeadZone && pedalPercent >= 0)
+    {
+        setThrottle(gasPedalDeadZone);
+    }
+    else if (pedalPercent > gasPedalDeadZone && pedalPercent < 101)
+    {
+        setThrottle(pedalPercent);
+    }
+    else
+    {
+        //error handler
+        std::cout << "ERROR: pedal percent out of range" << std::endl;
+    }
+
+    //sets engine revs every tick   
+        //rev modification trigger here
+    revSetter();
+    if (getRevs() > redLine)
+    {
+        setRedLineTickCounter(getRedLineTickCounter() + 1);
+        if (getRedLineTickCounter() > redLineTickLimit)
+        {
+            //engine breaks
+        }
+    }
+    else if (getRevs() < redLine && redLine > 0)
+    {
+        setRedLineTickCounter(0);
+    }
+
+    //sets output power and torque at the axle.
+    float axlePower = (getEnginePower() / getGearRatio());
+    float axleTorque = (getEngineTorque() * getGearRatio());
+
+    //takes away all the theoredical losses into account
+    axlePower *= drivetrainEfficiency;
+    axleTorque *= drivetrainEfficiency;
+    setOutputPower(axlePower);
+    setOutputTorque(axleTorque);
+    float force = getOutputTorque() / tireDiameter;
+    float acceleration = (force / carWeight) * 9.8; //returns acceleration in m/s^2
+    setAcceleration(acceleration);
+    float vf = (getSpeed() + getAcceleration() * (1 / refreshRate));
+    setSpeed(vf); //finally, sets the speed at the end of that tick.
+
+    
+    std::cout << "=======================================================" << std::endl
+        << "- Voici les informations actuelles du véhicule:" << std::endl
+        << "- Pourcentage de la pédal (touches - et =): " << pedalPercent << std::endl
+        << "- Pourcentage du throttle (= pédale, min 5):" << getThrottle() << std:: endl
+        << "- RPMs du moteur (contrôlé à l'interne):    " << getRevs() << std::endl
+        << "- Vitesse (transmission) (touches 1 è 6):   " << getGear() << std::endl
+        << "- Vitesse (km/h) (contrôlé à l'interne):    " << getSpeed()
+        << std::endl;
+
+    
+}
+
+
+
+//TODO:
+    // Find how to implement this by setting new revs and potentially adding more math. 
+    //Figure out realistic way for revs to behave and change
+void Powertrain::revSetter()
+{
+    //[find a way to receive pedal inputs]!!!!!
+    
+    //V-old unfinished system to calculate rev change for every time change. 
+    /*
+    //sets the target Revs based on how much throttle is applied on the scale between idle and the maximum rev amount.
+    int revTarget = (round(((maxRevs-idleRevs)*getThrottle())/100)+idleRevs);
+    std::cout << "----------------------------" << std::endl
+        << "DEBUG SECTION:  " << std::endl
+        << "getThrottle:    " << getThrottle() << std::endl
+        << "revTarget:        " << revTarget << std::endl;
+    //the higher the delta is, the higher the acceleration rate should be
+    int deltaRevs = (getRevs() - revTarget);
+    */
+
+
+
+
+    setThrottle(6);//->debug
+    //new attempt for throttle -> rev code
+    int revTarget = 0;
+    if (getThrottle() == gasPedalDeadZone)
+    {
+        revTarget = 800;
+        std::cout << "Idle revving!!!!" << std::endl;
+    }
+    else
+    {//will always be from 5 to 100, cannot be over or under
+
+        int revInstance = (maxRevs - idleRevs) / 100;
+        int revHelper = revInstance * getThrottle();
+        revTarget = idleRevs + (revHelper - (revHelper % 100));
+    }
+    std::cout << "----------------------------" << std::endl
+            << "DEBUG SECTION:  " << std::endl
+            << "getThrottle:    " << getThrottle() << std::endl
+            << "revTarget:        " << revTarget << std::endl;
+
+    //^seems to work decent, now to make it increase towards that at a good rate
+    int newRevs = 0;
+    if(getRevs() > revTarget)
+    {
+        if (revDownCounter == 5)
+        {
+            newRevs = getRevs() - 100;
+            revDownCounter = 0;
+        }
+        else
+        {
+            newRevs = getRevs();
+            revDownCounter++;
+        }
+    }
+    else if(getRevs() < revTarget)
+    {
+        //rev acceleration will be reduced based on which gear you're in, and how open the throttle is
+        float revGearResistance = (1/getGearRatio());
+
+        std::cout << "getGearRatio:     " << getGearRatio() << std::endl
+            << "revGearResistance:  " << revGearResistance << std::endl;
+        
+        newRevs = getRevs() + (revGearResistance*getThrottle()*20);
+        std::cout 
+            << "getThrottle:        " << getThrottle() << std::endl
+            << "newRevs:            " << newRevs << std::endl;
+    }
+    else
+    {
+        newRevs = getRevs();
+    }
+    setRevs(newRevs);
+
+    
+
+
+
+
+
+    /*
+    //system proposed by Roman. Hope it works!
+    int revAcceleration = getThrottle() * getRevs();
+    std::cout << "----------------------------" << std::endl
+        << "DEBUG SECTION:  " << std::endl
+        << "getThrottle:    " << getThrottle() << std::endl
+        << "getRevs:        " << getRevs() << std::endl;
+    //sets the new revs of the engine.
+    int newRevs = (getRevs() * revAcceleration * revAccelerationConstant);  //<-needs work
+    setRevs(newRevs);
+    std::cout
+        << "revAcceleration:" << revAcceleration << std::endl
+        << "newRevs:        " << newRevs << std::endl
+        << "----------------------------" << std::endl;
+    */
+
+    float power = getEnginePower();
+    float torque = getEngineTorque();
+
+
+    //##### WHAT WAS I TRYING TO ADD HERE!?!?!? @.@
+    
+    /*
+    \_> I dont think it works, we end up with 640000 RPM on the first tick.
+    yup, the system is causing problems
+
+    \_> old system is better, but also needs to be re-worked. Will likely 
+    try to make a linear function instead, and build it around
+
+
+    good news, new rev system works!!!!
+    */
+}
+
+//returns the gear ratio depending on what gear the car is in.
+float Powertrain::getGearRatio()
+{
+    float returnGearValue = gearRatioFinalDrive;
+    if (getGear() == 1)
+    {
+        return (returnGearValue * gearRatio1);
+    }
+    else if (getGear() == 2)
+    {
+        return (returnGearValue * gearRatio2);
+    }
+    else if (getGear() == 3)
+    {
+        return (returnGearValue * gearRatio3);
+    }
+    else if (getGear() == 4)
+    {
+        return (returnGearValue * gearRatio4);
+    }
+    else if (getGear() == 5)
+    {
+        return (returnGearValue * gearRatio5);
+    }
+    else if (getGear() == 6)
+    {
+        return (returnGearValue * gearRatio6);
+    }
+    return 0;
+}
