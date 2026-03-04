@@ -9,18 +9,31 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-add_executable(2Fast4U
-  main.cpp
-  car.h car.cpp
-  consolereader.h consolereader.cpp
+set(PROJECT_SOURCES
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
 )
-target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+
+qt_add_executable(2Fast4U
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+    gamewidget.h gamewidget.cpp
+    resources.qrc
+    line.h
+    player.h player.cpp
+
+)
+
+target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 include(GNUInstallDirs)
 install(TARGETS 2Fast4U
+    BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
