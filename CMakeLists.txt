@@ -27,6 +27,7 @@ qt_add_executable(2Fast4U
     line.h
     player.h player.cpp
     terrain.h terrain.cpp
+    obstacle.h
 
 )
 

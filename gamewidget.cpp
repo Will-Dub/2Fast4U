@@ -69,16 +69,16 @@ void GameWidget::gameLoop(){
 
     player.tick(dt, currentCurve, currentSlopeDelta, terrainFriction);
 
-    if (terrain.getTotalLines() > 0) {
-        int currentZ = player.getPositionZ();
-        int newSegmentIndex = currentZ / SEG_L;
-        const Line& collisionLine = terrain.getLine(newSegmentIndex % terrain.getTotalLines());
+    int currentZ = player.getPositionZ();
+    int newSegmentIndex = currentZ / SEG_L;
+    const Line& collisionLine = terrain.getLine(newSegmentIndex % terrain.getTotalLines());
 
-        // Vérifie si la ligne à un obstacle
-        if (!collisionLine.sprite.isNull()) {
+    // Vérifie si la ligne à un obstacle
+    if (!collisionLine.obstacles.isEmpty()) {
+        for(const Obstacle& obstacle : collisionLine.obstacles){
             float playerX = player.getPositionX();
-            float obstacleX = collisionLine.spriteX;
-            float obstacleWidth = 0.4f;
+            float obstacleX = obstacle.getSpriteX();
+            float obstacleWidth = obstacle.getHitboxWidth();
             qInfo() << playerX;
             qInfo() << obstacleX;
 

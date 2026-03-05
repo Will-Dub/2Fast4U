@@ -101,8 +101,11 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
 void Terrain::generateTerrain()
 {
     // Load les sprites
-    if (!testSprite.load(":/images/test.png")) {
-        qWarning() << "Échec à ouvrir le sprite";
+    QPixmap testSprite;
+    if (testSprite.load(":/images/test.png")) {
+        QPixmapCache::insert("test_obstacle0", testSprite);
+    } else {
+        qWarning() << "Warning: Erreur durant l'ouverture de test.png";
     }
 
     for (int i = 0; i < N_LINES; i++) {
@@ -114,7 +117,10 @@ void Terrain::generateTerrain()
         if(i>0 && i < 200) line.isLineFull = true;
         if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
 
-        if(i==50) { line.spriteX=-5; line.sprite=testSprite; }
+        if(i == 50) {
+            Obstacle obstacle("test_obstacle", 1, -5.0f, 0.05, 1);
+            line.obstacles.append(obstacle);
+        }
 
         lines.push_back(line);
     }

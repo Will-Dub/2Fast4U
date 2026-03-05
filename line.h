@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QDebug>
+#include "obstacle.h"
 
 constexpr static float CAM_D = 1.00f;
 constexpr static float ROAD_W = 9.5f;
@@ -14,10 +15,10 @@ struct Line {
     float x=0, y=0, z=0;
     // position 2D
     float X=0, Y=0, W=0;
-    float scale=0, curve=0, spriteX=0, clip=0;
+    float scale=0, curve=0, clip=0;
     int nbLane=1;
     bool isLineFull = false;
-    QPixmap sprite;
+    QList<Obstacle> obstacles;
 
     Line() {curve=x=y=z=0;}
 
@@ -40,35 +41,63 @@ struct Line {
     }
 
     void drawSprite(QPainter &painter, int screenWidth, int screenHeight){
-        int w = sprite.width();
-        int h = sprite.height();
+        if (obstacles.isEmpty()) return;
 
-        const float SPRITE_SCALE_FACTOR = 0.15f;
-        float destW = w * scale * screenWidth * SPRITE_SCALE_FACTOR;
-        float destH = h * scale * screenWidth * SPRITE_SCALE_FACTOR;
+        for(Obstacle& obstacle : obstacles){
+            QPixmap sprite = obstacle.getCurrentFrame();
+            if(sprite.isNull()) continue;
 
-        float destX = X + (W * spriteX / nbLane) - (destW / 2.0f);
-        float destY = Y - destH;
+            int w = sprite.width();
+            int h = sprite.height();
 
-        float visibleH = destH;
-        float clipY = clip;
+            float destW = w * scale * screenWidth * obstacle.getSpriteScale();
+            float destH = h * scale * screenWidth * obstacle.getSpriteScale();
 
-        if (clipY == 0) clipY = screenHeight;
+            float destX = X + (W * obstacle.getSpriteX() / nbLane) - (destW / 2.0f);
+            float destY = Y - destH;
 
-        if (destY >= clipY) return;
+            float visibleH = destH;
+            float clipY = clip;
 
-        if (destY + destH > clipY) {
-            visibleH = clipY - destY;
+            if (clipY == 0) clipY = screenHeight;
+
+            if (destY >= clipY) continue;
+
+            if (destY + destH > clipY) {
+                visibleH = clipY - destY;
+            }
+
+            if (visibleH <= 0) continue;
+
+            float srcVisibleH = (visibleH / destH) * h;
+            painter.drawPixmap(
+                QRectF(destX, destY, destW, visibleH),
+                sprite,
+                QRectF(0, 0, w, srcVisibleH)
+            );
+
+#ifdef QT_DEBUG
+            painter.save();
+
+            // Footprint du png
+            painter.setPen(QPen(Qt::yellow, 1, Qt::DashLine));
+            painter.drawRect(QRectF(destX, destY, destW, destH));
+
+            // Hitbox
+            float hitW = obstacle.getHitboxWidth();
+            float hitDestW = hitW * scale * screenWidth * obstacle.getSpriteScale();
+
+            float hitDestX = X + (W * obstacle.getSpriteX() / nbLane) - (hitDestW / 2.0f);
+
+            painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
+            painter.drawRect(QRectF(hitDestX, destY, hitDestW, destH));
+
+            painter.setPen(QPen(Qt::green, 4, Qt::SolidLine));
+            painter.drawPoint(QPointF(X + (W * obstacle.getSpriteX() / nbLane), destY + destH));
+
+            painter.restore();
+#endif
         }
-
-        if (visibleH <= 0) return;
-
-        float srcVisibleH = (visibleH / destH) * h;
-        painter.drawPixmap(
-            QRectF(destX, destY, destW, visibleH),
-            sprite,
-            QRectF(0, 0, w, srcVisibleH)
-        );
     }
 };
 
