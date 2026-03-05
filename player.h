@@ -25,6 +25,7 @@ public:
 
     void tick(float dt, float currentCurve, float currentSlope, float terrainFriction);
     void crash(float distancePushBack);
+    float getHitboxWidth() const;
 
 private:
     // Position
@@ -45,6 +46,8 @@ private:
     float m_coefficientDrag = 0.30f;
     float m_friction = 50.0;
     float m_forceMax = 8000.0f;
+
+    float m_hitboxWidth = 2.0f;
 };
 
 #endif // PLAYER_H

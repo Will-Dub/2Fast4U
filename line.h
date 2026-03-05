@@ -79,13 +79,15 @@ struct Line {
 #ifdef QT_DEBUG
             painter.save();
 
+            painter.setBrush(Qt::NoBrush);
+
             // Footprint du png
             painter.setPen(QPen(Qt::yellow, 1, Qt::DashLine));
             painter.drawRect(QRectF(destX, destY, destW, destH));
 
             // Hitbox
             float hitW = obstacle.getHitboxWidth();
-            float hitDestW = hitW * scale * screenWidth * obstacle.getSpriteScale();
+            float hitDestW = (W * hitW) / nbLane;
 
             float hitDestX = X + (W * obstacle.getSpriteX() / nbLane) - (hitDestW / 2.0f);
 

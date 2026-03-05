@@ -118,7 +118,7 @@ void Terrain::generateTerrain()
         if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
 
         if(i == 50) {
-            Obstacle obstacle("test_obstacle", 1, -5.0f, 0.05, 1);
+            Obstacle obstacle("test_obstacle", 1, -5.0f, 0.05, 2);
             line.obstacles.append(obstacle);
         }
 

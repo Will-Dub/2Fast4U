@@ -97,3 +97,8 @@ void Player::crash(float distancePushBack)
 
     m_positionZ -= distancePushBack;
 }
+
+float Player::getHitboxWidth() const
+{
+    return m_hitboxWidth;
+}

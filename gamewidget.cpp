@@ -42,22 +42,22 @@ void GameWidget::gameLoop(){
     // Max 33 ms entre les calculs physique
     if (dt > 0.033f) dt = 0.033f;
 
-    int startPos = player.getPositionZ() / SEG_L;
+    float previousZ = player.getPositionZ();
+    int startSegment = std::max(0, static_cast<int>(previousZ / SEG_L));
 
     float currentCurve = 0.0f;
     float currentSlopeDelta = 0.0f;
     float terrainFriction = 1.0f;
 
+    // Trouve la friction, curve et le slope du terrain
     if (terrain.getTotalLines() > 0) {
-        int currentIndex = startPos % terrain.getTotalLines();
-        int nextIndex = (startPos + 1) % terrain.getTotalLines();
+        int currentIndex = startSegment % terrain.getTotalLines();
+        int nextIndex = (startSegment + 1) % terrain.getTotalLines();
 
         const Line& currentLine = terrain.getLine(currentIndex);
         const Line& nextLine = terrain.getLine(nextIndex);
 
         currentCurve = currentLine.curve;
-        currentSlopeDelta = nextLine.y - currentLine.y;
-
         currentSlopeDelta = nextLine.y - currentLine.y;
 
         // Joueur à l'extérieure de la route
@@ -69,23 +69,36 @@ void GameWidget::gameLoop(){
 
     player.tick(dt, currentCurve, currentSlopeDelta, terrainFriction);
 
-    int currentZ = player.getPositionZ();
-    int newSegmentIndex = currentZ / SEG_L;
-    const Line& collisionLine = terrain.getLine(newSegmentIndex % terrain.getTotalLines());
+    // CCD
+    float currentZ = player.getPositionZ();
+    int endSegment = std::max(0, static_cast<int>(currentZ / SEG_L));
 
-    // Vérifie si la ligne à un obstacle
-    if (!collisionLine.obstacles.isEmpty()) {
-        for(const Obstacle& obstacle : collisionLine.obstacles){
-            float playerX = player.getPositionX();
-            float obstacleX = obstacle.getSpriteX();
-            float obstacleWidth = obstacle.getHitboxWidth();
-            qInfo() << playerX;
-            qInfo() << obstacleX;
+    float playerHitboxWidth = player.getHitboxWidth();
+    float playerHalfWidth = playerHitboxWidth / 2.0f;
+    float finalPlayerX = player.getPositionX();
+    bool isCrashed = false;
 
-            if (std::abs(playerX - obstacleX) < obstacleWidth) {
-                player.crash(SEG_L * 1.5f);
+    // Loop a travers tous les segment traversés
+    for (int i = startSegment; i <= endSegment; ++i) {
+        const Line& collisionLine = terrain.getLine(i % terrain.getTotalLines());
+
+        if (!collisionLine.obstacles.isEmpty()) {
+            for (const Obstacle& obstacle : collisionLine.obstacles) {
+                float obstacleX = obstacle.getSpriteX();
+
+                float obstacleHalfWidth = obstacle.getHitboxWidth() / 2.0f;
+                float minimumSafeDistance = playerHalfWidth + obstacleHalfWidth;
+
+                // Si leur distance du milieu est plus petit que leur demi combiner
+                if (std::abs(finalPlayerX - obstacleX) < minimumSafeDistance) {
+                    player.crash(SEG_L * 1.5f);
+                    isCrashed = true;
+                    break;
+                }
             }
         }
+
+        if (isCrashed) break;
     }
 
     update();
