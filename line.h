@@ -40,10 +40,10 @@ struct Line {
         }
     }
 
-    void drawSprite(QPainter &painter, int screenWidth, int screenHeight){
+    void drawSprite(QPainter &painter, int screenWidth, int screenHeight) const{
         if (obstacles.isEmpty()) return;
 
-        for(Obstacle& obstacle : obstacles){
+        for(const Obstacle& obstacle : obstacles){
             QPixmap sprite = obstacle.getCurrentFrame();
             if(sprite.isNull()) continue;
 

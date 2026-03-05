@@ -15,16 +15,20 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
     int startPos = player.getPositionZ()/SEG_L;
     float percent = (player.getPositionZ() - (startPos * SEG_L)) / (float)SEG_L;
 
-    Line currentLine = lines[startPos % N_LINES];
-    float currentY = currentLine.y;
-    float nextY = lines[(startPos + 1) % N_LINES].y;
+    int safeStart = (startPos % N_LINES + N_LINES) % N_LINES;
+    int safeNext = ((startPos + 1) % N_LINES + N_LINES) % N_LINES;
 
+    Line currentLine = lines[safeStart];
+    float currentY = currentLine.y;
+    float nextY = lines[safeNext].y;
+
+    // Hauteur de la caméra
     float rawSlope = nextY - currentY;
     float camHeight = player.getPositionY() + (currentY + rawSlope * percent);
 
+    // Angle de la caméra
     int lookahead = 15;
     float lookAheadY = lines[(startPos + lookahead) % N_LINES].y;
-
     float actualSlope = (lookAheadY - currentY) / (lookahead * SEG_L);
 
     float pitchStrength = 1.0f;
@@ -32,6 +36,7 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
 
     player.pitch += (targetPitch - player.pitch) * 0.1f;
 
+    // Tournages
     float x = 0;
     float dx = -(currentLine.curve * percent);
     int maxy = screenHeight;
@@ -39,7 +44,8 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
 
     // Montre les 600 lignes devant
     for(int n=startPos; n<startPos+600;n++){
-        Line& l = lines[n%N_LINES];
+        int index = (n % N_LINES + N_LINES) % N_LINES;
+        Line& l = lines[index];
 
         l.project(player.getPositionX()*ROAD_W-x, camHeight, player.getPositionZ() - ((n>=N_LINES)?N_LINES*SEG_L:0), screenWidth, screenHeight, cameraAngle, player.pitch);
 
@@ -102,10 +108,17 @@ void Terrain::generateTerrain()
 {
     // Load les sprites
     QPixmap testSprite;
-    if (testSprite.load(":/images/test.png")) {
+    if (testSprite.load(":/images/test3.png")) {
         QPixmapCache::insert("test_obstacle0", testSprite);
     } else {
-        qWarning() << "Warning: Erreur durant l'ouverture de test.png";
+        qWarning() << "Warning: Erreur durant l'ouverture de test3.png";
+    }
+
+    QPixmap testSprite2;
+    if (testSprite2.load(":/images/test4.png")) {
+        QPixmapCache::insert("test_obstacle1", testSprite2);
+    } else {
+        qWarning() << "Warning: Erreur durant l'ouverture de test4.png";
     }
 
     for (int i = 0; i < N_LINES; i++) {
@@ -118,11 +131,25 @@ void Terrain::generateTerrain()
         if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
 
         if(i == 50) {
-            Obstacle obstacle("test_obstacle", 1, -5.0f, 0.05, 2);
+            Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2);
             line.obstacles.append(obstacle);
         }
 
         lines.push_back(line);
+    }
+}
+
+void Terrain::tick(Player &player, float dt)
+{
+    int startPos = player.getPositionZ()/SEG_L;
+
+    for(int n=startPos; n<startPos+600;n++){
+        int index = (n % N_LINES + N_LINES) % N_LINES;
+        Line& l = lines[index];
+
+        for(Obstacle& obstacle : l.obstacles){
+            obstacle.update(dt);
+        }
     }
 }
 

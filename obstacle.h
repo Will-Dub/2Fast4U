@@ -15,7 +15,8 @@ public:
         m_spriteName(spriteName),
         m_spriteX(spriteX),
         m_spriteScale(spriteScale),
-        m_hitboxWidth(hitboxWidth){}
+        m_hitboxWidth(hitboxWidth),
+        m_timeElapsed(0.0f){}
 
     void nextFrame() {
         if (m_maxFrame > 0) {
@@ -46,6 +47,17 @@ public:
         return framePixmap;
     }
 
+    void update(float dt){
+        qInfo() << "dt:" << dt << " elapsed:" << m_timeElapsed;
+        m_timeElapsed += dt;
+        qInfo() << "dt:" << dt << " elapsed:" << m_timeElapsed;
+        if(m_timeElapsed>0.025){
+            nextFrame();
+            m_spriteX -= 0.1;
+            m_timeElapsed -= 0.100f;
+        }
+    }
+
     float getSpriteX() const{
         return m_spriteX;
     }
@@ -65,6 +77,7 @@ private:
     float m_spriteX;
     float m_spriteScale;
     float m_hitboxWidth;
+    float m_timeElapsed = 0.0f;
 
 };
 

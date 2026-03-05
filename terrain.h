@@ -16,6 +16,7 @@ public:
 
     void render(QPainter &painter, Player &player, int screenWidth, int screenHeight);
     void generateTerrain();
+    void tick(Player &player, float dt);
 
     Line& getLine(int index);
     const Line& getLine(int index) const;

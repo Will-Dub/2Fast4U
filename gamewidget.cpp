@@ -1,12 +1,13 @@
 #include "gamewidget.h"
 
 GameWidget::GameWidget(QWidget *parent) {
-    QTimer *timer = new QTimer(this);
-    timer->setTimerType(Qt::PreciseTimer);
+    QTimer *loopTimer = new QTimer(this);
+    loopTimer->setTimerType(Qt::PreciseTimer);
 
-    connect(timer, &QTimer::timeout, this, &GameWidget::gameLoop);
+    connect(loopTimer, &QTimer::timeout, this, &GameWidget::gameLoop);
 
-    timer->start(1000/FRAME_RATE);
+    loopTimer->start(1000/FRAME_RATE);
+    timer.start();
 
     // Génère la map
     terrain.generateTerrain();
@@ -39,8 +40,9 @@ void GameWidget::keyReleaseEvent(QKeyEvent *event) {
 void GameWidget::gameLoop(){
     float dt = timer.restart() / 1000.0f;
 
-    // Max 33 ms entre les calculs physique
+    // Max et min de dt
     if (dt > 0.033f) dt = 0.033f;
+    if (dt < 0.001f) dt = 0.016f;
 
     float previousZ = player.getPositionZ();
     int startSegment = std::max(0, static_cast<int>(previousZ / SEG_L));
@@ -49,7 +51,7 @@ void GameWidget::gameLoop(){
     float currentSlopeDelta = 0.0f;
     float terrainFriction = 1.0f;
 
-    // Trouve la friction, curve et le slope du terrain
+    // Trouve la friction, curve et slope du terrain
     if (terrain.getTotalLines() > 0) {
         int currentIndex = startSegment % terrain.getTotalLines();
         int nextIndex = (startSegment + 1) % terrain.getTotalLines();
@@ -101,6 +103,8 @@ void GameWidget::gameLoop(){
         if (isCrashed) break;
     }
 
+    terrain.tick(player, dt);
+
     update();
 }
 
@@ -129,6 +133,4 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QTextDocument doc;
     doc.setHtml(QString("<font color=\"#f00\">%1</font>").arg(currentFps));
     doc.drawContents(&painter);
-
-    //painter.drawEllipse(QRect(width()/2-30, height()/2-30, width()/2+30, height()/2+30));
 }
