@@ -5,6 +5,7 @@
 #include <QPainter>
 #include "line.h"
 #include "player.h"
+#include <QImageReader>
 
 class Terrain
 {

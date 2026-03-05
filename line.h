@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QPixmap>
+#include <QDebug>
 
 constexpr static float CAM_D = 1.00f;
 constexpr static float ROAD_W = 9.5f;
@@ -42,13 +43,12 @@ struct Line {
         int w = sprite.width();
         int h = sprite.height();
 
-        float destX = X + scale*spriteX*screenWidth/2;
-        float destY = Y + 4;
-        float destW = w*W/266;
-        float destH = h*W/266;
+        const float SPRITE_SCALE_FACTOR = 0.15f;
+        float destW = w * scale * screenWidth * SPRITE_SCALE_FACTOR;
+        float destH = h * scale * screenWidth * SPRITE_SCALE_FACTOR;
 
-        destX += destW*spriteX; // offset x
-        destY += -destH; // offset y
+        float destX = X + (W * spriteX / nbLane) - (destW / 2.0f);
+        float destY = Y - destH;
 
         float visibleH = destH;
         float clipY = clip;
@@ -68,7 +68,7 @@ struct Line {
             QRectF(destX, destY, destW, visibleH),
             sprite,
             QRectF(0, 0, w, srcVisibleH)
-            );
+        );
     }
 };
 

@@ -23,7 +23,8 @@ public:
     float getPositionZ() {return m_positionZ; }
     float getAngle() {return m_angle; }
 
-    void tick(float dt, float currentCurve, float currentSlope);
+    void tick(float dt, float currentCurve, float currentSlope, float terrainFriction);
+    void crash(float distancePushBack);
 
 private:
     // Position

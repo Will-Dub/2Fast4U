@@ -46,21 +46,47 @@ void GameWidget::gameLoop(){
 
     float currentCurve = 0.0f;
     float currentSlopeDelta = 0.0f;
+    float terrainFriction = 1.0f;
 
     if (terrain.getTotalLines() > 0) {
         int currentIndex = startPos % terrain.getTotalLines();
         int nextIndex = (startPos + 1) % terrain.getTotalLines();
+
         const Line& currentLine = terrain.getLine(currentIndex);
         const Line& nextLine = terrain.getLine(nextIndex);
 
         currentCurve = currentLine.curve;
+        currentSlopeDelta = nextLine.y - currentLine.y;
 
-        float currentY = currentLine.y;
-        float nextY = nextLine.y;
-        currentSlopeDelta = nextY - currentY;
+        currentSlopeDelta = nextLine.y - currentLine.y;
+
+        // Joueur à l'extérieure de la route
+        float playerX = player.getPositionX();
+        if (std::abs(playerX) > 1.0f * currentLine.nbLane) {
+            terrainFriction = 3.5f;
+        }
     }
 
-    player.tick(dt, currentCurve, currentSlopeDelta);
+    player.tick(dt, currentCurve, currentSlopeDelta, terrainFriction);
+
+    if (terrain.getTotalLines() > 0) {
+        int currentZ = player.getPositionZ();
+        int newSegmentIndex = currentZ / SEG_L;
+        const Line& collisionLine = terrain.getLine(newSegmentIndex % terrain.getTotalLines());
+
+        // Vérifie si la ligne à un obstacle
+        if (!collisionLine.sprite.isNull()) {
+            float playerX = player.getPositionX();
+            float obstacleX = collisionLine.spriteX;
+            float obstacleWidth = 0.4f;
+            qInfo() << playerX;
+            qInfo() << obstacleX;
+
+            if (std::abs(playerX - obstacleX) < obstacleWidth) {
+                player.crash(SEG_L * 1.5f);
+            }
+        }
+    }
 
     update();
 }

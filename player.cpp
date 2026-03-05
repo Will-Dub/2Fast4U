@@ -8,7 +8,7 @@ const float FORCE_CENTRIFUGE = 1.2f;
 const float BRAKE_MULTIPLIER = 2.5f;
 const float GRAVITY = 9.8f;
 
-void Player::tick(float dt, float currentCurve, float currentSlope)
+void Player::tick(float dt, float currentCurve, float currentSlope, float terrainFriction)
 {
     // TODO: faire currentSlope
     // Key event
@@ -47,7 +47,8 @@ void Player::tick(float dt, float currentCurve, float currentSlope)
 
     float forceEngine = m_potAccel * currentForceMax;
 
-    float resistanceFriction = m_friction * m_velocite;
+    float totalFriction = m_friction * terrainFriction;
+    float resistanceFriction = totalFriction * m_velocite;
     float resistanceAir      = m_coefficientDrag * (m_velocite * m_velocite);
 
     float angleRad = std::atan(currentSlope / SEG_L);
@@ -85,6 +86,14 @@ void Player::tick(float dt, float currentCurve, float currentSlope)
     float forceCentrifuge = currentCurve * m_velocite * FORCE_CENTRIFUGE;
     m_positionX -= forceCentrifuge * dt;
 
-    qInfo() << "SLOPE(deg): " << angleRad * (180.0 / M_PI);
-    qInfo() << "Vitesse: " << m_velocite*3.6f << " km/h";
+    //qInfo() << "SLOPE(deg): " << angleRad * (180.0 / M_PI);
+    //qInfo() << "Vitesse: " << m_velocite*3.6f << " km/h";
+}
+
+void Player::crash(float distancePushBack)
+{
+    m_velocite = 0.0f;
+    m_acceleration = 0.0f;
+
+    m_positionZ -= distancePushBack;
 }

@@ -114,16 +114,7 @@ void Terrain::generateTerrain()
         if(i>0 && i < 200) line.isLineFull = true;
         if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
 
-        if(i%100==0) { line.spriteX=-2.5; line.sprite=testSprite; }
-        /*if(i>100 && i<700) line.curve=0.5;
-        if(i > 1100) line.curve = -0.7;
-        if(i>0 && i < 200) line.isLineFull = true;
-
-        if(i%100==0) { line.spriteX=-2.5; line.sprite=testSprite; }
-
-        line.nbLane = 3;
-        if(i > 100 && i < 700) line.y = sin(i / 30.0) * 1500;
-        if(i > 400 && i < 700) line.y = sin(i / 90.0) * 15000;*/
+        if(i==50) { line.spriteX=-5; line.sprite=testSprite; }
 
         lines.push_back(line);
     }
