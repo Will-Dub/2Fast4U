@@ -11,8 +11,8 @@ const float GRAVITY = 9.8f;
 void Player::tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input)
 {
     // TODO: faire currentSlope
-    // Key event
 
+    // Key event
     if (keyUp) {
         m_potAccel += ACCEL_SPEED * dt;
     }
@@ -40,6 +40,8 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
     if(m_potAccel < -1.0f) m_potAccel = -1.0f;
     if(m_potSteering > 1.0f) m_potSteering = 1.0f;
     if(m_potSteering < -1.0f) m_potSteering = -1.0f;
+
+    float m_potSteeringFromInput = input.brake != 0 ? -input.brake : input.acceleration;
 
     // Frène plus vite
     float currentForceMax = (m_velocite > 1.0f && ACCEL_INPUT < 0.0f)
@@ -88,9 +90,6 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
     float targetAngle = (STEERING_INPUT * m_velocite * STEERING_LEAN_RATIO) +
                         (currentCurve * m_velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
-
-    //qInfo() << "SLOPE(deg): " << angleRad * (180.0 / M_PI);
-    //qInfo() << "Vitesse: " << m_velocite*3.6f << " km/h";
 }
 
 void Player::crash(float distancePushBack)

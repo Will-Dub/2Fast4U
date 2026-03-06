@@ -6,7 +6,6 @@
 #include <QDebug>
 #include "obstacle.h"
 
-constexpr static float CAM_D = 1.00f;
 constexpr static float ROAD_W = 9.5f;
 constexpr static float SEG_L = 3.0f;
 
@@ -23,7 +22,7 @@ struct Line {
     Line() {curve=x=y=z=0;}
 
     // Projete le 3D en 2D
-    void project(float camX, float camY, float camZ, int screenWidth, int screenHeight, float camAngle, float pitch) {
+    void project(float camX, float camY, float camZ, int screenWidth, int screenHeight, float camAngle, float pitch, float cameraDepth) {
         float relativeZ = z - camZ;
 
         // Si derrière ou proche
@@ -33,7 +32,7 @@ struct Line {
             Y = screenHeight;
             W = screenWidth;
         } else {
-            scale = CAM_D / relativeZ;
+            scale = cameraDepth / relativeZ;
             X = (1.0f + scale * (x - camX) - camAngle) * screenWidth / 2.0f;
             Y = (1.0f - scale * (y - camY) + pitch) * screenHeight / 2.0f;
             W = scale * ROAD_W * nbLane * screenWidth / 2.0f;

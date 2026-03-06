@@ -104,7 +104,11 @@ void GameWidget::gameLoop(){
         if (isCrashed) break;
     }
 
+    // Bouge les obstacles du terrain
     m_terrain.tick(m_player, dt);
+
+    // Envoie les données au arduino
+    m_serialController.sendInformation(dt, m_player.getSpeed(), 7000);
 
     update();
 }

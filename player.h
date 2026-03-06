@@ -6,9 +6,9 @@
 #include "serialcontroller.h"
 
 #define STEERING_INPUT input.steering
-//#define ACCEL_INPUT input.acceleration
+#define ACCEL_INPUT m_potSteeringFromInput
 //#define STEERING_INPUT m_potSteering
-#define ACCEL_INPUT m_potAccel
+//#define ACCEL_INPUT m_potAccel
 
 constexpr float CHASSIS_ROLL_STIFFNESS = 15.0f;
 constexpr float STEERING_LEAN_RATIO = 0.003f;
@@ -28,10 +28,11 @@ public:
     bool keySpace = false;
     float pitch = 0;
 
-    float getPositionX() {return m_positionX; }
-    float getPositionY() {return m_positionY; }
-    float getPositionZ() {return m_positionZ; }
-    float getAngle() {return m_angle; }
+    float getPositionX() { return m_positionX; }
+    float getPositionY() { return m_positionY; }
+    float getPositionZ() { return m_positionZ; }
+    float getAngle() { return m_angle; }
+    int getSpeed() { return m_velocite*3.6f; }
 
     void tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);

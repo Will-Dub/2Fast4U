@@ -33,13 +33,14 @@ public:
         JOYSTICK = 0,
         BUTTONS = 1,
         PEDALES = 2,
-        ACCEL = 3
+        STEERING = 3
     };
 
     explicit SerialController(const QString& portName, QObject* parent = nullptr);
     ~SerialController() override;
 
     InputState getState();
+    void sendInformation(float dt, int vitesse, int rpm);
 
 private slots:
     void handleReadyRead();
@@ -62,6 +63,11 @@ private:
     int m_joystickX = 0.0f;
     int m_joystickY = 0.0f;
     bool m_isJoystickBtnPressed = false;
+
+    float m_timeElapsedSinceSend = 0.0f;
+
+    static constexpr float STEERING_DEADZONE = 0.05f;
+    static constexpr float STEERING_SMOOTHING = 0.3f;
 
     void parsePacket(const QByteArray& packet);
 };

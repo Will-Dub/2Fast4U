@@ -36,6 +36,13 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
 
     player.pitch += (targetPitch - player.pitch) * 0.1f;
 
+    // Depth de la caméra
+    float baseDepth = 0.8f;
+    float speedFactor = player.getSpeed() / 300;
+
+    // Augmente le FOV dépendamment de la vitesse
+    float cameraDepth = baseDepth - (speedFactor * 0.2f);
+
     // Tournages
     float x = 0;
     float dx = -(currentLine.curve * percent);
@@ -47,7 +54,7 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
         int index = (n % N_LINES + N_LINES) % N_LINES;
         Line& l = lines[index];
 
-        l.project(player.getPositionX()*ROAD_W-x, camHeight, player.getPositionZ() - ((n>=N_LINES)?N_LINES*SEG_L:0), screenWidth, screenHeight, cameraAngle, player.pitch);
+        l.project(player.getPositionX()*ROAD_W-x, camHeight, player.getPositionZ() - ((n>=N_LINES)?N_LINES*SEG_L:0), screenWidth, screenHeight, cameraAngle, player.pitch, cameraDepth);
 
         x+=dx;
         dx+=l.curve;
@@ -128,7 +135,7 @@ void Terrain::generateTerrain()
         if(i>50 && i<700) line.curve=0.02;
         line.nbLane = 3;
         if(i>0 && i < 200) line.isLineFull = true;
-        if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
+        //if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
 
         if(i == 50) {
             Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2);

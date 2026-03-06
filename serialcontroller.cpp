@@ -12,7 +12,7 @@ SerialController::SerialController(const QString &portName, QObject *parent)
     connect(&m_serial, &QSerialPort::readyRead, this, &SerialController::handleReadyRead);
     connect(&m_serial, &QSerialPort::errorOccurred, this, &SerialController::handleError);
 
-    if (!m_serial.open(QIODevice::ReadOnly)) {
+    if (!m_serial.open(QIODevice::ReadWrite)) {
         qCritical() << "Critial: Erreur durant l'ouverure du port série:" << portName << m_serial.errorString();
     } else {
         qInfo() << "SUCCESS: Connecter au port série" << portName;
@@ -44,6 +44,33 @@ InputState SerialController::getState()
     state.isClutchPressed = m_isClutchBtnPressed;
 
     return state;
+}
+
+void SerialController::sendInformation(float dt, int vitesse, int rpm)
+{
+    m_timeElapsedSinceSend += dt;
+    if (m_timeElapsedSinceSend < 0.05f) {
+        return;
+    }
+
+    m_timeElapsedSinceSend = 0.0f;
+
+    if (!m_serial.isOpen() || !m_serial.isWritable()) {
+        return;
+    }
+
+    QJsonObject json;
+    json["v"] = vitesse;
+    json["r"] = rpm;
+
+    // Fais le payload(sans espace et new line)
+    QJsonDocument doc(json);
+    QByteArray payload = doc.toJson(QJsonDocument::Compact);
+
+    // Délimite les payload
+    payload.append('\n');
+
+    m_serial.write(payload);
 }
 
 void SerialController::handleReadyRead()
@@ -94,9 +121,21 @@ void SerialController::parsePacket(const QByteArray& packet) {
     PacketType type = PacketType(jsonObj["type"].toInt());
 
     switch(type){
-    case PacketType::ACCEL:
-        m_steering = std::clamp((float)jsonObj["steering"].toDouble(), -1.0f, 1.0f);
-        qInfo() << m_steering;
+    case PacketType::STEERING:
+        if (jsonObj.contains("steering")) {
+            float rawSteering = std::clamp((float)jsonObj["steering"].toDouble(), -1.0f, 1.0f);
+
+            // Applique les deadzones
+            if (std::abs(rawSteering) < STEERING_DEADZONE) {
+                rawSteering = 0.0f;
+            } else {
+                float sign = std::copysign(1.0f, rawSteering);
+                rawSteering = sign * ((std::abs(rawSteering) - STEERING_DEADZONE) / (1.0f - STEERING_DEADZONE));
+            }
+
+            // Low pass filter
+            m_steering += (rawSteering - m_steering) * STEERING_SMOOTHING;
+        }
         break;
     case PacketType::JOYSTICK:
         // TODO that shit
@@ -107,8 +146,8 @@ void SerialController::parsePacket(const QByteArray& packet) {
     case PacketType::PEDALES:
         if (jsonObj.contains("g") && jsonObj.contains("b") && jsonObj.contains("c")) {
             m_acceleration = std::clamp((float)jsonObj["g"].toDouble(), 0.0f, 1.0f);
-            m_brake        = std::clamp((float)jsonObj["b"].toDouble(), 0.0f, 1.0f);
-            m_clutch       = std::clamp((float)jsonObj["c"].toDouble(), 0.0f, 1.0f);
+            m_brake = std::clamp((float)jsonObj["b"].toDouble(), 0.0f, 1.0f);
+            m_clutch = std::clamp((float)jsonObj["c"].toDouble(), 0.0f, 1.0f);
         }
         break;
     default:
