@@ -1,6 +1,6 @@
 #include "gamewidget.h"
 
-GameWidget::GameWidget(QWidget *parent): m_serialController("/dev/ttyACM0") {
+GameWidget::GameWidget(QWidget *parent): m_serialController() {
     QTimer *loopTimer = new QTimer(this);
     loopTimer->setTimerType(Qt::PreciseTimer);
 
@@ -76,8 +76,7 @@ void GameWidget::gameLoop(){
     float currentZ = m_player.getPositionZ();
     int endSegment = std::max(0, static_cast<int>(currentZ / SEG_L));
 
-    float playerHitboxWidth = m_player.getHitboxWidth();
-    float playerHalfWidth = playerHitboxWidth / 2.0f;
+    float playerHalfWidth = m_player.getHitboxHalfWidth();
     float finalPlayerX = m_player.getPositionX();
     bool isCrashed = false;
 

@@ -100,7 +100,7 @@ void Player::crash(float distancePushBack)
     m_positionZ -= distancePushBack;
 }
 
-float Player::getHitboxWidth() const
+float Player::getHitboxHalfWidth() const
 {
-    return m_hitboxWidth;
+    return m_hitboxHalfWidth;
 }

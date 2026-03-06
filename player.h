@@ -36,7 +36,7 @@ public:
 
     void tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
-    float getHitboxWidth() const;
+    float getHitboxHalfWidth() const;
 
 private:
     // Position
@@ -58,7 +58,7 @@ private:
     float m_friction = 50.0;
     float m_forceMax = 8000.0f;
 
-    float m_hitboxWidth = 2.0f;
+    float m_hitboxHalfWidth = 1.0f;
 };
 
 #endif // PLAYER_H

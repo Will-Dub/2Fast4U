@@ -128,6 +128,13 @@ void Terrain::generateTerrain()
         qWarning() << "Warning: Erreur durant l'ouverture de test4.png";
     }
 
+    QPixmap arbre;
+    if (arbre.load(":/images/arbre.png")) {
+        QPixmapCache::insert("arbre0", arbre);
+    } else {
+        qWarning() << "Warning: Erreur durant l'ouverture de arbre.png";
+    }
+
     for (int i = 0; i < N_LINES; i++) {
         Line line;
         line.z = i * SEG_L;
@@ -138,7 +145,11 @@ void Terrain::generateTerrain()
         //if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
 
         if(i == 50) {
-            Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2);
+            Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2, 0.1);
+            line.obstacles.append(obstacle);
+        }
+        if(i == 25) {
+            Obstacle obstacle("arbre", 1, 5.0f, 0.3, 2);
             line.obstacles.append(obstacle);
         }
 

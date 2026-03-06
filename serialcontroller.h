@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+#include <QSerialPortInfo>
 
 struct InputState {
     float steering = 0.0f;
@@ -36,7 +37,7 @@ public:
         STEERING = 3
     };
 
-    explicit SerialController(const QString& portName, QObject* parent = nullptr);
+    explicit SerialController(QObject* parent = nullptr);
     ~SerialController() override;
 
     InputState getState();
@@ -56,9 +57,9 @@ private:
     float m_brake = 0.0f;
     float m_clutch = 0.0f;
 
-    bool m_isAccelerationBtnPressed = 0.0f;
-    bool m_isBrakeBtnPressed = 0.0f;
-    bool m_isClutchBtnPressed = 0.0f;
+    bool m_isAccelerationBtnPressed = false;
+    bool m_isBrakeBtnPressed = false;
+    bool m_isClutchBtnPressed = false;
 
     int m_joystickX = 0.0f;
     int m_joystickY = 0.0f;

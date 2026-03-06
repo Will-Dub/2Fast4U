@@ -1,8 +1,29 @@
 #include "serialcontroller.h"
 
-SerialController::SerialController(const QString &portName, QObject *parent)
+SerialController::SerialController(QObject *parent)
     : QObject(parent)
 {
+    QString portName = "";
+
+    const auto infos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &info : infos) {
+        QString port = info.portName().toLower();
+
+        if (port.startsWith("ttys") && !port.contains("usb")) {
+            continue;
+        }
+
+        if (port.contains("ttyacm") || port.contains("ttyusb") || port.contains("com")) {
+            portName = info.portName();
+            break;
+        }
+    }
+
+    if (portName.isEmpty()) {
+        qCritical() << "CRITICAL: Aucun port série détecté";
+        return;
+    }
+
     m_serial.setPortName(portName);
     m_serial.setBaudRate(QSerialPort::Baud115200);
     m_serial.setDataBits(QSerialPort::Data8);
@@ -48,8 +69,9 @@ InputState SerialController::getState()
 
 void SerialController::sendInformation(float dt, int vitesse, int rpm)
 {
+
     m_timeElapsedSinceSend += dt;
-    if (m_timeElapsedSinceSend < 0.05f) {
+    if (m_timeElapsedSinceSend < 0.1f) {
         return;
     }
 
@@ -71,6 +93,7 @@ void SerialController::sendInformation(float dt, int vitesse, int rpm)
     payload.append('\n');
 
     m_serial.write(payload);
+    m_serial.flush();
 }
 
 void SerialController::handleReadyRead()
@@ -148,6 +171,7 @@ void SerialController::parsePacket(const QByteArray& packet) {
             m_acceleration = std::clamp((float)jsonObj["g"].toDouble(), 0.0f, 1.0f);
             m_brake = std::clamp((float)jsonObj["b"].toDouble(), 0.0f, 1.0f);
             m_clutch = std::clamp((float)jsonObj["c"].toDouble(), 0.0f, 1.0f);
+            qInfo() << m_acceleration;
         }
         break;
     default:

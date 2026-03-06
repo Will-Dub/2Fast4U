@@ -9,14 +9,14 @@
 class Obstacle
 {
 public:
-    Obstacle(QString spriteName, int maxFrame, float spriteX, float spriteScale, float hitboxWidth)
+    Obstacle(QString spriteName, int maxFrame, float spriteX, float spriteScale, float hitboxWidth, float movingSpeed=0)
         : m_currentFrame(0),
         m_maxFrame(maxFrame),
         m_spriteName(spriteName),
         m_spriteX(spriteX),
         m_spriteScale(spriteScale),
         m_hitboxWidth(hitboxWidth),
-        m_timeElapsed(0.0f){}
+        m_movingSpeed(movingSpeed){}
 
     void nextFrame() {
         if (m_maxFrame > 0) {
@@ -51,7 +51,7 @@ public:
         m_timeElapsed += dt;
         if(m_timeElapsed>0.025){
             nextFrame();
-            m_spriteX -= 0.1;
+            m_spriteX -= m_movingSpeed;
             m_timeElapsed -= 0.100f;
         }
     }
@@ -75,6 +75,7 @@ private:
     float m_spriteX;
     float m_spriteScale;
     float m_hitboxWidth;
+    float m_movingSpeed;
     float m_timeElapsed = 0.0f;
 
 };
