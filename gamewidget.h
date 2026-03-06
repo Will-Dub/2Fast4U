@@ -13,6 +13,7 @@
 #include <QTextDocument>
 #include <QDebug>
 #include "terrain.h"
+#include "serialcontroller.h"
 
 constexpr static int FRAME_RATE = 180;
 
@@ -32,14 +33,15 @@ private slots:
     void gameLoop();
 
 private:
-    Player player;
-    Terrain terrain;
+    Player m_player;
+    Terrain m_terrain;
+    SerialController m_serialController;
 
-    int frameCount = 0;
-    int currentFps = 0;
-    QElapsedTimer timer;
-    QElapsedTimer fpsTimer;
-    QLinearGradient sunset;
+    int m_frameCount = 0;
+    int m_currentFps = 0;
+    QElapsedTimer m_timer;
+    QElapsedTimer m_fpsTimer;
+    QLinearGradient m_sunset;
 };
 
 #endif // GAMEWIDGET_H

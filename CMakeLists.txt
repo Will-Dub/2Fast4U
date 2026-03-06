@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS SerialPort)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -28,10 +29,12 @@ qt_add_executable(2Fast4U
     player.h player.cpp
     terrain.h terrain.cpp
     obstacle.h
+    serialcontroller.h serialcontroller.cpp
 
 )
 
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
 
 include(GNUInstallDirs)
 install(TARGETS 2Fast4U

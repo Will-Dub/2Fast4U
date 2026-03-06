@@ -8,10 +8,11 @@ const float FORCE_CENTRIFUGE = 1.2f;
 const float BRAKE_MULTIPLIER = 2.5f;
 const float GRAVITY = 9.8f;
 
-void Player::tick(float dt, float currentCurve, float currentSlope, float terrainFriction)
+void Player::tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input)
 {
     // TODO: faire currentSlope
     // Key event
+
     if (keyUp) {
         m_potAccel += ACCEL_SPEED * dt;
     }
@@ -41,11 +42,11 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
     if(m_potSteering < -1.0f) m_potSteering = -1.0f;
 
     // Frène plus vite
-    float currentForceMax = (m_velocite > 1.0f && m_potAccel < 0.0f)
+    float currentForceMax = (m_velocite > 1.0f && ACCEL_INPUT < 0.0f)
                                 ? m_forceMax * BRAKE_MULTIPLIER
                                 : m_forceMax;
 
-    float forceEngine = m_potAccel * currentForceMax;
+    float forceEngine = ACCEL_INPUT * currentForceMax;
 
     float totalFriction = m_friction * terrainFriction;
     float resistanceFriction = totalFriction * m_velocite;
@@ -65,7 +66,7 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
         m_acceleration = 0.0f;
     }
 
-    if(m_potAccel == 0.0f && std::abs(m_velocite) < 0.1f) {
+    if(ACCEL_INPUT == 0.0f && std::abs(m_velocite) < 0.1f) {
         m_velocite = 0.0f;
         m_acceleration = 0.0f;
     }
@@ -77,14 +78,16 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
     if (std::abs(m_velocite) > 0.1f) {
         float reverseMultiplier = (m_velocite < 0) ? -1.0f : 1.0f;
 
-        m_positionX += m_potSteering * m_velocite * m_turnSpeed * reverseMultiplier * 0.08f * dt;
+        m_positionX += STEERING_INPUT * m_velocite * m_turnSpeed * reverseMultiplier * 0.08f * dt;
     }
-
-    m_angle = m_potSteering * 0.15f;
 
     // Force centrifuge lors des tournages
     float forceCentrifuge = currentCurve * m_velocite * FORCE_CENTRIFUGE;
     m_positionX -= forceCentrifuge * dt;
+
+    float targetAngle = (STEERING_INPUT * m_velocite * STEERING_LEAN_RATIO) +
+                        (currentCurve * m_velocite * CURVE_LEAN_RATIO);
+    m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
     //qInfo() << "SLOPE(deg): " << angleRad * (180.0 / M_PI);
     //qInfo() << "Vitesse: " << m_velocite*3.6f << " km/h";

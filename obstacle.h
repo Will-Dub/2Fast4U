@@ -48,9 +48,7 @@ public:
     }
 
     void update(float dt){
-        qInfo() << "dt:" << dt << " elapsed:" << m_timeElapsed;
         m_timeElapsed += dt;
-        qInfo() << "dt:" << dt << " elapsed:" << m_timeElapsed;
         if(m_timeElapsed>0.025){
             nextFrame();
             m_spriteX -= 0.1;

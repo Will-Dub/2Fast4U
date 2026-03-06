@@ -3,6 +3,16 @@
 
 #include <QDebug>
 #include "line.h"
+#include "serialcontroller.h"
+
+#define STEERING_INPUT input.steering
+//#define ACCEL_INPUT input.acceleration
+//#define STEERING_INPUT m_potSteering
+#define ACCEL_INPUT m_potAccel
+
+constexpr float CHASSIS_ROLL_STIFFNESS = 15.0f;
+constexpr float STEERING_LEAN_RATIO = 0.003f;
+constexpr float CURVE_LEAN_RATIO = 0.015f;
 
 class Player
 {
@@ -23,7 +33,7 @@ public:
     float getPositionZ() {return m_positionZ; }
     float getAngle() {return m_angle; }
 
-    void tick(float dt, float currentCurve, float currentSlope, float terrainFriction);
+    void tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
     float getHitboxWidth() const;
 
