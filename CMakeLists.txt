@@ -30,6 +30,7 @@ qt_add_executable(2Fast4U
     terrain.h terrain.cpp
     obstacle.h
     serialcontroller.h serialcontroller.cpp
+    powertrain.h powertrain.cpp
 
 )
 

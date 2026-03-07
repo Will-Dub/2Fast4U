@@ -2,8 +2,10 @@
 #define PLAYER_H
 
 #include <QDebug>
+#include <QtMath>
 #include "line.h"
 #include "serialcontroller.h"
+#include "powertrain.h"
 
 #define STEERING_INPUT input.steering
 #define ACCEL_INPUT m_potSteeringFromInput
@@ -32,7 +34,8 @@ public:
     float getPositionY() { return m_positionY; }
     float getPositionZ() { return m_positionZ; }
     float getAngle() { return m_angle; }
-    int getSpeed() { return m_velocite*3.6f; }
+    int getSpeed();
+    int getRevs();
 
     void tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
@@ -50,15 +53,9 @@ private:
     float m_potAccel = 0;
     float m_potSteering = 0;
 
-    float m_velocite = 0;
-    float m_acceleration = 0;
-    float m_masse = 1200.0f;
-
-    float m_coefficientDrag = 0.30f;
-    float m_friction = 50.0;
-    float m_forceMax = 8000.0f;
-
     float m_hitboxHalfWidth = 1.0f;
+
+    Powertrain m_powertrain;
 };
 
 #endif // PLAYER_H

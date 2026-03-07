@@ -10,8 +10,6 @@ const float GRAVITY = 9.8f;
 
 void Player::tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input)
 {
-    // TODO: faire currentSlope
-
     // Key event
     if (keyUp) {
         m_potAccel += ACCEL_SPEED * dt;
@@ -43,59 +41,43 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
 
     float m_potSteeringFromInput = input.brake != 0 ? -input.brake : input.acceleration;
 
-    // Frène plus vite
-    float currentForceMax = (m_velocite > 1.0f && ACCEL_INPUT < 0.0f)
-                                ? m_forceMax * BRAKE_MULTIPLIER
-                                : m_forceMax;
+    m_powertrain.everyRefresh(ACCEL_INPUT*100);
 
-    float forceEngine = ACCEL_INPUT * currentForceMax;
+    float velocite = m_powertrain.getSpeed() / 3.6f;
 
-    float totalFriction = m_friction * terrainFriction;
-    float resistanceFriction = totalFriction * m_velocite;
-    float resistanceAir      = m_coefficientDrag * (m_velocite * m_velocite);
-
-    float angleRad = std::atan(currentSlope / SEG_L);
-    float forceGravity = m_masse * GRAVITY * std::sin(angleRad);
-
-    float forceNet = forceEngine - resistanceAir - resistanceFriction - forceGravity;
-
-    m_acceleration = forceNet / m_masse;
-    m_velocite += m_acceleration * dt;
-
-    // Empeche de reculer pour l'instant
-    if (m_velocite < 0.0f) {
-        m_velocite = 0.0f;
-        m_acceleration = 0.0f;
+    if(qIsNaN(velocite)){
+        return;
     }
 
-    if(ACCEL_INPUT == 0.0f && std::abs(m_velocite) < 0.1f) {
-        m_velocite = 0.0f;
-        m_acceleration = 0.0f;
+    m_positionZ += velocite * dt;
+
+    if (std::abs(velocite) > 0.1f) {
+        float reverseMultiplier = (velocite < 0) ? -1.0f : 1.0f;
+        m_positionX += STEERING_INPUT * velocite * m_turnSpeed * reverseMultiplier * 0.08f * dt;
     }
 
-    // Avance
-    m_positionZ += m_velocite * dt;
-
-    // Déplace gauche/droite selon direction et vitesse
-    if (std::abs(m_velocite) > 0.1f) {
-        float reverseMultiplier = (m_velocite < 0) ? -1.0f : 1.0f;
-
-        m_positionX += STEERING_INPUT * m_velocite * m_turnSpeed * reverseMultiplier * 0.08f * dt;
-    }
-
-    // Force centrifuge lors des tournages
-    float forceCentrifuge = currentCurve * m_velocite * FORCE_CENTRIFUGE;
+    float forceCentrifuge = currentCurve * velocite * FORCE_CENTRIFUGE;
     m_positionX -= forceCentrifuge * dt;
 
-    float targetAngle = (STEERING_INPUT * m_velocite * STEERING_LEAN_RATIO) +
-                        (currentCurve * m_velocite * CURVE_LEAN_RATIO);
+    float targetAngle = (STEERING_INPUT * velocite * STEERING_LEAN_RATIO) +
+                        (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
+}
+
+int Player::getSpeed()
+{
+    return qIsNaN(m_powertrain.getSpeed()) ? 0 : m_powertrain.getSpeed();
+}
+
+int Player::getRevs()
+{
+    return m_powertrain.getRevs();
 }
 
 void Player::crash(float distancePushBack)
 {
-    m_velocite = 0.0f;
-    m_acceleration = 0.0f;
+    m_powertrain.setSpeed(0);
+    m_powertrain.setAcceleration(0);
 
     m_positionZ -= distancePushBack;
 }

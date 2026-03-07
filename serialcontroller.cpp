@@ -8,6 +8,7 @@ SerialController::SerialController(QObject *parent)
     const auto infos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &info : infos) {
         QString port = info.portName().toLower();
+        qInfo() << port;
 
         if (port.startsWith("ttys") && !port.contains("usb")) {
             continue;
@@ -171,7 +172,6 @@ void SerialController::parsePacket(const QByteArray& packet) {
             m_acceleration = std::clamp((float)jsonObj["g"].toDouble(), 0.0f, 1.0f);
             m_brake = std::clamp((float)jsonObj["b"].toDouble(), 0.0f, 1.0f);
             m_clutch = std::clamp((float)jsonObj["c"].toDouble(), 0.0f, 1.0f);
-            qInfo() << m_acceleration;
         }
         break;
     default:
