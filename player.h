@@ -42,7 +42,6 @@ public:
     void crash(float distancePushBack);
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;
-    QVector<Rail> getShifterRails() const;
 
 private:
     // Position

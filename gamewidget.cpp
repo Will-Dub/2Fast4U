@@ -143,29 +143,47 @@ void GameWidget::paintEvent(QPaintEvent *event){
     // Painture le shifter
     painter.save();
 
-    // Dessine en bas a droite
-    int hudOffsetX = width() - 50;
-    int hudOffsetY = height() - 50;
+    // Place le centre
+    int hudOffsetX = width() - 80;
+    int hudOffsetY = height() - 80;
     painter.translate(hudOffsetX, hudOffsetY);
 
-    float scaleFactor = 50.0f;
+    // Écrit le texte
+    painter.setPen(Qt::black);
+    QFont font = painter.font();
+    font.setPixelSize(14);
+    font.setBold(true);
+    painter.setFont(font);
+
+    painter.drawText(-28, -45, "1");
+    painter.drawText(-28,  55, "2");
+
+    painter.drawText( -4, -45, "3");
+    painter.drawText( -4,  55, "4");
+
+    painter.drawText( 20, -45, "5");
+    painter.drawText( 20,  55, "6");
+
+    float scaleFactor = 40.0f;
     painter.scale(scaleFactor, -scaleFactor);
 
-    // Dessine les rails
+    // Fait les rails
     QPen railPen(Qt::black);
     railPen.setWidthF(0.05);
     painter.setPen(railPen);
 
-    for (const Rail& rail : m_player.getShifterRails()) {
-        painter.drawLine(rail.startNode, rail.endNode);
-    }
+    painter.drawLine(QPointF(-0.6f, 0.0f), QPointF(0.6f, 0.0f)); // N
+    painter.drawLine(QPointF(-0.6f, 1.0f), QPointF(-0.6f, -1.0f)); // 1-2
+    painter.drawLine(QPointF( 0.0f, 1.0f), QPointF( 0.0f, -1.0f)); // 3-4
+    painter.drawLine(QPointF( 0.6f, 1.0f), QPointF( 0.6f, -1.0f)); // 5-6
 
-    // Dessine le curseur
+    // Fait le curseur
     painter.setBrush(Qt::red);
     painter.setPen(Qt::NoPen);
 
     QPointF cursor = m_player.getShifterPosition();
     float knobRadius = 0.2f;
     painter.drawEllipse(cursor, knobRadius, knobRadius);
+
     painter.restore();
 }

@@ -44,7 +44,8 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
     // Met à jour le shifter
     m_shifter.updatePosition(input.joystickX, input.joystickY);
 
-    // TODO: changer la gear
+    // Met à jour le gear
+    m_powertrain.setGear(m_shifter.getGear());
 
     m_powertrain.everyRefresh(ACCEL_INPUT*100);
 
@@ -95,9 +96,4 @@ float Player::getHitboxHalfWidth() const
 QPointF Player::getShifterPosition() const
 {
     return m_shifter.getPosition();
-}
-
-QVector<Rail> Player::getShifterRails() const
-{
-    return m_shifter.getRails();
 }

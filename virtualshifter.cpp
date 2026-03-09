@@ -1,107 +1,114 @@
 #include "virtualshifter.h"
 
 VirtualShifter::VirtualShifter() {
-    m_position = QPointF(0.0f, 0.0f);
-
-    // Fait les points de la ligne du milieu
-    QPointF centerLeft(-0.6f, 0.0f);
-    QPointF centerRight(0.6f, 0.0f);
-
-    // Points de chaque gear
-    QPointF gear1(-0.6f, 1.0f);
-    QPointF gear2(-0.6f, -1.0f);
-    QPointF gear3(0.0f, 1.0f);
-    QPointF gear4(0.0f, -1.0f);
-    QPointF gear5(0.6f, 1.0f);
-    QPointF gear6(0.6f, -1.0f);
-
-    // Connecte tous les points valides
-    // Milieu
-    m_rails.push_back({centerLeft, centerRight});
-
-    // 1 et 2
-    m_rails.push_back({gear1, gear2});
-
-    // 3 et 4
-    m_rails.push_back({gear3, gear4});
-
-    // 5 et 6
-    m_rails.push_back({gear5, gear6});
+    m_currentNode = Node::NEUTRAL_CENTER;
+    m_isLocked = false;
 }
 
 void VirtualShifter::updatePosition(float x, float y)
 {
-    QPointF joystick(x,y);
-
-    if(joystick.manhattanLength() < 0.1f){
+    // Deadzone pour le reset
+    if (std::abs(x) < 0.3f && std::abs(y) < 0.3f) {
+        m_isLocked = false;
         return;
     }
 
-    if (std::abs(joystick.y()) > std::abs(joystick.x())) {
-        joystick.setX(0.0f);
-    }
-    else {
-        joystick.setY(0.0f);
-    }
+    // Check si locked
+    if (m_isLocked) return;
 
-    // Trouve les rails qui touches
-    QList<Rail> railsValide;
-    for(const Rail& rail: m_rails){
-        if(rail.containsPoint(m_position)){
-            railsValide.append(rail);
-        }
-    }
+    // Trouve la direction
+    bool goUp = false, goDown = false, goLeft = false, goRight = false;
 
-    // Essaie tous les mouvement et prend le plus grand
-    float vitesse = 0.08f;
-    QPointF nouvellePosition = m_position + (joystick * vitesse);
-
-    float meilleurDistance = 0.0f;
-    QPointF meilleurPositionFinal = m_position;
-
-    for (const Rail& rail : railsValide) {
-        // Force sur la rail
-        QPointF testPos = fixToRail(nouvellePosition, rail);
-
-        // Mesure la distance
-        QPointF movementDelta = testPos - m_position;
-        float distMoved = QPointF::dotProduct(movementDelta, movementDelta);
-
-        // Prend la rail si meilleur
-        if (distMoved > meilleurDistance) {
-            meilleurDistance = distMoved;
-            meilleurPositionFinal = testPos;
-        }
+    if (std::abs(y) > std::abs(x)) {
+        if (y > 0.6f) goUp = true;
+        if (y < -0.6f) goDown = true;
+    } else {
+        if (x > 0.6f) goRight = true;
+        if (x < -0.6f) goLeft = true;
     }
 
-    // Applique la gagnante
-    if (meilleurDistance > 0.0001f) {
-        m_position = meilleurPositionFinal;
+    // Change de node et lock
+    if (goUp || goDown || goLeft || goRight) {
+        executeTransition(goUp, goDown, goLeft, goRight);
+        m_isLocked = true;
+    }
+}
+
+int VirtualShifter::getGear() const
+{
+    switch (m_currentNode) {
+        case Node::GEAR_1: return 1;
+        case Node::GEAR_2: return 2;
+        case Node::GEAR_3: return 3;
+        case Node::GEAR_4: return 4;
+        case Node::GEAR_5: return 5;
+        case Node::GEAR_6: return 6;
+        default: return 0;
     }
 }
 
 QPointF VirtualShifter::getPosition() const
 {
-    return m_position;
+    switch (m_currentNode) {
+        case Node::NEUTRAL_LEFT: return QPointF(-0.6f,  0.0f);
+        case Node::NEUTRAL_CENTER: return QPointF( 0.0f,  0.0f);
+        case Node::NEUTRAL_RIGHT: return QPointF( 0.6f,  0.0f);
+        case Node::GEAR_1: return QPointF(-0.6f,  1.0f);
+        case Node::GEAR_2: return QPointF(-0.6f, -1.0f);
+        case Node::GEAR_3: return QPointF( 0.0f,  1.0f);
+        case Node::GEAR_4: return QPointF( 0.0f, -1.0f);
+        case Node::GEAR_5: return QPointF( 0.6f,  1.0f);
+        case Node::GEAR_6: return QPointF( 0.6f, -1.0f);
+    }
+    return QPointF(0.0f, 0.0f);
 }
 
-QPointF VirtualShifter::fixToRail(const QPointF &intendedPos, const Rail &activeRail)
+void VirtualShifter::executeTransition(bool goUp, bool goDown, bool goLeft, bool goRight)
 {
-    // Trouve les barrières
-    float minX = std::min(activeRail.startNode.x(), activeRail.endNode.x());
-    float maxX = std::max(activeRail.startNode.x(), activeRail.endNode.x());
+    // This is the hardcoded metal gate. You define exactly where the cursor is allowed to go.
+    switch (m_currentNode) {
 
-    float minY = std::min(activeRail.startNode.y(), activeRail.endNode.y());
-    float maxY = std::max(activeRail.startNode.y(), activeRail.endNode.y());
+    // Barre neutre
+    case Node::NEUTRAL_CENTER:
+        if (goLeft) m_currentNode = Node::NEUTRAL_LEFT;
+        else if (goRight) m_currentNode = Node::NEUTRAL_RIGHT;
+        else if (goUp) m_currentNode = Node::GEAR_3;
+        else if (goDown) m_currentNode = Node::GEAR_4;
+        break;
 
-    // Applique les barrières
-    float fixedX = std::max(minX, std::min(maxX, static_cast<float>(intendedPos.x())));
-    float fixedY = std::max(minY, std::min(maxY, static_cast<float>(intendedPos.y())));
+    case Node::NEUTRAL_LEFT:
+        if (goRight) m_currentNode = Node::NEUTRAL_CENTER;
+        else if (goUp) m_currentNode = Node::GEAR_1;
+        else if (goDown) m_currentNode = Node::GEAR_2;
+        break;
 
-    return QPointF(fixedX, fixedY);
+    case Node::NEUTRAL_RIGHT:
+        if (goLeft) m_currentNode = Node::NEUTRAL_CENTER;
+        else if (goUp) m_currentNode = Node::GEAR_5;
+        else if (goDown) m_currentNode = Node::GEAR_6;
+        break;
+
+    // Chaque gear
+    case Node::GEAR_1:
+        if (goDown) m_currentNode = Node::NEUTRAL_LEFT;
+        break;
+    case Node::GEAR_2:
+        if (goUp) m_currentNode = Node::NEUTRAL_LEFT;
+        break;
+
+    case Node::GEAR_3:
+        if (goDown) m_currentNode = Node::NEUTRAL_CENTER;
+        break;
+    case Node::GEAR_4:
+        if (goUp) m_currentNode = Node::NEUTRAL_CENTER;
+        break;
+
+    case Node::GEAR_5:
+        if (goDown) m_currentNode = Node::NEUTRAL_RIGHT;
+        break;
+    case Node::GEAR_6:
+        if (goUp) m_currentNode = Node::NEUTRAL_RIGHT;
+        break;
+    }
 }
 
-QVector<Rail> VirtualShifter::getRails() const
-{
-    return m_rails;
-}
