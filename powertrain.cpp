@@ -241,13 +241,19 @@ void Powertrain::everyRefresh(int pedalPercent)
             setRedLineTickCounter(0);
         }
 
-        //sets output power and torque at the axle.
-        float axlePower = (getEnginePower() / getGearRatio());
-        float axleTorque = (getEngineTorque() * getGearRatio());
+        float axlePower = 0;
+        float axleTorque = 0;
 
-        //takes away all the theoredical losses into account
-        axlePower *= drivetrainEfficiency;
-        axleTorque *= drivetrainEfficiency;
+        if (getGear() != 0) {
+            //sets output power and torque at the axle.
+            axlePower = (getEnginePower() / getGearRatio());
+            axleTorque = (getEngineTorque() * getGearRatio());
+
+            //takes away all the theoredical losses into account
+            axlePower *= drivetrainEfficiency;
+            axleTorque *= drivetrainEfficiency;
+        }
+
         setOutputPower(axlePower);
         setOutputTorque(axleTorque);
         float force = (getOutputTorque() / tireDiameter); //power in feet
@@ -256,11 +262,14 @@ void Powertrain::everyRefresh(int pedalPercent)
         setAcceleration(acceleration);
 
         float vf = (getSpeed() + (getAcceleration()/refreshRate)*3.6);
-        float maxSpeed = ((getRevs()/getGearRatio())*(tireDiameter*12*M_PI)*0.00152); //(RPM*tirediameter->converts tire diam to inches, then inches/min to
-        if (vf > maxSpeed)
-        {
-            vf = maxSpeed;
+
+        if (getGear() != 0) {
+            float maxSpeed = ((getRevs() / getGearRatio()) * (tireDiameter * 12 * M_PI) * 0.00152);
+            if (vf > maxSpeed) {
+                vf = maxSpeed;
+            }
         }
+
         setSpeed(vf); //finally, sets the speed at the end of that tick.
         /*std::cout << "-------------------------------------------------------" << std::endl
             << "SECTION DEBUG VITESSE:  " << std::endl
@@ -333,7 +342,13 @@ void Powertrain::revSetter()
     else if(getRevs() < revTarget+100)
     {
         //rev acceleration will be reduced based on which gear you're in, and how open the throttle is
-        float revGearResistance = 1-(1/getGearRatio());
+        float revGearResistance;
+
+        if (getGear() == 0) {
+            revGearResistance = 2.5;
+        } else {
+            revGearResistance = 1 - (1 / getGearRatio());
+        }
 
         /*std::cout << "getGearRatio:     " << getGearRatio() << std::endl
             << "revGearResistance:  " << revGearResistance << std::endl;*/
