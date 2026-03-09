@@ -32,6 +32,7 @@ qt_add_executable(2Fast4U
     serialcontroller.h serialcontroller.cpp
     powertrain.h powertrain.cpp
     virtualshifter.h virtualshifter.cpp
+    audiomanager.h audiomanager.cpp
 )
 
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

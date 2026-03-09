@@ -55,7 +55,7 @@ void Powertrain::Shift(int gear) {
     if (gear < m_gear && getRevs() > moneyShiftRevThreshold)
     {
         //[Money shift implementation trigger]
-        qInfo() << "KABOOM (money shift)\n";
+        qInfo() << "KABOOM (money shift)";
         setStarted(false);
         return;
     }
@@ -167,7 +167,6 @@ void Powertrain::setPedalPercent(int pedalPercent)
 void Powertrain::everyRefresh(int pedalPercent)
 {
     setPedalPercent(pedalPercent);
-    m_started = true;
 
     if(m_started)
     {
@@ -220,7 +219,7 @@ void Powertrain::everyRefresh(int pedalPercent)
         else
         {
             //error handler
-            qInfo() << "ERROR: pedal percent out of range\n";
+            qInfo() << "ERROR: pedal percent out of range";
         }
 
         //sets engine revs every tick
@@ -231,7 +230,7 @@ void Powertrain::everyRefresh(int pedalPercent)
             setRedLineTickCounter(getRedLineTickCounter() + 1);
             if (getRedLineTickCounter() > redLineTickLimit)
             {
-                qInfo() << "KABOOM! (moteur explose)\n";
+                qInfo() << "KABOOM! (moteur explose)";
                 setStarted(false);
                 return;
             }
@@ -285,17 +284,16 @@ void Powertrain::everyRefresh(int pedalPercent)
     }
     else
     {
-        qInfo() << "Moteur arrêté! Veuillez démarrer afin de continuer!\n";
+        qInfo() << "Moteur arrêté! Veuillez démarrer afin de continuer!";
     }
 
-    /*qInfo() << "=======================================================" << "\n"
-              << "Voici les informations actuelles du véhicule: " << instanceCounter << "\n"
-              << "- Pourcentage de la pédal (touches W+ et S-): " << getPedalPercent() << "\n"
-              << "- Pourcentage du throttle (= pédale, min 5):" << getThrottle() << "\n"
-              << "- RPMs du moteur (contrôlé à l'interne):    " << getRevs() << "\n"
-              << "- Vitesse (transmission) (touches 1 à 6):   " << getGear() << "\n"
-              << "- Vitesse (km/h) (contrôlé à l'interne):    " << getSpeed()
-              << "\n";*/
+    /*qInfo() << "======================================================="
+              << "Voici les informations actuelles du véhicule: " << instanceCounter
+              << "- Pourcentage de la pédal (touches W+ et S-): " << getPedalPercent()
+              << "- Pourcentage du throttle (= pédale, min 5):" << getThrottle()
+              << "- RPMs du moteur (contrôlé à l'interne):    " << getRevs()
+              << "- Vitesse (transmission) (touches 1 à 6):   " << getGear()
+              << "- Vitesse (km/h) (contrôlé à l'interne):    " << getSpeed();*/
     instanceCounter++;
 
 
@@ -310,7 +308,7 @@ void Powertrain::revSetter()
     if (getThrottle() == gasPedalDeadZone)
     {
         revTarget = 800;
-        //qInfo() << "Idle revving!!!!\n";
+        //qInfo() << "Idle revving!!!!";
     }
     else
     {//will always be from 5 to 100, cannot be over or under

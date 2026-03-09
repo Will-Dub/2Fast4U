@@ -150,7 +150,7 @@ void Terrain::generateTerrain()
         }
         if(i == 25) {
             Obstacle obstacle("arbre", 1, 5.0f, 0.3, 2);
-            line.obstacles.append(obstacle);
+            //line.obstacles.append(obstacle);
         }
 
         lines.push_back(line);
