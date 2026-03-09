@@ -41,6 +41,11 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
 
     float m_potSteeringFromInput = input.brake != 0 ? -input.brake : input.acceleration;
 
+    // Met à jour le shifter
+    m_shifter.updatePosition(input.joystickX, input.joystickY);
+
+    // TODO: changer la gear
+
     m_powertrain.everyRefresh(ACCEL_INPUT*100);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
@@ -85,4 +90,14 @@ void Player::crash(float distancePushBack)
 float Player::getHitboxHalfWidth() const
 {
     return m_hitboxHalfWidth;
+}
+
+QPointF Player::getShifterPosition() const
+{
+    return m_shifter.getPosition();
+}
+
+QVector<Rail> Player::getShifterRails() const
+{
+    return m_shifter.getRails();
 }

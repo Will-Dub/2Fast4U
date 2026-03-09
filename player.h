@@ -6,6 +6,7 @@
 #include "line.h"
 #include "serialcontroller.h"
 #include "powertrain.h"
+#include "virtualshifter.h"
 
 #define STEERING_INPUT input.steering
 #define ACCEL_INPUT m_potSteeringFromInput
@@ -40,6 +41,8 @@ public:
     void tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
     float getHitboxHalfWidth() const;
+    QPointF getShifterPosition() const;
+    QVector<Rail> getShifterRails() const;
 
 private:
     // Position
@@ -56,6 +59,7 @@ private:
     float m_hitboxHalfWidth = 1.0f;
 
     Powertrain m_powertrain;
+    VirtualShifter m_shifter;
 };
 
 #endif // PLAYER_H

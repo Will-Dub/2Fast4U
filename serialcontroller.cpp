@@ -8,7 +8,6 @@ SerialController::SerialController(QObject *parent)
     const auto infos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &info : infos) {
         QString port = info.portName().toLower();
-        qInfo() << port;
 
         if (port.startsWith("ttys") && !port.contains("usb")) {
             continue;
@@ -30,6 +29,7 @@ SerialController::SerialController(QObject *parent)
     m_serial.setDataBits(QSerialPort::Data8);
     m_serial.setParity(QSerialPort::NoParity);
     m_serial.setStopBits(QSerialPort::OneStop);
+    m_serial.setFlowControl(QSerialPort::NoFlowControl);
 
     connect(&m_serial, &QSerialPort::readyRead, this, &SerialController::handleReadyRead);
     connect(&m_serial, &QSerialPort::errorOccurred, this, &SerialController::handleError);
@@ -37,6 +37,8 @@ SerialController::SerialController(QObject *parent)
     if (!m_serial.open(QIODevice::ReadWrite)) {
         qCritical() << "Critial: Erreur durant l'ouverure du port série:" << portName << m_serial.errorString();
     } else {
+        m_serial.setDataTerminalReady(true);
+        m_serial.setRequestToSend(true);
         qInfo() << "SUCCESS: Connecter au port série" << portName;
     }
 }
@@ -94,7 +96,6 @@ void SerialController::sendInformation(float dt, int vitesse, int rpm)
     payload.append('\n');
 
     m_serial.write(payload);
-    m_serial.flush();
 }
 
 void SerialController::handleReadyRead()
@@ -162,7 +163,11 @@ void SerialController::parsePacket(const QByteArray& packet) {
         }
         break;
     case PacketType::JOYSTICK:
-        // TODO that shit
+        if (jsonObj.contains("x") && jsonObj.contains("y") && jsonObj.contains("b")) {
+            m_joystickX = normaliseAdc(jsonObj["x"].toInt()) * -1.0f;
+            m_joystickY = normaliseAdc(jsonObj["y"].toInt());
+            m_isJoystickBtnPressed = jsonObj["b"].toBool();
+        }
         break;
     case PacketType::BUTTONS:
         // TODO that shit
@@ -178,6 +183,22 @@ void SerialController::parsePacket(const QByteArray& packet) {
         qWarning() << "WARNING: Type de packet inconnu (" << type << ").";
         break;
     }
+}
+
+float SerialController::normaliseAdc(int valeurAdc)
+{
+    // Deadzone
+    if(valeurAdc > 490 && valeurAdc < 530){
+        return 0.0f;
+    }
+
+    // Met la valeur de 0-1023
+    int valeurAdcLimite = std::max(0, std::min(1023, valeurAdc));
+
+    // Divise par 1023 -> 0.0 à 1.0, multiplie par 2 et enleve 1. Donc de -1 à 1
+    float normalise = ((float)valeurAdcLimite/1023.0f) * 2.0f - 1.0f;
+
+    return normalise;
 }
 
 void SerialController::handleError(QSerialPort::SerialPortError error) {

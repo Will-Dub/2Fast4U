@@ -109,6 +109,8 @@ void GameWidget::gameLoop(){
     // Envoie les données au arduino
     m_serialController.sendInformation(dt, m_player.getSpeed(), m_player.getRevs());
 
+    // Met à jour le visuel
+
     update();
 }
 
@@ -137,4 +139,33 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QTextDocument doc;
     doc.setHtml(QString("<font color=\"#f00\">%1</font>").arg(m_currentFps));
     doc.drawContents(&painter);
+
+    // Painture le shifter
+    painter.save();
+
+    // Dessine en bas a droite
+    int hudOffsetX = width() - 50;
+    int hudOffsetY = height() - 50;
+    painter.translate(hudOffsetX, hudOffsetY);
+
+    float scaleFactor = 50.0f;
+    painter.scale(scaleFactor, -scaleFactor);
+
+    // Dessine les rails
+    QPen railPen(Qt::black);
+    railPen.setWidthF(0.05);
+    painter.setPen(railPen);
+
+    for (const Rail& rail : m_player.getShifterRails()) {
+        painter.drawLine(rail.startNode, rail.endNode);
+    }
+
+    // Dessine le curseur
+    painter.setBrush(Qt::red);
+    painter.setPen(Qt::NoPen);
+
+    QPointF cursor = m_player.getShifterPosition();
+    float knobRadius = 0.2f;
+    painter.drawEllipse(cursor, knobRadius, knobRadius);
+    painter.restore();
 }

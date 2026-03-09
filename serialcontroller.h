@@ -17,8 +17,8 @@ struct InputState {
     float brake = 0.0f;
     float clutch = 0.0f;
 
-    int joystickX = 0;
-    int joystickY = 0;
+    float joystickX = 0;
+    float joystickY = 0;
     bool isJoystickBtnPressed = false;
 
     bool isAccelPressed = false;
@@ -61,8 +61,8 @@ private:
     bool m_isBrakeBtnPressed = false;
     bool m_isClutchBtnPressed = false;
 
-    int m_joystickX = 0.0f;
-    int m_joystickY = 0.0f;
+    float m_joystickX = 0.0f;
+    float m_joystickY = 0.0f;
     bool m_isJoystickBtnPressed = false;
 
     float m_timeElapsedSinceSend = 0.0f;
@@ -71,6 +71,7 @@ private:
     static constexpr float STEERING_SMOOTHING = 0.3f;
 
     void parsePacket(const QByteArray& packet);
+    float normaliseAdc(int valeurAdc);
 };
 
 #endif // SERIALCONTROLLER_H

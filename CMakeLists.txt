@@ -31,7 +31,7 @@ qt_add_executable(2Fast4U
     obstacle.h
     serialcontroller.h serialcontroller.cpp
     powertrain.h powertrain.cpp
-
+    virtualshifter.h virtualshifter.cpp
 )
 
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
