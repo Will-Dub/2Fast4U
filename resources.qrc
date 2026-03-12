@@ -4,5 +4,15 @@
         <file>test3.png</file>
         <file>test4.png</file>
         <file>arbre.png</file>
+        <file>arbree.png</file>
+    </qresource>
+    <qresource prefix="/audio">
+        <file>audio/BAC_Mono_onhigh.wav</file>
+        <file>audio/BAC_Mono_onlow.wav</file>
+        <file>audio/BAC_Mono_offveryhigh.wav</file>
+        <file>audio/BAC_Mono_offlow.wav</file>
+        <file>audio/limiter.wav</file>
+        <file>audio/trany_power_high.wav</file>
+        <file>audio/tw_offlow_4.wav</file>
     </qresource>
 </RCC>

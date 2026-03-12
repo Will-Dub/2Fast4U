@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS SerialPort)
+find_package(Qt6 COMPONENTS Multimedia REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -33,10 +34,13 @@ qt_add_executable(2Fast4U
     powertrain.h powertrain.cpp
     virtualshifter.h virtualshifter.cpp
     audiomanager.h audiomanager.cpp
+    powertrainaudiocontroller.h powertrainaudiocontroller.cpp
+    sounds.qrc
 )
 
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
+target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia)
 
 include(GNUInstallDirs)
 install(TARGETS 2Fast4U
