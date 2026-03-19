@@ -4,8 +4,8 @@ Terrain::Terrain() {}
 
 void Terrain::render(QPainter &painter, Player &player, int screenWidth, int screenHeight)
 {
-    static const QColor GRASS_LIGHT(16, 200, 16);
-    static const QColor GRASS_DARK(0, 154, 0);
+    static const QColor GRASS_LIGHT(8, 150, 0);
+    static const QColor GRASS_DARK(0, 124, 0);
     static const QColor RUMBLE_LIGHT(143, 143, 143);
     static const QColor RUMBLE_DARK(121, 121, 121);
     static const QColor ROAD_LIGHT(107, 107, 107);
@@ -135,6 +135,13 @@ void Terrain::generateTerrain()
         qWarning() << "Warning: Erreur durant l'ouverture de arbre.png";
     }
 
+    QPixmap arbree;
+    if (arbre.load(":/images/arbree.png")) {
+        QPixmapCache::insert("arbree0", arbre);
+    } else {
+        qWarning() << "Warning: Erreur durant l'ouverture de arbree.png";
+    }
+
     for (int i = 0; i < N_LINES; i++) {
         Line line;
         line.z = i * SEG_L;
@@ -146,11 +153,14 @@ void Terrain::generateTerrain()
 
         if(i == 50) {
             Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2, 0.1);
-            line.obstacles.append(obstacle);
+            //line.obstacles.append(obstacle);
         }
         if(i == 25) {
-            Obstacle obstacle("arbre", 1, 5.0f, 0.3, 2);
+            Obstacle obstacle("arbre", 1, 5.0f, 0.025, 2);
             //line.obstacles.append(obstacle);
+
+            Obstacle obstacleCass("arbree", 1, -5.0f, 0.3, 2);
+            //line.obstacles.append(obstacleCass);
         }
 
         lines.push_back(line);

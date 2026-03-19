@@ -20,7 +20,7 @@ DynamicAudioNode AudioManager::add(const AudioSource& source) {
     node.audioOutput = new QAudioOutput(this);
 
     node.player->setAudioOutput(node.audioOutput);
-    node.player->setSource(QUrl::fromLocalFile(source.sourcePath));
+    node.player->setSource(QUrl(source.sourcePath));
 
     node.player->setLoops(QMediaPlayer::Infinite);
 

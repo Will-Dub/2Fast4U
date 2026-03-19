@@ -1,6 +1,8 @@
 #include "player.h"
 
-Player::Player() {}
+Player::Player(): m_powertrainAudioController(&m_powertrain) {
+    m_powertrainAudioController.initSounds();
+}
 
 const float ACCEL_SPEED = 2.0f;
 const float STEERING_SPEED = 1.5f;
@@ -68,6 +70,8 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
     float targetAngle = (STEERING_INPUT * velocite * STEERING_LEAN_RATIO) +
                         (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
+
+    m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()

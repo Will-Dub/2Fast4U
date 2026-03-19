@@ -5,6 +5,7 @@
 #include <QtMath>
 #include "line.h"
 #include "serialcontroller.h"
+#include "powertrainaudiocontroller.h"
 #include "powertrain.h"
 #include "virtualshifter.h"
 
@@ -59,6 +60,7 @@ private:
 
     Powertrain m_powertrain;
     VirtualShifter m_shifter;
+    PowertrainAudioController m_powertrainAudioController;
 };
 
 #endif // PLAYER_H
