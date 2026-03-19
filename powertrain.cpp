@@ -12,8 +12,9 @@ Powertrain::Powertrain() {
     this->m_outputPower = 0;
     this->m_outputTorque = 0;
     this->m_redLineTickCounter = 0;
-    this->m_started = true;
-    this->m_pedalPercent = 0;
+    this->m_started = false;
+    this->m_gasPedalPercent = 0;
+    this->m_brakePedalPercent = 0;
 }
 /*Powertrain::Powertrain(int revs, int gear, int throttle, int speed) {
     std::cout << "birth" << std::endl;
@@ -59,6 +60,16 @@ void Powertrain::Shift(int gear) {
         setStarted(false);
         return;
     }
+    else if(gear < m_gear)
+    {
+        float floatNewRevs = ((getGearRatio*getSpeed())/(0.00152 * (tireDiameter * 12 * M_PI)));
+        int newRevs = (floatNewRevs - (floatNewRevs % 1));
+        if(newRevs > getRevs())
+        {
+            setRevs(newRevs);
+        }   
+    }
+        
     else
     {
         setGear(gear);
@@ -152,22 +163,37 @@ void Powertrain::setOutputTorque(float torque)
     m_outputTorque = torque;
 }
 
-int Powertrain::getPedalPercent()
+int Powertrain::getGasPedalPercent()
 {
-    return m_pedalPercent;
+    return m_gasPedalPercent;
 }
 
-void Powertrain::setPedalPercent(int pedalPercent)
+void Powertrain::setGasPedalPercent(int gasPedalPercent)
 {
-    m_pedalPercent = pedalPercent;
+    m_gasPedalPercent = gasPedalPercent;
 }
 
-
-
-void Powertrain::everyRefresh(int pedalPercent)
+int Powertrain::getBrakePedalPercent()
 {
-    setPedalPercent(pedalPercent);
+    return m_brakePedalPercent;
+}
 
+void Powertrain::setBrakePedalPercent(int brakePedalPercent)
+{
+    m_brakePedalPercent = brakePedalPercent;
+}
+
+void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
+{
+    setGasPedalPercent(gasPedalPercent);
+    if(brakePedalPercent > brakePedalDeadZone)
+    {
+        setBrakePedalPercent(brakePedalPercent);
+    }
+    else
+    {
+        setBrakePedalPercent(0);
+    }
     if(m_started)
     {
         //[find a way to receive pedal inputs]!!!!!
@@ -179,16 +205,16 @@ void Powertrain::everyRefresh(int pedalPercent)
         //================ Simulation
         /*if (instanceCounter <= 100)
         {
-            setPedalPercent((instanceCounter - (instanceCounter % 2))/2);
+            setGasPedalPercent((instanceCounter - (instanceCounter % 2))/2);
         }
         else if (instanceCounter > 100 && instanceCounter <= 125)
         {
-            setPedalPercent(50 + (instanceCounter - 100));
+            setGasPedalPercent(50 + (instanceCounter - 100));
 
         }
         else if (instanceCounter > 125 && instanceCounter <= 174)
         {
-            setPedalPercent(0);
+            setGasPedalPercent(0);
         }
         else if (instanceCounter == 175)
         {
@@ -196,25 +222,30 @@ void Powertrain::everyRefresh(int pedalPercent)
         }
         else if (instanceCounter > 175 && instanceCounter <= 200)
         {
-            setPedalPercent(75);
+            setGasPedalPercent(75);
         }
         else if (instanceCounter > 200 && instanceCounter <= 300)
         {
-            setPedalPercent(80);
+            setGasPedalPercent(80);
         }
         else if (instanceCounter > 300 && instanceCounter <= 500)
         {
-            setPedalPercent(0);
+            setGasPedalPercent(0);
         }*/
+        if(brakePedalPercent > 0)
+        {
+            braking();
+        }
+
 
         //adjusts throttle opening from how much the pedal is pressed;
-        if (getPedalPercent() <= gasPedalDeadZone && getPedalPercent() >= 0)
+        if (getGasPedalPercent() <= gasPedalDeadZone && getGasPedalPercent() >= 0)
         {
             setThrottle(gasPedalDeadZone);
         }
-        else if (getPedalPercent() > gasPedalDeadZone && getPedalPercent() < 101)
+        else if (getGasPedalPercent() > gasPedalDeadZone && getGasPedalPercent() < 101)
         {
-            setThrottle(getPedalPercent());
+            setThrottle(getGasPedalPercent());
         }
         else
         {
@@ -289,7 +320,7 @@ void Powertrain::everyRefresh(int pedalPercent)
 
     /*qInfo() << "======================================================="
               << "Voici les informations actuelles du véhicule: " << instanceCounter
-              << "- Pourcentage de la pédal (touches W+ et S-): " << getPedalPercent()
+              << "- Pourcentage de la pédal (touches W+ et S-): " << getGasPedalPercent()
               << "- Pourcentage du throttle (= pédale, min 5):" << getThrottle()
               << "- RPMs du moteur (contrôlé à l'interne):    " << getRevs()
               << "- Vitesse (transmission) (touches 1 à 6):   " << getGear()
@@ -297,6 +328,20 @@ void Powertrain::everyRefresh(int pedalPercent)
     instanceCounter++;
 
 
+}
+
+//tp
+void Powertrain::braking()
+{
+    int brakePedalForce = brakePedalDeadZone + getBrakePedalPercent();
+    float caliperPressure = ((brakePedalForce * brakePedalRatio))/masterCylinderAreaOfSystem; //(result in PSI)
+    float clampingForce = caliperPressure * brakePadArea; //-> ~7200 for 70 pounds of pedal (+100 from booster)
+    float brakeTorque = clampingForce * frictionCoefficient; //in ft-lbs most likely?
+
+    
+
+
+    
 }
 
 //TODO:
@@ -395,5 +440,11 @@ float Powertrain::getGearRatio()
     {
         return (returnGearValue * gearRatio6);
     }
+    else if (getGear() == 0)
+    {
+        return 0;
+    }
+
+    //if this returns, something went wrong
     return 0;
 }
