@@ -10,8 +10,9 @@ const float FORCE_CENTRIFUGE = 1.2f;
 const float BRAKE_MULTIPLIER = 2.5f;
 const float GRAVITY = 9.8f;
 
-void Player::tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input)
+void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input)
 {
+    qInfo() << currentSlopeAngle;
     // Key event
     if (keyUp) {
         m_potAccel += ACCEL_SPEED * dt;
@@ -71,7 +72,7 @@ void Player::tick(float dt, float currentCurve, float currentSlope, float terrai
                         (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
-    m_powertrainAudioController.update();
+    //m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()

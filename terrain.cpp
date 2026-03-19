@@ -149,7 +149,7 @@ void Terrain::generateTerrain()
         if(i>50 && i<700) line.curve=0.02;
         line.nbLane = 3;
         if(i>0 && i < 200) line.isLineFull = true;
-        //if(i > 100 && i < 700) line.y = sin(i / 30.0) * 150;
+        //if(i > 10 && i < 700) line.y = cos(i / 30.0) * 150;
 
         if(i == 50) {
             Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2, 0.1);

@@ -48,7 +48,7 @@ void GameWidget::gameLoop(){
     int startSegment = std::max(0, static_cast<int>(previousZ / SEG_L));
 
     float currentCurve = 0.0f;
-    float currentSlopeDelta = 0.0f;
+    float currentSlopeAngle = 0.0f;
     float terrainFriction = 1.0f;
 
     // Trouve la friction, curve et slope du terrain
@@ -60,7 +60,8 @@ void GameWidget::gameLoop(){
         const Line& nextLine = m_terrain.getLine(nextIndex);
 
         currentCurve = currentLine.curve;
-        currentSlopeDelta = nextLine.y - currentLine.y;
+        float currentSlopeDelta = nextLine.y - currentLine.y;
+        currentSlopeAngle = qAtan(currentSlopeDelta/SEG_L) * 180 / M_PI;
 
         // Joueur à l'extérieure de la route
         float playerX = m_player.getPositionX();
@@ -70,7 +71,7 @@ void GameWidget::gameLoop(){
     }
 
     InputState input = m_serialController.getState();
-    m_player.tick(dt, currentCurve, currentSlopeDelta, terrainFriction, input);
+    m_player.tick(dt, currentCurve, currentSlopeAngle, terrainFriction, input);
 
     // CCD
     float currentZ = m_player.getPositionZ();

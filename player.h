@@ -39,7 +39,7 @@ public:
     int getSpeed();
     int getRevs();
 
-    void tick(float dt, float currentCurve, float currentSlope, float terrainFriction, const InputState& input);
+    void tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;
