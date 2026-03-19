@@ -62,8 +62,8 @@ void Powertrain::Shift(int gear) {
     }
     else if(gear < m_gear)
     {
-        float floatNewRevs = ((getGearRatio*getSpeed())/(0.00152 * (tireDiameter * 12 * M_PI)));
-        int newRevs = (floatNewRevs - (floatNewRevs % 1));
+        int newRevs = ((getGearRatio()*getSpeed())/(0.00152 * (tireDiameter * 12 * M_PI)));
+
         if(newRevs > getRevs())
         {
             setRevs(newRevs);

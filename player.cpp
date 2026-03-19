@@ -45,12 +45,14 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     float m_potSteeringFromInput = input.brake != 0 ? -input.brake : input.acceleration;
 
     // Met à jour le shifter
-    m_shifter.updatePosition(input.joystickX, input.joystickY);
+    if(input.clutch >= 0.95){
+        m_shifter.updatePosition(input.joystickX, input.joystickY);
+    }
 
     // Met à jour le gear
     m_powertrain.setGear(m_shifter.getGear());
 
-    m_powertrain.everyRefresh(ACCEL_INPUT*100);
+    m_powertrain.everyRefresh(input.acceleration*100, input.brake*100);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 
