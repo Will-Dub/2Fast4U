@@ -5,7 +5,7 @@
     changed in this file:
     -set refreshrate from 60 to 100
     -removed gas pedal percent from call stack in the everyRefresh function
-    -added pedalPercent as an int in the everyRefresh function, and changed how it interacts with it to take keyboard inputs
+    -added gasPedalPercent as an int in the everyRefresh function, and changed how it interacts with it to take keyboard inputs
     -added a section that shows all the things I want in the console while running
     -added global locale to make cout print actual symbols (maybe)
     -added refreshTrigger function (sanity)
@@ -36,9 +36,19 @@ int const maxRevs = 8000;   //sets the max number of revs (do not go higher than
 int const redLineTimeLimit = 1; //sets the number of seconds past redline before engine breaks
 int const redLineTickLimit = (refreshRate*redLineTimeLimit); //sets the number of ticks past redline before engine breaks
 int const gasPedalDeadZone = 5; //used to adjust throttle % for idle, but also means the beginning of the pedal is a dead zone (does nothing)
+int const brakePedalDeadZone = 3; //used to elimite parasitic pedal values
+int const brakePedalOffset = 20; //according to a source, the pressure applied to a pedal is between 20 and 120 pounds, so this is added to the percentage to turn it into pounds
 float const revAccelerationConstant = 0.2; //set arbitrarily, change this to affect how fast the revs change
 float const drivetrainEfficiency = 0.82; //equivalent to %, refers to loss of power through the powertrain.
 float const tireDiameter = 1.25; //set in feet (cuz ft-lb so force is easily found in lbs)
+float const brakePadHeight = 2.51; //set in inches
+float const brakePadLenght = 4.50; //set in inches
+float const brakePadArea = (brakePadHeight*brakePadLenght); //square inches
+float const frictionCoefficient = 0.4;
+float const brakePedalRatio = 5; // typical recommended for manual is 5-7 and power assited should be 4-5
+int const brakeBoosterAdd = 100; //amount of force in pounds added by the brake booster (can be 0)
+float const masterCylinderAreaOfSystem = 0.7; //if other brake value are changed, this will need adjusting using this: https://motionraceworks.com/en-ca/pages/brake-system-setup-and-calculations
+
 float const carWeight = 2815; //in pounds, based on Subaru BRZ 2022
 int const defaultGear = 1; //sets the gear by default (1-6)
 float const gearRatio1 = 3.63; //gear ratio for first gear
@@ -76,7 +86,8 @@ public:
 
 
     void Shift(int gear);            //used to change gears, with checks for money shifts etc.
-    void everyRefresh(int pedalPercent);   //called every 'tick' to adjust the speed dynamically
+    void everyRefresh(int gasPedalPercent, int brakePedalPercent);   //called every 'tick' to adjust the speed dynamically
+    void braking();
     void revSetter();                   //sets the revs every tick, adjusting it based on throttle opening.
     float getGearRatio();               //returns the gear ratio of the gearbox;
     float getEnginePower();             //returns horsepower depending on the RPM.
@@ -85,8 +96,10 @@ public:
     float getOutputTorque();
     void setOutputPower(float power);
     void setOutputTorque(float torque);
-    int getPedalPercent();
-    void setPedalPercent(int pedalPercent);
+    int getGasPedalPercent();
+    void setGasPedalPercent(int gasPedalPercent);
+    int getBrakePedalPercent();
+    void setBrakePedalPercent(int brakePedalPercent);
 
 
 private:
@@ -99,10 +112,9 @@ private:
     float m_outputTorque;   //IMPORTANT!!!! this is the torque at the AXLE, NOT at the wheels
     int m_redLineTickCounter;
     bool m_started;
-    int m_pedalPercent;
+    int m_gasPedalPercent;
+    int m_brakePedalPercent;
 };
-Powertrain refreshTrigger();
-
 
 const float powerCurve[73] = {
     61.52, 71.38, 83.8, 95.97, 105.34, 114.59, 133.07, 152.63, 156.61, 166.09, 171.17, 176.94,
@@ -189,19 +201,64 @@ Pos     RPM		    HP
 70	    7800	    451.3
 71	    7900	    442.91
 72	    8000	    433.82
+
+=============================================
+Gear ratios (based on 2022 Subaru BRZ's gearbox):
+
+Neutral:                [none]      [**Source 2]
+1st:                    3.63:1
+2nd:                    2.19:1
+3rd:                    1.54:1
+4th:                    1.21:1
+5th:                    1.00:1      
+6th:                    0.77:1      
+rvrs:                   3.44:1      -> if we implement this
+final drive axle ratio: 4.10:1      
 */
 
 
 /*
 /////TO DO:
--Implement engine's limits, strength,  etc. -> learn more for this...
--Implement driver errors (money shifting[~~]), over revving[~~], etc.)
+
 -Implement engine brake
--Implement ACTUAL brakes
+-Implement ACTUAL brakes <==
+    https://visualfoodie.com/understanding-the-math-behind-stopping-a-car/
+    ->70 pounds is what drivers can do easily (force on the pedal)
+    https://arachnoid.com/braking_physics/index.html
+    ->break distance function (will need to determine distance done per tick of time, and figure out reduction of speed for that tick, and apply it to the speed directly).
+    https://www.tomorrowstechnician.com/how-your-foot-turns-into-stopping-power-pedal-ratio-basics/
+    ->range 20-120 pounds is the rough range of pedal force applied by the driver 
+    https://help.summitracing.com/knowledgebase/article/SR-05037/en-us
+    ->how to mesure pedal ratio, and implement it along with master cylinder + good help.
+    ->calipers need 800-1200PSI to stop the car
+    https://www.thecarconnection.com/specifications/subaru_brz_2022
+    ->specs for the brakes
+    https://help.summitracing.com/knowledgebase/article/SR-05293/en-us
+    ->brake booster
+    https://motionraceworks.com/en-ca/pages/brake-system-setup-and-calculations
+    ->calculates PSI from input pressure with input (pressure * pedal ratio)/Master Cylinder area of systen
+    https://a2zcalculators.com/science-and-engineering-calculators/brake-caliper-clamping-force-calculator
+    ->calculate caliper clamping from PSI and caliper area
+    https://www.napacanada.com/en/p/RBFBC1539?srsltid=AfmBOopQsFOVfsUPNb5MV4Pc9RtRwdws2NlAGc6L9ZpuVc4NhzsxaI7n
+    ->get caliper area
+    https://www.tomorrowstechnician.com/how-calipers-and-friction-turn-pressure-into-stopping-power/
+    ->friction*clamping force = brake torque
+    https://www.hotrod.com/how-to/disc-brake-pad-friction-codes-explained
+    ->break pad friction coefficient -> 0.4 (top tier but a bit lower)
+    #tp
+
+
+
 -Implement gravity resistance while uphill and acceleration on downhill
 -Implement resistance while turning
+-Implement revs going up from down shifting -> new money shifting?
+-Implement wheel grip and traction of the car for drifting.
 
+~~Implement engine's limits, strength,  etc. -> learn more for this...
+~~Implement driver errors (money shifting[~~]), over revving[~~], etc.)
+*/
 
+/*
 -Convert throttle into engine revs ->
     https://www.physicsforums.com/threads/how-does-the-throttle-affect-the-rpm-of-an-engine.832029/
     https://ijcrt.org/papers/IJCRT1892376.pdf
@@ -244,13 +301,13 @@ Pos     RPM		    HP
     \_> now to pick one: https://maximumtwist.com/dyno-runs/d1e7aa5c-7404-4b78-8ee3-11c04d9649d6
     \_> combined with the john deer (+20 to 60) for the lower RPMs
     \_> stats written here: https://usherbrooke-my.sharepoint.com/:x:/r/personal/gues2290_usherbrooke_ca/_layouts/15/Doc.aspx?sourcedoc=%7BDFBC399E-54BD-4796-903D-F9C9F7EE41BC%7D&file=Book.xlsx&action=editNew&mobileredirect=true&wdOrigin=WAC.EXCEL.HOME-BUTTON%2CAPPHOME-WEB.BANNER.NEWBLANK&wdPreviousSession=4557574e-d15e-f15f-3701-d50754d59a97&wdPreviousSessionSrc=Wac&ct=1770933495884
+*/
 
 
 
 
 
-
-
+/*
 =============================================
 Notes on math to calculate torque, power, etc:
     yt vid: https://youtu.be/S23AOeGP_Os
@@ -317,18 +374,7 @@ Notes on math to calculate torque, power, etc:
             \_> 875.333... ft*lbs
 
 
-=============================================
-Gear ratios (based on 2022 Subaru BRZ's gearbox):
 
-Neutral:                [none]      -> if we implement this
-1st:                    3.63:1
-2nd:                    2.19:1
-3rd:                    1.54:1
-4th:                    1.21:1
-5th:                    1.00:1
-6th:                    0.77:1
-rvrs:                   3.44:1      -> if we implement this
-final drive axle ratio: 4.10:1      -> if we implement this
 */
 
 
