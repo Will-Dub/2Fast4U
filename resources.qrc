@@ -5,6 +5,7 @@
         <file>test4.png</file>
         <file>arbre.png</file>
         <file>arbree.png</file>
+        <file>pole.png</file>
     </qresource>
     <qresource prefix="/audio">
         <file>audio/BAC_Mono_onhigh.wav</file>
