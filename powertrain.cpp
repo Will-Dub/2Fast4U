@@ -315,7 +315,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
     }
     else
     {
-        qInfo() << "Moteur arrêté! Veuillez démarrer afin de continuer!";
+        //qInfo() << "Moteur arrêté! Veuillez démarrer afin de continuer!";
     }
 
     /*qInfo() << "======================================================="

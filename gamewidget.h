@@ -14,6 +14,7 @@
 #include <QDebug>
 #include "terrain.h"
 #include "serialcontroller.h"
+#include "racemanager.h"
 
 constexpr static int FRAME_RATE = 180;
 
@@ -36,6 +37,7 @@ private:
     Player m_player;
     Terrain m_terrain;
     SerialController m_serialController;
+    RaceManager m_raceManager;
 
     int m_frameCount = 0;
     int m_currentFps = 0;

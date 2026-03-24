@@ -12,7 +12,6 @@ const float GRAVITY = 9.8f;
 
 void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input)
 {
-    qInfo() << currentSlopeAngle;
     // Key event
     if (keyUp) {
         m_potAccel += ACCEL_SPEED * dt;
