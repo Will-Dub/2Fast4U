@@ -12,7 +12,6 @@ const float GRAVITY = 9.8f;
 
 void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input)
 {
-    qInfo() << currentSlopeAngle;
     // Key event
     if (keyUp) {
         m_potAccel += ACCEL_SPEED * dt;
@@ -42,7 +41,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     if(m_potSteering > 1.0f) m_potSteering = 1.0f;
     if(m_potSteering < -1.0f) m_potSteering = -1.0f;
 
-    float m_potSteeringFromInput = input.brake != 0 ? -input.brake : input.acceleration;
+    float m_potSteeringFromInput = input.brake != 0.0f ? -input.brake : input.acceleration;
 
     // Met à jour le shifter
     if(input.clutch >= 0.95){
@@ -52,7 +51,9 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     // Met à jour le gear
     m_powertrain.setGear(m_shifter.getGear());
 
-    m_powertrain.everyRefresh(input.acceleration*100, input.brake*100);
+    float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
+
+    m_powertrain.everyRefresh(inputAcceleration, input.brake*100);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 
@@ -93,6 +94,13 @@ void Player::crash(float distancePushBack)
     m_powertrain.setAcceleration(0);
 
     m_positionZ -= distancePushBack;
+}
+
+void Player::restart()
+{
+    m_powertrain.setSpeed(0);
+    m_powertrain.setAcceleration(0);
+    m_shifter.resetPosition();
 }
 
 float Player::getHitboxHalfWidth() const

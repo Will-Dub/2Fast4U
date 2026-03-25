@@ -12,6 +12,9 @@ GameWidget::GameWidget(QWidget *parent): m_serialController() {
     // Génère la map
     m_terrain.generateTerrain();
 
+    // Start le timer TODO a changer
+    m_raceManager.startRace();
+
     setFocusPolicy(Qt::StrongFocus);
 
     // Crée le background
@@ -38,6 +41,8 @@ void GameWidget::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void GameWidget::gameLoop(){
+    if(m_raceManager.getState() != RaceState::RACING) return;
+
     float dt = m_timer.restart() / 1000.0f;
 
     // Max et min de dt
@@ -104,15 +109,28 @@ void GameWidget::gameLoop(){
         if (isCrashed) break;
     }
 
+    // Manage la race et le temps
+    m_raceManager.update(m_player.getPositionX(), isCrashed, dt);
+
+    if(m_raceManager.getState() != RaceState::RACING){
+        QTimer::singleShot(5000, [=]() {
+            this->restartGame();
+        });
+    }
+
     // Bouge les obstacles du terrain
     m_terrain.tick(m_player, dt);
 
     // Envoie les données au arduino
     m_serialController.sendInformation(dt, m_player.getSpeed(), m_player.getRevs());
 
-    // Met à jour le visuel
-
     update();
+}
+
+void GameWidget::restartGame()
+{
+    m_player.restart();
+    m_raceManager.startRace();
 }
 
 void GameWidget::paintEvent(QPaintEvent *event){
@@ -122,6 +140,10 @@ void GameWidget::paintEvent(QPaintEvent *event){
     painter.fillRect(rect(), m_sunset);
     painter.setPen(Qt::NoPen);
     painter.drawEllipse(QRect(150, 300, 100, 100));
+
+    if(m_raceManager.getState() != RaceState::RACING){
+        return;
+    }
 
     // Terrain
     m_terrain.render(painter, m_player, width(), height());
@@ -138,7 +160,12 @@ void GameWidget::paintEvent(QPaintEvent *event){
     }
 
     QTextDocument doc;
-    doc.setHtml(QString("<font color=\"#f00\">%1</font>").arg(m_currentFps));
+    QString timeStr = QString::number(m_raceManager.getElapsedTime(), 'f', 2);
+    QString fpsStr  = QString::number(m_currentFps);
+
+    doc.setHtml(QString("<font color='#f00'>FPS: %1</font><br><font color='#f00'>%2s</font>")
+                    .arg(fpsStr)
+                    .arg(timeStr));
     doc.drawContents(&painter);
 
     // Painture le shifter

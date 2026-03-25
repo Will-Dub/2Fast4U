@@ -113,6 +113,8 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
 
 void Terrain::generateTerrain()
 {
+    lines.clear();
+
     // Load les sprites
     QPixmap testSprite;
     if (testSprite.load(":/images/test3.png")) {
@@ -136,31 +138,68 @@ void Terrain::generateTerrain()
     }
 
     QPixmap arbree;
-    if (arbre.load(":/images/arbree.png")) {
-        QPixmapCache::insert("arbree0", arbre);
+    if (arbree.load(":/images/arbree.png")) {
+        QPixmapCache::insert("arbree0", arbree);
     } else {
         qWarning() << "Warning: Erreur durant l'ouverture de arbree.png";
     }
 
+    QPixmap poleSprite;
+    if (testSprite.load(":/images/pole.png")) {
+        QPixmapCache::insert("pole0", testSprite);
+    } else {
+        qWarning() << "Warning: Erreur durant l'ouverture de pole.png";
+    }
+
+    int mountainStart = 100;
+    int mountainLength = 300;
+    float mountainHeight = 500.0f; // baisse un peu la hauteur pour éviter les gaps
+
     for (int i = 0; i < N_LINES; i++) {
         Line line;
         line.z = i * SEG_L;
-
-        if(i>50 && i<700) line.curve=0.02;
+        line.y = 0.0f;
+        line.curve = 0.0f;
         line.nbLane = 3;
-        if(i>0 && i < 200) line.isLineFull = true;
-        //if(i > 10 && i < 700) line.y = cos(i / 30.0) * 150;
+        line.isLineFull = false;
 
-        if(i == 50) {
-            Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2, 0.1);
-            //line.obstacles.append(obstacle);
+        if (i > 50 && i < 700)
+            line.curve = 0.02f;
+
+        if (i > 0 && i < 200)
+            line.isLineFull = true;
+
+        // Montagne plus lisse
+        if (i >= mountainStart && i < mountainStart + mountainLength) {
+            float t = float(i - mountainStart) / float(mountainLength - 1); // 0 -> 1
+
+            // smoothstep : 3t^2 - 2t^3
+            float s = t * t * (3.0f - 2.0f * t);
+
+            // forme montagne : monte puis redescend
+            // sin(pi*t) donne 0 -> 1 -> 0, très lisse
+            line.y = mountainHeight * std::sin(M_PI * s);
         }
-        if(i == 25) {
+
+        if (i == 50) {
+            Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2, 0.1);
+            // line.obstacles.append(obstacle);
+        }
+
+        if (i == 25) {
             Obstacle obstacle("arbre", 1, 5.0f, 0.025, 2);
-            //line.obstacles.append(obstacle);
+            line.obstacles.append(obstacle);
 
             Obstacle obstacleCass("arbree", 1, -5.0f, 0.3, 2);
-            //line.obstacles.append(obstacleCass);
+            // line.obstacles.append(obstacleCass);
+        }
+
+        if (i == 150) {
+            Obstacle obstacle("pole", 1, 5.0f, 0.025, 2);
+            line.obstacles.append(obstacle);
+
+            Obstacle obstacleCass("pole", 1, -5.0f, 0.025, 2);
+            line.obstacles.append(obstacleCass);
         }
 
         lines.push_back(line);
