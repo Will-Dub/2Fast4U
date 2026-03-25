@@ -96,6 +96,13 @@ void Player::crash(float distancePushBack)
     m_positionZ -= distancePushBack;
 }
 
+void Player::restart()
+{
+    m_powertrain.setSpeed(0);
+    m_powertrain.setAcceleration(0);
+    m_shifter.resetPosition();
+}
+
 float Player::getHitboxHalfWidth() const
 {
     return m_hitboxHalfWidth;

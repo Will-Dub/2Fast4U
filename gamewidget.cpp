@@ -112,6 +112,12 @@ void GameWidget::gameLoop(){
     // Manage la race et le temps
     m_raceManager.update(m_player.getPositionX(), isCrashed, dt);
 
+    if(m_raceManager.getState() != RaceState::RACING){
+        QTimer::singleShot(5000, [=]() {
+            this->restartGame();
+        });
+    }
+
     // Bouge les obstacles du terrain
     m_terrain.tick(m_player, dt);
 
@@ -121,6 +127,12 @@ void GameWidget::gameLoop(){
     update();
 }
 
+void GameWidget::restartGame()
+{
+    m_player.restart();
+    m_raceManager.startRace();
+}
+
 void GameWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
@@ -128,6 +140,10 @@ void GameWidget::paintEvent(QPaintEvent *event){
     painter.fillRect(rect(), m_sunset);
     painter.setPen(Qt::NoPen);
     painter.drawEllipse(QRect(150, 300, 100, 100));
+
+    if(m_raceManager.getState() != RaceState::RACING){
+        return;
+    }
 
     // Terrain
     m_terrain.render(painter, m_player, width(), height());

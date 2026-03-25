@@ -41,6 +41,8 @@ public:
 
     void tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
+    void restart();
+
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;
 

@@ -32,6 +32,7 @@ protected:
 
 private slots:
     void gameLoop();
+    void restartGame();
 
 private:
     Player m_player;
