@@ -60,16 +60,17 @@ void Powertrain::Shift(int gear) {
         setStarted(false);
         return;
     }
-    else if(gear < m_gear)
+    else if (gear < m_gear)
     {
-        int newRevs = ((getGearRatio()*getSpeed())/(0.00152 * (tireDiameter * 12 * M_PI)));
+        setGear(gear);
+        int newRevs = ((getGearRatio() * getSpeed()) / (0.00152 * (tireDiameter * 12 * M_PI)));
 
-        if(newRevs > getRevs())
+        if (newRevs > getRevs())
         {
             setRevs(newRevs);
-        }   
-    }
+        }
         
+    }
     else
     {
         setGear(gear);
@@ -134,7 +135,7 @@ void Powertrain::setRedLineTickCounter(int redLineTickCounter)
 
 float Powertrain::getEnginePower()
 {
-    int powerPosition = ((getRevs() - (getRevs() % 100)) / 100)-8;
+    int powerPosition = ((getRevs() - (getRevs() % 100)) / 100) - 8;
     return powerCurve[powerPosition];
 }
 
@@ -183,10 +184,10 @@ void Powertrain::setBrakePedalPercent(int brakePedalPercent)
     m_brakePedalPercent = brakePedalPercent;
 }
 
-void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
+void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle)
 {
     setGasPedalPercent(gasPedalPercent);
-    if(brakePedalPercent > brakePedalDeadZone)
+    if (brakePedalPercent > 0/*brakePedalDeadZone*/)
     {
         setBrakePedalPercent(brakePedalPercent);
     }
@@ -194,7 +195,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
     {
         setBrakePedalPercent(0);
     }
-    if(m_started)
+    if (m_started)
     {
         //[find a way to receive pedal inputs]!!!!!
         /*
@@ -232,10 +233,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
         {
             setGasPedalPercent(0);
         }*/
-        if(brakePedalPercent > 0)
-        {
-            braking();
-        }
+
 
 
         //adjusts throttle opening from how much the pedal is pressed;
@@ -287,19 +285,36 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
         setOutputPower(axlePower);
         setOutputTorque(axleTorque);
         float force = (getOutputTorque() / tireDiameter); //power in feet
-        float acceleration = (force / carWeight) * 9.8; //returns acceleration in m/s^2 (4.44... converts lbs to N)
-
+        if (angle > 0)
+        {
+            force -= (gravitationnalAccelerationFt) / sin(angle);
+        }
+        else
+        {
+            force += (gravitationnalAccelerationFt) / sin(angle);
+        }
+        float acceleration = (force / carWeight) * gravitationnalAcceleration; //returns acceleration in m/s^2 (4.44... converts lbs to N)
         setAcceleration(acceleration);
 
-        float vf = (getSpeed() + (getAcceleration()/refreshRate)*3.6);
+
+        //modifies acceleration, so it takes effect here when we are breaking.
+        if (getBrakePedalPercent() > 0)
+        {
+            braking();
+        }
+        float vf = (getSpeed() + (getAcceleration() / refreshRate) * 3.6);
 
         if (getGear() != 0) {
             float maxSpeed = ((getRevs() / getGearRatio()) * (tireDiameter * 12 * M_PI) * 0.00152);
             if (vf > maxSpeed) {
+                std::cout << "limiting factor is maxSpeed: " << maxSpeed << std::endl;
                 vf = maxSpeed;
             }
         }
-
+        if (vf < 0) // stops the speed from being negative due to eccessive breaking force
+        {
+            vf = 0;
+        }
         setSpeed(vf); //finally, sets the speed at the end of that tick.
         /*std::cout << "-------------------------------------------------------" << std::endl
             << "SECTION DEBUG VITESSE:  " << std::endl
@@ -325,6 +340,17 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
               << "- RPMs du moteur (contrôlé à l'interne):    " << getRevs()
               << "- Vitesse (transmission) (touches 1 à 6):   " << getGear()
               << "- Vitesse (km/h) (contrôlé à l'interne):    " << getSpeed();*/
+    std::cout
+        << "======================================================="
+        << "Voici les informations actuelles du véhicule:   " << instanceCounter << std::endl
+        << "- Pourcentage de la pédale (touches W+ et S-):  " << getGasPedalPercent() << std::endl
+        << "- Pourcentage du throttle (= pédale, min 5):    " << getThrottle() << std::endl
+        << "- RPMs du moteur (contrôlé à l'interne):        " << getRevs() << std::endl
+        << "- Vitesse (transmission) (touches 1 à 6):       " << getGear() << std::endl
+        << "- Vitesse (km/h) (contrôlé à l'interne):        " << getSpeed() << std::endl
+        << "-------------------------------------------------------" << std::endl
+        << "- Pourcentage du frein(touches E+ et D-):       " << getBrakePedalPercent() << std::endl
+        << "- Angle d'inclinaison:(touches F+ et G-):       " << angle << std::endl;
     instanceCounter++;
 
 
@@ -334,14 +360,21 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent)
 void Powertrain::braking()
 {
     int brakePedalForce = brakePedalDeadZone + getBrakePedalPercent();
-    float caliperPressure = ((brakePedalForce * brakePedalRatio))/masterCylinderAreaOfSystem; //(result in PSI)
+    float caliperPressure = ((brakePedalForce * brakePedalRatio)) / masterCylinderAreaOfSystem; //(result in PSI)
     float clampingForce = caliperPressure * brakePadArea; //-> ~7200 for 70 pounds of pedal (+100 from booster)
     float brakeTorque = clampingForce * frictionCoefficient; //in ft-lbs most likely?
-
-    
-
-
-    
+    std::cout << "brakeTorque : " << brakeTorque << std::endl;
+    float brakeTorqueN = 1.35582 * brakeTorque; //converts ft-lbs to N*m
+    //Done: get speedratio between wheel and brakes...??? -> ignored, done * 1 since we don't use front vs rear wheel braking effort (hoping that's what it is)
+    float brakeForce = 4 * (brakeTorqueN * brakeSpeedRatio) / tireRadiusM; //force in N, *4 because 4 wheels
+    std::cout << "brakeForce : " << brakeForce << std::endl;
+    float deceleration = brakeForce / (carWeight * gravitationnalAcceleration); //in m/s^2
+    deceleration = deceleration;
+    std::cout << "decel : " << deceleration << std::endl;
+    std::cout << "oldAccel : " << getAcceleration() << std::endl;
+    float newAccel = getAcceleration() - deceleration;
+    std::cout << "newAccel : " << newAccel << std::endl;
+    setAcceleration(newAccel);
 }
 
 //TODO:
@@ -367,11 +400,11 @@ void Powertrain::revSetter()
             << "getThrottle:    " << getThrottle() << std::endl
             << "revTarget:        " << revTarget << std::endl;*/
 
-    //^seems to work decent, now to make it increase towards that at a good rate
+            //^seems to work decent, now to make it increase towards that at a good rate
     int newRevs = 0;
-    if(getRevs() > revTarget+100)
+    if (getRevs() > revTarget + 100)
     {
-        if(revDownCounter == (refreshRate/20))
+        if (revDownCounter == (refreshRate / 20))
         {
             newRevs = getRevs() - 100;
             revDownCounter = 1;
@@ -382,21 +415,22 @@ void Powertrain::revSetter()
             revDownCounter++;
         }
     }
-    else if(getRevs() < revTarget+100)
+    else if (getRevs() < revTarget + 100)
     {
         //rev acceleration will be reduced based on which gear you're in, and how open the throttle is
         float revGearResistance;
 
         if (getGear() == 0) {
             revGearResistance = 2.5;
-        } else {
+        }
+        else {
             revGearResistance = 1 - (1 / getGearRatio());
         }
 
         /*std::cout << "getGearRatio:     " << getGearRatio() << std::endl
             << "revGearResistance:  " << revGearResistance << std::endl;*/
 
-        newRevs = getRevs() + (revGearResistance*getThrottle());
+        newRevs = getRevs() + (revGearResistance * getThrottle());
         /*std::cout
             << "getThrottle:        " << getThrottle() << std::endl
             << "newRevs:            " << newRevs << std::endl
