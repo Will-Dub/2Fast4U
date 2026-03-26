@@ -25,6 +25,7 @@
 */
 
 #define _USE_MATH_DEFINES
+#include <iostream>
 #include <QDebug>
 #include <math.h>
 
@@ -34,22 +35,28 @@ int const moneyShiftRevThreshold = 6000;  //sets the rev limit before shifting w
 int const redLine = 7000;   //sets the redline
 int const maxRevs = 8000;   //sets the max number of revs (do not go higher than 8000, the powercurve is not defined past that)
 int const redLineTimeLimit = 1; //sets the number of seconds past redline before engine breaks
-int const redLineTickLimit = (refreshRate*redLineTimeLimit); //sets the number of ticks past redline before engine breaks
+int const redLineTickLimit = (refreshRate * redLineTimeLimit); //sets the number of ticks past redline before engine breaks
 int const gasPedalDeadZone = 5; //used to adjust throttle % for idle, but also means the beginning of the pedal is a dead zone (does nothing)
 int const brakePedalDeadZone = 3; //used to elimite parasitic pedal values
 int const brakePedalOffset = 20; //according to a source, the pressure applied to a pedal is between 20 and 120 pounds, so this is added to the percentage to turn it into pounds
 float const revAccelerationConstant = 0.2; //set arbitrarily, change this to affect how fast the revs change
-float const drivetrainEfficiency = 0.82; //equivalent to %, refers to loss of power through the powertrain.
-float const tireDiameter = 1.25; //set in feet (cuz ft-lb so force is easily found in lbs)
+float const drivetrainEfficiency = 0.88; //equivalent to %, refers to loss of power through the powertrain.
+float const tireDiameter = 1.5; //set in feet (cuz ft-lb so force is easily found in lbs)
+float const tireRadiusM = 0.23; //set in Meters, is half of diameter (is reduced a bit since tire is compressed when on road)
 float const brakePadHeight = 2.51; //set in inches
 float const brakePadLenght = 4.50; //set in inches
-float const brakePadArea = (brakePadHeight*brakePadLenght); //square inches
+float const brakePadArea = (brakePadHeight * brakePadLenght); //square inches
 float const frictionCoefficient = 0.4;
 float const brakePedalRatio = 5; // typical recommended for manual is 5-7 and power assited should be 4-5
 int const brakeBoosterAdd = 100; //amount of force in pounds added by the brake booster (can be 0)
 float const masterCylinderAreaOfSystem = 0.7; //if other brake value are changed, this will need adjusting using this: https://motionraceworks.com/en-ca/pages/brake-system-setup-and-calculations
+float const gravitationnalAcceleration = 9.8; //in m/s^2
+float const gravitationnalAccelerationFt = 32.19; //->32.18503937007874, in feet/s^2, for math in imperial
+int const brakeSpeedRatio = 1; // set to 1, would normally be for front vs rear wheels, but not used in our case
+//^think this is incorrect, but can't find what the website wants (BIBLE)
 
 float const carWeight = 2815; //in pounds, based on Subaru BRZ 2022
+float const carWeightKg = 1277;//1276.863; //used elsewhere in math, in kg, same weight
 int const defaultGear = 1; //sets the gear by default (1-6)
 float const gearRatio1 = 3.63; //gear ratio for first gear
 float const gearRatio2 = 2.19; //' '
@@ -57,7 +64,8 @@ float const gearRatio3 = 1.54; //' '
 float const gearRatio4 = 1.21; //' '
 float const gearRatio5 = 1.00; //' '
 float const gearRatio6 = 0.77; //' '
-float const gearRatioFinalDrive = 4.20; //sets the final drive axle ratio
+float const gearRatioFinalDrive = 4.10; //sets the final drive axle ratio
+
 int const defaultSpeed = 0; //sets the starting speed, set to 1 for debug
 
 class Powertrain
@@ -86,7 +94,9 @@ public:
 
 
     void Shift(int gear);            //used to change gears, with checks for money shifts etc.
-    void everyRefresh(int gasPedalPercent, int brakePedalPercent);   //called every 'tick' to adjust the speed dynamically
+
+    void everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle);   //called every 'tick' to adjust the speed dynamically
+
     void braking();
     void revSetter();                   //sets the revs every tick, adjusting it based on throttle opening.
     float getGearRatio();               //returns the gear ratio of the gearbox;
@@ -210,10 +220,10 @@ Neutral:                [none]      [**Source 2]
 2nd:                    2.19:1
 3rd:                    1.54:1
 4th:                    1.21:1
-5th:                    1.00:1      
-6th:                    0.77:1      
+5th:                    1.00:1
+6th:                    0.77:1
 rvrs:                   3.44:1      -> if we implement this
-final drive axle ratio: 4.10:1      
+final drive axle ratio: 4.10:1
 */
 
 
@@ -227,7 +237,7 @@ final drive axle ratio: 4.10:1
     https://arachnoid.com/braking_physics/index.html
     ->break distance function (will need to determine distance done per tick of time, and figure out reduction of speed for that tick, and apply it to the speed directly).
     https://www.tomorrowstechnician.com/how-your-foot-turns-into-stopping-power-pedal-ratio-basics/
-    ->range 20-120 pounds is the rough range of pedal force applied by the driver 
+    ->range 20-120 pounds is the rough range of pedal force applied by the driver
     https://help.summitracing.com/knowledgebase/article/SR-05037/en-us
     ->how to mesure pedal ratio, and implement it along with master cylinder + good help.
     ->calipers need 800-1200PSI to stop the car
@@ -245,13 +255,22 @@ final drive axle ratio: 4.10:1
     ->friction*clamping force = brake torque
     https://www.hotrod.com/how-to/disc-brake-pad-friction-codes-explained
     ->break pad friction coefficient -> 0.4 (top tier but a bit lower)
+    https://homepages.plus.net/chimescakes/engineeringinspiration/brakecalcs.html#STV
+    ->BIBLE? !!!!
+
     #tp
 
 
 
 -Implement gravity resistance while uphill and acceleration on downhill
+
+
 -Implement resistance while turning
+
 -Implement revs going up from down shifting -> new money shifting?
+
+
+
 -Implement wheel grip and traction of the car for drifting.
 
 ~~Implement engine's limits, strength,  etc. -> learn more for this...
