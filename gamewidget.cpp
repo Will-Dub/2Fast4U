@@ -110,7 +110,7 @@ void GameWidget::gameLoop(){
     }
 
     // --- Manage la race et le temps ---
-    m_raceManager.update(m_player.getPositionX(), isCrashed, dt);
+    m_raceManager.update(m_player.getPositionZ(), isCrashed, dt);
 
     // Vérifie si le joueur a perdu ou gagné
     if(m_raceManager.getState() != RaceState::RACING){

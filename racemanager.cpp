@@ -13,7 +13,7 @@ RaceManager::RaceManager(QObject *parent)
     }
 }
 
-void RaceManager::update(float positionX, bool isCrashed, float deltaTime)
+void RaceManager::update(float positionZ, bool isCrashed, float deltaTime)
 {
     if(m_state != RaceState::RACING) return;
 
@@ -28,8 +28,9 @@ void RaceManager::update(float positionX, bool isCrashed, float deltaTime)
         }
 
         m_elapsedTime += deltaTime;
+        qInfo() << positionZ;
 
-        if (positionX >= m_finishLineX) {
+        if (positionZ >= m_finishLineZ) {
             m_state = RaceState::FINISHED;
             m_finalTime = m_elapsedTime;
             saveResult("William");

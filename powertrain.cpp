@@ -309,7 +309,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
         if (getGear() != 0) {
             float maxSpeed = ((getRevs() / getGearRatio()) * (tireDiameter * 12 * M_PI) * 0.00152);
             if (vf > maxSpeed) {
-                std::cout << "limiting factor is maxSpeed: " << maxSpeed << std::endl;
+                //std::cout << "limiting factor is maxSpeed: " << maxSpeed << std::endl;
                 vf = maxSpeed;
             }
         }

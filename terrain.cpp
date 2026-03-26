@@ -242,7 +242,7 @@ void Terrain::generateTerrain()
         }
 
         // 4. LES POLES (Section 5) - Intouchés
-        if (i == 1500) {
+        if (i == 175) {
             line.obstacles.append(Obstacle("pole", 1, 5.0f, 0.025f, 2));
             line.obstacles.append(Obstacle("pole", 1, -5.0f, 0.025f, 2));
         }
