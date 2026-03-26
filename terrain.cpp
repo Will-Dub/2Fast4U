@@ -163,38 +163,113 @@ void Terrain::generateTerrain()
         line.nbLane = 3;
         line.isLineFull = false;
 
-        if (i > 50 && i < 700)
-            line.curve = 0.02f;
-
-        if (i > 0 && i < 200)
+        // -----------------------------
+        // SECTION 1 : départ plat
+        // -----------------------------
+        if (i >= 0 && i < 200) {
+            line.y = 0.0f;
+            line.curve = 0.0f;
             line.isLineFull = true;
-
-        // Montagne plus lisse
-        if (i >= mountainStart && i < mountainStart + mountainLength) {
-            float t = float(i - mountainStart) / float(mountainLength - 1); // 0 -> 1
-
-            // smoothstep : 3t^2 - 2t^3
-            float s = t * t * (3.0f - 2.0f * t);
-
-            // forme montagne : monte puis redescend
-            // sin(pi*t) donne 0 -> 1 -> 0, très lisse
-            line.y = mountainHeight * std::sin(M_PI * s);
         }
 
-        if (i == 50) {
-            Obstacle obstacle("test_obstacle", 2, 5.0f, 0.1, 2, 0.1);
+        // -----------------------------
+        // SECTION 2 : montée douce
+        // -----------------------------
+        else if (i >= 200 && i < 500) {
+            float t = float(i - 200) / float(500 - 200);
+            line.y = 300.0f * sin(M_PI * 0.5f * t); // monte progressivement
+            line.curve = 0.0f;
+        }
+
+        // -----------------------------
+        // SECTION 3 : virage à droite en haut
+        // -----------------------------
+        else if (i >= 500 && i < 900) {
+            float t = float(i - 500) / float(900 - 500);
+            line.y = 300.0f;
+            line.curve = 0.015f + 0.01f * t;
+        }
+
+        // -----------------------------
+        // SECTION 4 : descente douce
+        // -----------------------------
+        else if (i >= 900 && i < 1300) {
+            float t = float(i - 900) / float(1300 - 900);
+            line.y = 300.0f * cos(M_PI * 0.5f * t); // redescend vers 0
+            line.curve = 0.02f;
+        }
+
+        // -----------------------------
+        // SECTION 5 : ligne droite plate
+        // -----------------------------
+        else if (i >= 1300 && i < 1700) {
+            line.y = 0.0f;
+            line.curve = 0.0f;
+        }
+
+        // -----------------------------
+        // SECTION 6 : grosse montagne
+        // -----------------------------
+        else if (i >= 1700 && i < 2300) {
+            float t = float(i - 1700) / float(2300 - 1700);
+            float x = 2.0f * t - 1.0f;
+            line.y = 500.0f * (1.0f - x * x); // parabole inversée
+            line.curve = -0.01f;
+        }
+
+        // -----------------------------
+        // SECTION 7 : virage à gauche
+        // -----------------------------
+        else if (i >= 2300 && i < 2800) {
+            float t = float(i - 2300) / float(2800 - 2300);
+            line.y = 150.0f;
+            line.curve = -0.03f * t;
+        }
+
+        // -----------------------------
+        // SECTION 8 : vallée
+        // -----------------------------
+        else if (i >= 2800 && i < 3400) {
+            float t = float(i - 2800) / float(3400 - 2800);
+            float x = 2.0f * t - 1.0f;
+            line.y = -250.0f * (1.0f - x * x); // creux
+            line.curve = -0.02f;
+        }
+
+        // -----------------------------
+        // SECTION 9 : remontée légère
+        // -----------------------------
+        else if (i >= 3400 && i < 3900) {
+            float t = float(i - 3400) / float(3900 - 3400);
+            line.y = -250.0f + 250.0f * t;
+            line.curve = 0.01f;
+        }
+
+        // -----------------------------
+        // SECTION 10 : longue fin droite
+        // -----------------------------
+        else if (i >= 3900 && i < N_LINES) {
+            line.y = 0.0f;
+            line.curve = 0.0f;
+        }
+
+        // Obstacles exemples
+        if (i == 250) {
+            Obstacle obstacle("arbre", 1, 5.0f, 0.025, 2);
             // line.obstacles.append(obstacle);
         }
 
-        if (i == 25) {
-            Obstacle obstacle("arbre", 1, 5.0f, 0.025, 2);
-            line.obstacles.append(obstacle);
-
-            Obstacle obstacleCass("arbree", 1, -5.0f, 0.3, 2);
-            // line.obstacles.append(obstacleCass);
+        if (i == 1200) {
+            Obstacle obstacle("arbree", 1, -5.0f, 0.3, 2);
+            // line.obstacles.append(obstacle);
         }
 
-        if (i == 150) {
+        if (i == 2100) {
+            Obstacle obstacle("test_obstacle", 2, 3.0f, 0.1, 2, 0.1);
+            // line.obstacles.append(obstacle);
+        }
+
+        if (i == 1500) {
             Obstacle obstacle("pole", 1, 5.0f, 0.025, 2);
             line.obstacles.append(obstacle);
 

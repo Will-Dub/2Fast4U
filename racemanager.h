@@ -26,7 +26,7 @@ class RaceManager : public QObject
 {
     Q_OBJECT
     RaceState m_state = RaceState::WAITING;
-    double m_finishLineX = 5000.0;
+    double m_finishLineX = 1000.0;
 
     double m_elapsedTime = 0.0;
     double m_finalTime = 0.0;
@@ -44,10 +44,6 @@ public:
 
 private:
     void saveResult(QString nom);
-
-signals:
-    void raceFinished(double time);
-    void raceCrashed();
 };
 
 #endif // RACEMANAGER_H

@@ -1,11 +1,10 @@
 <RCC>
     <qresource prefix="/images">
-        <file>test.png</file>
-        <file>test3.png</file>
-        <file>test4.png</file>
+        <file>penguin.png</file>
         <file>arbre.png</file>
-        <file>arbree.png</file>
         <file>pole.png</file>
+        <file>buche.png</file>
+        <file>roche.png</file>
     </qresource>
     <qresource prefix="/audio">
         <file>audio/BAC_Mono_offhigh.wav</file>

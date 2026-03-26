@@ -149,10 +149,10 @@ void GameWidget::paintEvent(QPaintEvent *event){
     painter.setPen(Qt::NoPen);
     painter.drawEllipse(QRect(150, 300, 100, 100));
 
-    // Terrain
+    // --- Terrain ---
     m_terrain.render(painter, m_player, width(), height());
 
-    // Calcul des fps
+    // --- Calcul des fps ---
     m_frameCount++;
     if (!m_fpsTimer.isValid()) m_fpsTimer.start();
     if(m_fpsTimer.elapsed() > 1000){
@@ -163,6 +163,7 @@ void GameWidget::paintEvent(QPaintEvent *event){
         m_fpsTimer.restart();
     }
 
+    // --- Affiche les fps et le temps ---
     QTextDocument doc;
     QString timeStr = QString::number(m_raceManager.getElapsedTime(), 'f', 2);
     QString fpsStr  = QString::number(m_currentFps);
@@ -172,7 +173,7 @@ void GameWidget::paintEvent(QPaintEvent *event){
                     .arg(timeStr));
     doc.drawContents(&painter);
 
-    // Painture le shifter
+    // --- Shifter ---
     painter.save();
 
     // Place le centre

@@ -75,7 +75,8 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
                         (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
-    m_powertrainAudioController.update();
+    // TODO enelver quand on veux ce faire niquer les oreilles
+    //m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()

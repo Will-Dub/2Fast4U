@@ -24,24 +24,15 @@ void RaceManager::update(float positionX, bool isCrashed, float deltaTime)
     case RaceState::RACING:
         if (isCrashed) {
             m_state = RaceState::CRASHED;
-            emit raceCrashed();
             return;
         }
 
         m_elapsedTime += deltaTime;
 
-        // LIGNE DE TEST
-        if(m_elapsedTime >= 5){
-            m_state = RaceState::FINISHED;
-            m_finalTime = m_elapsedTime;
-            saveResult("William12345");
-        }
-
         if (positionX >= m_finishLineX) {
             m_state = RaceState::FINISHED;
             m_finalTime = m_elapsedTime;
             saveResult("William");
-            emit raceFinished(m_finalTime);
         }
         break;
 

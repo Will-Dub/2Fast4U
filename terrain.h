@@ -12,7 +12,7 @@ class Terrain
 public:
     Terrain();
 
-    constexpr static int N_LINES = 2000;
+    constexpr static int N_LINES = 5000;
 
     void render(QPainter &painter, Player &player, int screenWidth, int screenHeight);
     void generateTerrain();
