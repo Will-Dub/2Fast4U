@@ -35,7 +35,7 @@ qt_add_executable(2Fast4U
     virtualshifter.h virtualshifter.cpp
     audiomanager.h audiomanager.cpp
     powertrainaudiocontroller.h powertrainaudiocontroller.cpp
-    sounds.qrc
+
     racemanager.h racemanager.cpp
 )
 

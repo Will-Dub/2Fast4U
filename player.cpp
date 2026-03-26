@@ -75,7 +75,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
                         (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
-    //m_powertrainAudioController.update();
+    m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()
@@ -92,15 +92,19 @@ void Player::crash(float distancePushBack)
 {
     m_powertrain.setSpeed(0);
     m_powertrain.setAcceleration(0);
-
     m_positionZ -= distancePushBack;
+    m_powertrainAudioController.stop();
 }
 
 void Player::restart()
 {
     m_powertrain.setSpeed(0);
     m_powertrain.setAcceleration(0);
+    m_positionX=0;
+    m_positionZ=0;
+    m_positionZ=MIN_PLAYER_Y;
     m_shifter.resetPosition();
+    m_powertrainAudioController.start();
 }
 
 float Player::getHitboxHalfWidth() const

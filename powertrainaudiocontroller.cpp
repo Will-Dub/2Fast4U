@@ -9,20 +9,28 @@ PowertrainAudioController::~PowertrainAudioController() {}
 void PowertrainAudioController::initSounds() {
     QMap<QString, AudioSource> sources;
 
-    sources.insert("on_low", {"qrc:/audio/engine_on_low.wav", 3000.0, 1.0});
+    /*sources.insert("on_low", {"qrc:/audio/engine_on_low.wav", 3000.0, 1.0});
     sources.insert("off_low", {"qrc:/audio/engine_off_low.wav", 3000.0, 1.0});
     sources.insert("on_high", {"qrc:/audio/engine_on_high.wav", 6500.0, 1.0});
     sources.insert("off_high", {"qrc:/audio/engine_off_high.wav", 6500.0, 1.0});
     sources.insert("limiter", {"qrc:/audio/limiter.wav", 6500.0, 1.0});
 
     sources.insert("tranny_on", {"qrc:/audio/tranny_on.wav", 1000.0, 0.8});
-    sources.insert("tranny_off", {"qrc:/audio/tranny_off.wav", 1000.0, 0.8});
+    sources.insert("tranny_off", {"qrc:/audio/tranny_off.wav", 1000.0, 0.8});*/
+    sources.insert("on_low", {"qrc:/audio/audio/BAC_Mono_onlow.wav", 3000.0, 1.0});
+    sources.insert("off_low", {"qrc:/audio/audio/BAC_Mono_offlow.wav", 3000.0, 1.0});
+    sources.insert("on_high", {"qrc:/audio/audio/BAC_Mono_onhigh.wav", 6500.0, 1.0});
+    sources.insert("off_high", {"qrc:/audio/audio/BAC_Mono_offhigh.wav", 6500.0, 1.0});
+    sources.insert("limiter", {"qrc:/audio/audio/limiter.wav", 6500.0, 1.0});
+
+    sources.insert("tranny_on", {"qrc:/audio/audio/trany_power_high.wav", 1000.0, 0.8});
+    sources.insert("tranny_off", {"qrc:/audio/audio/tw_offlow_4.wav", 1000.0, 0.8});
 
     m_audioManager.init(sources);
 }
 
 void PowertrainAudioController::update() {
-    // Safety check: if the physics model was destroyed, do not calculate audio.
+    if (!m_isPlaying) return;
     if (!m_powertrainPtr) return;
 
     double currentRevs = m_powertrainPtr->getRevs();
@@ -94,5 +102,27 @@ void PowertrainAudioController::update() {
         auto status = m_audioManager.samples["on_low"].player->mediaStatus();
         auto error = m_audioManager.samples["on_low"].player->error();
         qDebug() << "On_Low Media Status:" << status << "| Error:" << error;
+    }
+}
+
+void PowertrainAudioController::start()
+{
+    m_isPlaying = true;
+
+    for (auto& node : m_audioManager.samples) {
+        if (node.player) {
+            node.player->play();
+        }
+    }
+}
+
+void PowertrainAudioController::stop()
+{
+    m_isPlaying = false;
+
+    for(auto& node : m_audioManager.samples){
+        if(node.player){
+            node.player->stop();
+        }
     }
 }

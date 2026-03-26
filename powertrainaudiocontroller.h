@@ -16,14 +16,18 @@ private:
     double m_limiter;
     double m_rpmPitchFactor;
 
+    bool m_isPlaying = false;
+
 public:
     PowertrainAudioController(Powertrain* powertrain);
 
     ~PowertrainAudioController();
 
     void initSounds();
-
     void update();
+
+    void start();
+    void stop();
 };
 
 #endif // POWERTRAINAUDIOCONTROLLER_H

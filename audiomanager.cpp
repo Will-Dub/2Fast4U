@@ -15,7 +15,6 @@ void AudioManager::init(const QMap<QString, AudioSource>& sources) {
 DynamicAudioNode AudioManager::add(const AudioSource& source) {
     DynamicAudioNode node;
 
-
     node.player = new QMediaPlayer(this);
     node.audioOutput = new QAudioOutput(this);
 
@@ -46,6 +45,10 @@ void AudioManager::dispose() {
     for (auto& node : samples) {
         if (node.player) {
             node.player->stop();
+            node.player->deleteLater();
+        }
+        if (node.audioOutput) {
+            node.audioOutput->deleteLater();
         }
     }
     samples.clear();

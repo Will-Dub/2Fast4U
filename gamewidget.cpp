@@ -45,7 +45,7 @@ void GameWidget::gameLoop(){
 
     float dt = m_timer.restart() / 1000.0f;
 
-    // Max et min de dt
+    // --- Fixe les limite de dt ---
     if (dt > 0.033f) dt = 0.033f;
     if (dt < 0.001f) dt = 0.016f;
 
@@ -56,7 +56,7 @@ void GameWidget::gameLoop(){
     float currentSlopeAngle = 0.0f;
     float terrainFriction = 1.0f;
 
-    // Trouve la friction, curve et slope du terrain
+    // --- Trouve la friction, curve et slope du terrain ---
     if (m_terrain.getTotalLines() > 0) {
         int currentIndex = startSegment % m_terrain.getTotalLines();
         int nextIndex = (startSegment + 1) % m_terrain.getTotalLines();
@@ -78,7 +78,7 @@ void GameWidget::gameLoop(){
     InputState input = m_serialController.getState();
     m_player.tick(dt, currentCurve, currentSlopeAngle, terrainFriction, input);
 
-    // CCD
+    // --- CCD (Collisions) ---
     float currentZ = m_player.getPositionZ();
     int endSegment = std::max(0, static_cast<int>(currentZ / SEG_L));
 
@@ -109,21 +109,23 @@ void GameWidget::gameLoop(){
         if (isCrashed) break;
     }
 
-    // Manage la race et le temps
+    // --- Manage la race et le temps ---
     m_raceManager.update(m_player.getPositionX(), isCrashed, dt);
 
+    // Vérifie si le joueur a perdu ou gagné
     if(m_raceManager.getState() != RaceState::RACING){
         QTimer::singleShot(5000, [=]() {
             this->restartGame();
         });
     }
 
-    // Bouge les obstacles du terrain
+    // --- Bouge les obstacles du terrain ---
     m_terrain.tick(m_player, dt);
 
-    // Envoie les données au arduino
+    // --- Envoie les données au arduino ---
     m_serialController.sendInformation(dt, m_player.getSpeed(), m_player.getRevs());
 
+    // --- Appel update de QWidget ---
     update();
 }
 
@@ -136,14 +138,16 @@ void GameWidget::restartGame()
 void GameWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
-    // Ciel
+    // --- Vérifie si la partie est terminé ---
+    if(m_raceManager.getState() != RaceState::RACING){
+        painter.fillRect(rect(), Qt::black);
+        return;
+    }
+
+    // --- Ciel ---
     painter.fillRect(rect(), m_sunset);
     painter.setPen(Qt::NoPen);
     painter.drawEllipse(QRect(150, 300, 100, 100));
-
-    if(m_raceManager.getState() != RaceState::RACING){
-        return;
-    }
 
     // Terrain
     m_terrain.render(painter, m_player, width(), height());
