@@ -29,7 +29,7 @@
 #include <QDebug>
 #include <math.h>
 
-int const refreshRate = 100; //number of executions per second
+int const refreshRate = 200; //number of executions per second
 int const idleRevs = 800;   //sets the idle (do not set lower than 800, the powercurve is not defined past that)
 int const moneyShiftRevThreshold = 6000;  //sets the rev limit before shifting will break the gearbox
 int const redLine = 7000;   //sets the redline
