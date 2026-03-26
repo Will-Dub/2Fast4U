@@ -82,7 +82,9 @@ float Powertrain::getAcceleration() {
 }
 
 void Powertrain::setAcceleration(float acceleration) {
-    m_acceleration = acceleration;
+    if (!qIsInf(acceleration)) {
+        m_acceleration = acceleration;
+    }
 }
 
 float Powertrain::getSpeed()
@@ -186,6 +188,7 @@ void Powertrain::setBrakePedalPercent(int brakePedalPercent)
 
 void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle)
 {
+    m_started = true;
     setGasPedalPercent(gasPedalPercent);
     if (brakePedalPercent > 0/*brakePedalDeadZone*/)
     {
@@ -289,13 +292,12 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
         {
             force -= (gravitationnalAccelerationFt) / sin(angle);
         }
-        else
+        else if (angle < 0)
         {
             force += (gravitationnalAccelerationFt) / sin(angle);
         }
         float acceleration = (force / carWeight) * gravitationnalAcceleration; //returns acceleration in m/s^2 (4.44... converts lbs to N)
         setAcceleration(acceleration);
-
 
         //modifies acceleration, so it takes effect here when we are breaking.
         if (getBrakePedalPercent() > 0)
@@ -333,14 +335,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
         //qInfo() << "Moteur arrêté! Veuillez démarrer afin de continuer!";
     }
 
-    /*qInfo() << "======================================================="
-              << "Voici les informations actuelles du véhicule: " << instanceCounter
-              << "- Pourcentage de la pédal (touches W+ et S-): " << getGasPedalPercent()
-              << "- Pourcentage du throttle (= pédale, min 5):" << getThrottle()
-              << "- RPMs du moteur (contrôlé à l'interne):    " << getRevs()
-              << "- Vitesse (transmission) (touches 1 à 6):   " << getGear()
-              << "- Vitesse (km/h) (contrôlé à l'interne):    " << getSpeed();*/
-    std::cout
+    /*std::cout
         << "======================================================="
         << "Voici les informations actuelles du véhicule:   " << instanceCounter << std::endl
         << "- Pourcentage de la pédale (touches W+ et S-):  " << getGasPedalPercent() << std::endl
@@ -350,7 +345,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
         << "- Vitesse (km/h) (contrôlé à l'interne):        " << getSpeed() << std::endl
         << "-------------------------------------------------------" << std::endl
         << "- Pourcentage du frein(touches E+ et D-):       " << getBrakePedalPercent() << std::endl
-        << "- Angle d'inclinaison:(touches F+ et G-):       " << angle << std::endl;
+        << "- Angle d'inclinaison:(touches F+ et G-):       " << angle << std::endl;*/
     instanceCounter++;
 
 

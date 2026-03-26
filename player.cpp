@@ -53,7 +53,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
 
     float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
 
-    m_powertrain.everyRefresh(inputAcceleration, input.brake*100);
+    m_powertrain.everyRefresh(inputAcceleration, input.brake, currentSlopeAngle);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 
@@ -76,7 +76,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
     // TODO enelver quand on veux ce faire niquer les oreilles
-    //m_powertrainAudioController.update();
+    m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()
