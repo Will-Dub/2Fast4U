@@ -41,6 +41,8 @@ SerialController::SerialController(QObject *parent)
         m_serial.setRequestToSend(true);
         qInfo() << "SUCCESS: Connecter au port série" << portName;
     }
+
+    QThread::sleep(1);
 }
 
 SerialController::~SerialController()
@@ -73,12 +75,15 @@ InputState SerialController::getState()
 void SerialController::sendInformation(float dt, int vitesse, int rpm)
 {
 
-    m_timeElapsedSinceSend += dt;
-    if (m_timeElapsedSinceSend < 0.1f) {
-        return;
+    if (!m_timer.isValid()) {
+        m_timer.start();
     }
 
-    m_timeElapsedSinceSend = 0.0f;
+    if (!m_timer.hasExpired(SERIAL_INTERVAL_MS)) {
+        return;
+    }
+    qInfo() << "sent";
+    m_timer.restart();
 
     if (!m_serial.isOpen() || !m_serial.isWritable()) {
         return;

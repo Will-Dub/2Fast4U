@@ -9,6 +9,8 @@
 #include <QJsonObject>
 #include <QJsonParseError>
 #include <QSerialPortInfo>
+#include <QElapsedTimer>
+#include <QThread>
 
 struct InputState {
     float steering = 0.0f;
@@ -50,6 +52,8 @@ private slots:
 private:
     QSerialPort m_serial;
     QByteArray m_buffer;
+    QElapsedTimer m_timer;
+    const qint64 SERIAL_INTERVAL_MS = 200;
 
     float m_steering = 0.0f;
 
