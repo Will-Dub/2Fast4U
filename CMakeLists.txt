@@ -37,6 +37,7 @@ qt_add_executable(2Fast4U
     powertrainaudiocontroller.h powertrainaudiocontroller.cpp
 
     racemanager.h racemanager.cpp
+    spritemanager.h spritemanager.cpp
 )
 
 target_link_libraries(2Fast4U PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

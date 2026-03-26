@@ -115,42 +115,6 @@ void Terrain::generateTerrain()
 {
     lines.clear();
 
-    // Load les sprites
-    QPixmap testSprite;
-    if (testSprite.load(":/images/test3.png")) {
-        QPixmapCache::insert("test_obstacle0", testSprite);
-    } else {
-        qWarning() << "Warning: Erreur durant l'ouverture de test3.png";
-    }
-
-    QPixmap testSprite2;
-    if (testSprite2.load(":/images/test4.png")) {
-        QPixmapCache::insert("test_obstacle1", testSprite2);
-    } else {
-        qWarning() << "Warning: Erreur durant l'ouverture de test4.png";
-    }
-
-    QPixmap arbre;
-    if (arbre.load(":/images/arbre.png")) {
-        QPixmapCache::insert("arbre0", arbre);
-    } else {
-        qWarning() << "Warning: Erreur durant l'ouverture de arbre.png";
-    }
-
-    QPixmap arbree;
-    if (arbree.load(":/images/arbree.png")) {
-        QPixmapCache::insert("arbree0", arbree);
-    } else {
-        qWarning() << "Warning: Erreur durant l'ouverture de arbree.png";
-    }
-
-    QPixmap poleSprite;
-    if (testSprite.load(":/images/pole.png")) {
-        QPixmapCache::insert("pole0", testSprite);
-    } else {
-        qWarning() << "Warning: Erreur durant l'ouverture de pole.png";
-    }
-
     int mountainStart = 100;
     int mountainLength = 300;
     float mountainHeight = 500.0f; // baisse un peu la hauteur pour éviter les gaps
@@ -253,28 +217,46 @@ void Terrain::generateTerrain()
             line.curve = 0.0f;
         }
 
-        // Obstacles exemples
-        if (i == 250) {
-            Obstacle obstacle("arbre", 1, 5.0f, 0.025, 2);
-            // line.obstacles.append(obstacle);
+        if(i == 25){
+            line.obstacles.append(Obstacle("roche", 1, 3.0f, 0.01f, 2.5f));
         }
 
-        if (i == 1200) {
-            Obstacle obstacle("arbree", 1, -5.0f, 0.3, 2);
-            // line.obstacles.append(obstacle);
+        if (i == 50){
+            line.obstacles.append(Obstacle("buche", 1, 0.0f, 0.02f, 2.0f));
         }
 
-        if (i == 2100) {
-            Obstacle obstacle("test_obstacle", 2, 3.0f, 0.1, 2, 0.1);
-            // line.obstacles.append(obstacle);
+        if (i % 150 == 0 && i > 100 && i < 500) {
+            line.obstacles.append(Obstacle("arbre", 1, 6.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre", 1, -6.0f, 0.025f, 2));
         }
 
+        // 2. Danger dans la montée/virage : Roches proches de la piste
+        if (i == 600 || i == 800) {
+            float posX = (i == 600) ? 2.5f : -2.5f;
+            line.obstacles.append(Obstacle("roche", 1, posX, 0.01f, 2.5f));
+        }
+
+        // 3. Bûche en plein milieu de la descente (Section 4)
+        if (i == 1100) {
+            line.obstacles.append(Obstacle("buche", 1, 0.0f, 0.02f, 2.0f));
+        }
+
+        // 4. LES POLES (Section 5) - Intouchés
         if (i == 1500) {
-            Obstacle obstacle("pole", 1, 5.0f, 0.025, 2);
-            line.obstacles.append(obstacle);
+            line.obstacles.append(Obstacle("pole", 1, 5.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("pole", 1, -5.0f, 0.025f, 2));
+        }
 
-            Obstacle obstacleCass("pole", 1, -5.0f, 0.025, 2);
-            line.obstacles.append(obstacleCass);
+        // 5. Grosse Montagne : Arbres denses sur les côtés
+        if (i % 100 == 0 && i >= 1700 && i < 2300) {
+            line.obstacles.append(Obstacle("arbre", 1, 5.5f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre", 1, -5.5f, 0.025f, 2));
+        }
+
+        // 6. Piège dans la vallée : Combo Roche + Bûche
+        if (i == 3000) {
+            line.obstacles.append(Obstacle("roche", 1, -2.0f, 0.01f, 2.5f)); // Bloque la gauche
+            line.obstacles.append(Obstacle("buche", 1, 1.5f, 0.02f, 2.0f));  // Gêne la droite
         }
 
         lines.push_back(line);

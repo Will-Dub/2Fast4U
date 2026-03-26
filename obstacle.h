@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <QString>
 #include <QDebug>
+#include "spritemanager.h"
 
 class Obstacle
 {
@@ -26,25 +27,7 @@ public:
 
     QPixmap getCurrentFrame() const {
         QString cacheFrameKey = m_spriteName + QString::number(m_currentFrame);
-        QPixmap framePixmap;
-
-        // Check si l'image est déjà en cache
-        if (QPixmapCache::find(cacheFrameKey, &framePixmap)) {
-            return framePixmap;
-        }
-
-        qWarning() << "Warning: Image pas en cache " << cacheFrameKey;
-
-        // Load l'image
-        QString filePath= QString(":/assets/%1.png").arg(cacheFrameKey);
-        if (framePixmap.load(filePath)) {
-            QPixmapCache::insert(cacheFrameKey, framePixmap);
-        } else {
-            qCritical() << "Fatal: Asset manquant " << filePath;
-            QPixmapCache::insert(cacheFrameKey, QPixmap());
-        }
-
-        return framePixmap;
+        return SpriteManager::get(cacheFrameKey);
     }
 
     void update(float dt){
