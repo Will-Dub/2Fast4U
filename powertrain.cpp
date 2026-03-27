@@ -12,7 +12,7 @@ Powertrain::Powertrain() {
     this->m_outputPower = 0;
     this->m_outputTorque = 0;
     this->m_redLineTickCounter = 0;
-    this->m_started = false;
+    this->m_started = true;
     this->m_gasPedalPercent = 0;
     this->m_brakePedalPercent = 0;
 }

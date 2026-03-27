@@ -2,6 +2,7 @@
 
 Player::Player(): m_powertrainAudioController(&m_powertrain) {
     m_powertrainAudioController.initSounds();
+    m_powertrain.setStarted(true);
 }
 
 const float ACCEL_SPEED = 2.0f;

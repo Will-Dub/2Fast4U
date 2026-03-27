@@ -36,6 +36,7 @@ public:
     float getPositionY() { return m_positionY; }
     float getPositionZ() { return m_positionZ; }
     float getAngle() { return m_angle; }
+    bool getIsCrashed() { return !m_powertrain.getStarted(); }
     int getSpeed();
     int getRevs();
 
