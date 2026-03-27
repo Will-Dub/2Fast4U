@@ -109,6 +109,21 @@ void Player::restart()
     m_powertrainAudioController.start();
 }
 
+void Player::renderHabitacle(QPainter &painter, RaceState raceState, int screenWidth, int screenHeight)
+{
+    QPixmap sprite;
+    if(raceState == RaceState::CRASHED){
+        sprite = SpriteManager::get("habitacle");
+    }else{
+        sprite = SpriteManager::get("habitacleCrashed");
+    }
+    painter.drawPixmap(
+        QRectF(0, 0, screenWidth, screenHeight),
+        sprite,
+        QRectF(0, 0, screenWidth, screenHeight)
+    );
+}
+
 float Player::getHitboxHalfWidth() const
 {
     return m_hitboxHalfWidth;

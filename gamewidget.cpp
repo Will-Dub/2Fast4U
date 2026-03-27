@@ -138,12 +138,6 @@ void GameWidget::restartGame()
 void GameWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
-    // --- Vérifie si la partie est terminé ---
-    if(m_raceManager.getState() != RaceState::RACING){
-        painter.fillRect(rect(), Qt::black);
-        return;
-    }
-
     // --- Ciel ---
     painter.fillRect(rect(), m_sunset);
     painter.setPen(Qt::NoPen);
@@ -217,6 +211,9 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QPointF cursor = m_player.getShifterPosition();
     float knobRadius = 0.2f;
     painter.drawEllipse(cursor, knobRadius, knobRadius);
+
+    // --- Fait l'habitacle ---
+    //m_player.renderHabitacle(painter, m_raceManager.getState(), width(), height());
 
     painter.restore();
 }

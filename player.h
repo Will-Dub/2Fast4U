@@ -8,6 +8,7 @@
 #include "powertrainaudiocontroller.h"
 #include "powertrain.h"
 #include "virtualshifter.h"
+#include "racemanager.h"
 
 #define STEERING_INPUT input.steering
 #define ACCEL_INPUT m_potSteeringFromInput
@@ -43,6 +44,7 @@ public:
     void tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
     void restart();
+    void renderHabitacle(QPainter &painter, RaceState raceState, int screenWidth, int screenHeight);
 
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;
