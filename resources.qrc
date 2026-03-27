@@ -5,6 +5,8 @@
         <file>pole.png</file>
         <file>buche.png</file>
         <file>roche.png</file>
+        <file>habitacle.png</file>
+        <file>habitacleCrashed.png</file>
     </qresource>
     <qresource prefix="/audio">
         <file>audio/BAC_Mono_offhigh.wav</file>

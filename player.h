@@ -44,7 +44,7 @@ public:
     void tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input);
     void crash(float distancePushBack);
     void restart();
-    void renderHabitacle(QPainter &painter, RaceState raceState, int screenWidth, int screenHeight);
+    void renderHabitacle(QPainter *painter, RaceState raceState, int screenWidth, int screenHeight);
 
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;

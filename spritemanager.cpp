@@ -11,7 +11,7 @@ const QPixmap &SpriteManager::get(const QString &id)
         loadSprite(sprites, "pole0", ":/images/pole.png");
         loadSprite(sprites, "roche0", ":/images/roche.png");
         loadSprite(sprites, "habitacle", ":/images/habitacle.png");
-        loadSprite(sprites, "habitacle", ":/images/habitacleCrash.png");
+        loadSprite(sprites, "habitacleCrashed", ":/images/habitacleCrashed.png");
     }
 
     if (!sprites.contains(id)) {

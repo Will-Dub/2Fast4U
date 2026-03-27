@@ -157,22 +157,16 @@ void GameWidget::paintEvent(QPaintEvent *event){
         m_fpsTimer.restart();
     }
 
-    // --- Affiche les fps et le temps ---
-    QTextDocument doc;
-    QString timeStr = QString::number(m_raceManager.getElapsedTime(), 'f', 2);
-    QString fpsStr  = QString::number(m_currentFps);
-
-    doc.setHtml(QString("<font color='#f00'>FPS: %1</font><br><font color='#f00'>%2s</font>")
-                    .arg(fpsStr)
-                    .arg(timeStr));
-    doc.drawContents(&painter);
+    // --- Dessine l'habitacle ---
+    m_player.renderHabitacle(&painter, m_raceManager.getState(), width(), height());
 
     // --- Shifter ---
     painter.save();
 
     // Place le centre
     int hudOffsetX = width() - 80;
-    int hudOffsetY = height() - 80;
+    //int hudOffsetY = height() - 80;
+    int hudOffsetY = 80;
     painter.translate(hudOffsetX, hudOffsetY);
 
     // Écrit le texte
@@ -211,9 +205,29 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QPointF cursor = m_player.getShifterPosition();
     float knobRadius = 0.2f;
     painter.drawEllipse(cursor, knobRadius, knobRadius);
+    painter.restore();
 
-    // --- Fait l'habitacle ---
-    //m_player.renderHabitacle(painter, m_raceManager.getState(), width(), height());
+    // --- Affiche les fps ---
+    QTextDocument doc;
+    QString fpsStr  = QString::number(m_currentFps);
+
+    doc.setHtml(QString("<font color='#f00'>FPS: %1</font>").arg(fpsStr));
+    doc.drawContents(&painter);
+
+    // --- Affiche le temps ---
+    painter.save();
+
+    qint64 totalMillis = static_cast<qint64>(m_raceManager.getElapsedTime() * 1000.0);
+    QTime t(0, 0, 0);
+    t = t.addMSecs(totalMillis);
+    QString timeStr = t.toString("mm:ss.zzz");
+
+    QFont timerFont("Arial", 20);
+    doc.setDefaultFont(timerFont);
+
+    doc.setTextWidth(width());
+    doc.setHtml(QStringLiteral("<div align='center'><font color='#f00'>%1</font></div>").arg(timeStr));
+    doc.drawContents(&painter);
 
     painter.restore();
 }
