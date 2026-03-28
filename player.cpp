@@ -95,8 +95,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
     // TODO enelver quand on veux ce faire niquer les oreilles
-    m_powertrainAudioController.handleEngineExplosion(dt);
-    //m_powertrainAudioController.update();
+    m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()
@@ -114,10 +113,12 @@ void Player::stop()
     m_powertrain.setSpeed(0);
     m_powertrain.setAcceleration(0);
     m_powertrainAudioController.stop();
+    m_powertrainAudioController.handleCatastrophicFailure();
 }
 
 void Player::restart()
 {
+    m_powertrainAudioController.stop();
     m_powertrain.setSpeed(0);
     m_powertrain.setAcceleration(0);
     m_positionX=0;

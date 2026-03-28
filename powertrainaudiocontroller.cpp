@@ -17,6 +17,8 @@ void PowertrainAudioController::initSounds() {
 
     sources.insert("tranny_on", {":/audio/audio/trany_power_high.wav", 0.0, 0.4});
     sources.insert("tranny_off", {":/audio/audio/tw_offlow_4.wav", 0.0, 0.2});
+    sources.insert("snap", {":/audio/audio/explosion_cable_break.wav", 0.0, 1.5});
+    sources.insert("thud", {":/audio/audio/explosion_base.wav", 0.0, 1.2});
 
     m_audioManager.init(sources);
 }
@@ -114,28 +116,24 @@ void PowertrainAudioController::stop() {
     }
 }
 
-void PowertrainAudioController::handleEngineExplosion(double dt) {
-    if (!m_audioManager.samples.contains("on_low")) return;
+void PowertrainAudioController::handleCatastrophicFailure() {
+    // 1. Trigger the "Snap" (High frequency peak)
+    if (m_audioManager.samples.contains("snap")) {
+        m_audioManager.engine.play(*m_audioManager.samples["snap"].wav);
+    }
 
-    auto& node = m_audioManager.samples["on_low"];
-    double currentRevs = m_powertrainPtr->getRevs();
+    // 2. Trigger the "Thrud" (Low frequency weight)
+    if (m_audioManager.samples.contains("thud")) {
+        SoLoud::handle h = m_audioManager.engine.play(*m_audioManager.samples["thud"].wav);
+        m_audioManager.engine.setRelativePlaySpeed(h, 0.9f); // Slightly lower pitch for more "oomph"
+    }
 
-    // 1. Base Pitch (calculated normally based on RPM)
-    double cents = (currentRevs - node.rpm) * m_rpmPitchFactor;
-    double basePitch = std::pow(2.0, cents / 1200.0);
+    // 3. Trigger the Debris (The "Gravel Drop")
+    if (m_audioManager.samples.contains("debris")) {
+        // Delay this slightly or play it at 1.0 volume to simulate parts hitting the floor
+        m_audioManager.engine.play(*m_audioManager.samples["debris"].wav);
+    }
 
-    // 2. Add "Mechanical Jitter"
-    // We generate a random offset to simulate the engine 'stumbling'
-    double pitchJitter = ((rand() % 100) / 100.0) * 0.3; // 30% pitch variation
-    double volumeJitter = ((rand() % 100) / 100.0) * 0.5; // 50% volume dropouts
-
-    // 3. Apply to SoLoud
-    m_audioManager.engine.setRelativePlaySpeed(node.handle, basePitch + pitchJitter);
-
-    // The volume fluctuates wildly to sound like "grinding"
-    double brokenVolume = (node.baseVolume * 0.5) * (1.0 - volumeJitter);
-    m_audioManager.engine.setVolume(node.handle, brokenVolume);
-
-    // 4. Force physics to die
-    // In your physics update, ensure torque is 0 if health <= 0
+    // 4. Kill the standard engine loops
+    stop();
 }

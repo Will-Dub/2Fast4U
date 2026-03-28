@@ -25,7 +25,7 @@ public:
 
     void initSounds();
     void update();
-    void handleEngineExplosion(double dt);
+    void handleCatastrophicFailure();
 
     void start();
     void stop();
