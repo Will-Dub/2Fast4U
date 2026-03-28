@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(2Fast4U LANGUAGES CXX)
+project(2Fast4U LANGUAGES CXX C)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -14,6 +14,16 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS SerialPort)
 find_package(Qt6 COMPONENTS Multimedia REQUIRED)
 
+add_compile_definitions(WITH_MINIAUDIO)
+add_compile_definitions(NOMINMAX)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/soloud/include)
+file(GLOB SOLOUD_SOURCES
+    "soloud/src/core/*.cpp"
+    "soloud/src/audiosource/wav/*.cpp"
+    "soloud/src/audiosource/wav/*.c"
+    "soloud/src/backend/miniaudio/*.cpp"
+)
+
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
@@ -24,6 +34,7 @@ set(PROJECT_SOURCES
 qt_add_executable(2Fast4U
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    ${SOLOUD_SOURCES}
     gamewidget.h gamewidget.cpp
     resources.qrc
     line.h

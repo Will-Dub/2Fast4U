@@ -23,6 +23,7 @@ public:
     VirtualShifter();
     void updatePosition(float x, float y);
     void resetPosition();
+    void setGear(Node newNode);
 
     int getGear() const;
     QPointF getPosition() const;

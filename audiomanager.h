@@ -1,14 +1,17 @@
 #ifndef AUDIOMANAGER_H
 #define AUDIOMANAGER_H
 
-#include <QtMultimedia/QMediaPlayer>
-#include <QtMultimedia/QAudioOutput>
 #include <QObject>
 #include <QMap>
 #include <QString>
-#include <QUrl>
+#include <QFile>
+#include <QByteArray>
 #include <cmath>
 #include <algorithm>
+
+// Include SoLoud
+#include "soloud.h"
+#include "soloud_wav.h"
 
 struct AudioSource {
     QString sourcePath;
@@ -17,8 +20,8 @@ struct AudioSource {
 };
 
 struct DynamicAudioNode {
-    QMediaPlayer* player = nullptr;
-    QAudioOutput* audioOutput = nullptr;
+    SoLoud::Wav* wav = nullptr;
+    SoLoud::handle handle = 0; // The active playback ID
     double rpm = 1000.0;
     double baseVolume = 1.0;
 };
@@ -35,14 +38,12 @@ public:
     explicit AudioManager(QObject *parent = nullptr);
     ~AudioManager();
 
+    SoLoud::Soloud engine; // The core audio engine
     QMap<QString, DynamicAudioNode> samples;
 
     void init(const QMap<QString, AudioSource>& sources);
-
-    DynamicAudioNode add(const AudioSource& source);
-
+    void add(const QString& key, const AudioSource& source);
     static CrossFadeResult crossFade(double value, double start, double end);
-
     void dispose();
 };
 

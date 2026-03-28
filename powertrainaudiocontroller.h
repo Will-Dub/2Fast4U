@@ -16,7 +16,7 @@ private:
     double m_limiter;
     double m_rpmPitchFactor;
 
-    bool m_isPlaying = false;
+    bool m_isPlaying = true;
 
 public:
     PowertrainAudioController(Powertrain* powertrain);
@@ -25,6 +25,7 @@ public:
 
     void initSounds();
     void update();
+    void handleEngineExplosion(double dt);
 
     void start();
     void stop();

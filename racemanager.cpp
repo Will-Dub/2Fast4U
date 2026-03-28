@@ -28,7 +28,6 @@ void RaceManager::update(float positionZ, bool isCrashed, float deltaTime)
         }
 
         m_elapsedTime += deltaTime;
-        qInfo() << positionZ;
 
         if (positionZ >= m_finishLineZ) {
             m_state = RaceState::FINISHED;

@@ -30,6 +30,13 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Up) m_player.keyUp = true;
     if (event->key() == Qt::Key_Down) m_player.keyDown = true;
     if (event->key() == Qt::Key_Space) m_player.keySpace = true;
+    if (event->key() == Qt::Key_1) m_player.key1 = true;
+    if (event->key() == Qt::Key_2) m_player.key2 = true;
+    if (event->key() == Qt::Key_3) m_player.key3 = true;
+    if (event->key() == Qt::Key_4) m_player.key4 = true;
+    if (event->key() == Qt::Key_5) m_player.key5 = true;
+    if (event->key() == Qt::Key_6) m_player.key6 = true;
+    if (event->key() == Qt::Key_N) m_player.keyN = true;
 }
 
 void GameWidget::keyReleaseEvent(QKeyEvent *event) {
@@ -38,6 +45,13 @@ void GameWidget::keyReleaseEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Up) m_player.keyUp = false;
     if (event->key() == Qt::Key_Down) m_player.keyDown = false;
     if (event->key() == Qt::Key_Space) m_player.keySpace = false;
+    if (event->key() == Qt::Key_1) m_player.key1 = false;
+    if (event->key() == Qt::Key_2) m_player.key2 = false;
+    if (event->key() == Qt::Key_3) m_player.key3 = false;
+    if (event->key() == Qt::Key_4) m_player.key4 = false;
+    if (event->key() == Qt::Key_5) m_player.key5 = false;
+    if (event->key() == Qt::Key_6) m_player.key6 = false;
+    if (event->key() == Qt::Key_N) m_player.keyN = false;
 }
 
 void GameWidget::gameLoop(){
@@ -99,7 +113,6 @@ void GameWidget::gameLoop(){
 
                 // Si leur distance du milieu est plus petit que leur demi combiner
                 if (std::abs(finalPlayerX - obstacleX) < minimumSafeDistance) {
-                    m_player.crash(SEG_L * 1.5f);
                     isCrashed = true;
                     break;
                 }
@@ -114,6 +127,7 @@ void GameWidget::gameLoop(){
 
     // Vérifie si le joueur a perdu ou gagné
     if(m_raceManager.getState() != RaceState::RACING){
+        m_player.stop();
         QTimer::singleShot(5000, [=]() {
             this->restartGame();
         });
@@ -131,8 +145,9 @@ void GameWidget::gameLoop(){
 
 void GameWidget::restartGame()
 {
-    m_player.restart();
+    m_player.stop();
     m_raceManager.startRace();
+    m_player.restart();
 }
 
 void GameWidget::paintEvent(QPaintEvent *event){

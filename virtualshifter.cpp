@@ -39,6 +39,11 @@ void VirtualShifter::resetPosition()
     m_currentNode = Node::NEUTRAL_CENTER;
 }
 
+void VirtualShifter::setGear(Node newNode)
+{
+    m_currentNode = newNode;
+}
+
 int VirtualShifter::getGear() const
 {
     switch (m_currentNode) {

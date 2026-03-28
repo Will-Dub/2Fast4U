@@ -82,7 +82,7 @@ void SerialController::sendInformation(float dt, int vitesse, int rpm)
     if (!m_timer.hasExpired(SERIAL_INTERVAL_MS)) {
         return;
     }
-    qInfo() << "sent";
+
     m_timer.restart();
 
     if (!m_serial.isOpen() || !m_serial.isWritable()) {

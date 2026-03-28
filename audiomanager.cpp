@@ -1,6 +1,10 @@
 #include "audiomanager.h"
+#include <QDebug>
 
-AudioManager::AudioManager(QObject *parent) : QObject(parent) {}
+AudioManager::AudioManager(QObject *parent) : QObject(parent) {
+    // Initialize the audio engine. It automatically picks the best backend.
+    engine.init();
+}
 
 AudioManager::~AudioManager() {
     dispose();
@@ -8,47 +12,51 @@ AudioManager::~AudioManager() {
 
 void AudioManager::init(const QMap<QString, AudioSource>& sources) {
     for (auto it = sources.constBegin(); it != sources.constEnd(); ++it) {
-        samples.insert(it.key(), add(it.value()));
+        add(it.key(), it.value());
     }
 }
 
-DynamicAudioNode AudioManager::add(const AudioSource& source) {
+void AudioManager::add(const QString& key, const AudioSource& source) {
     DynamicAudioNode node;
-
-    node.player = new QMediaPlayer(this);
-    node.audioOutput = new QAudioOutput(this);
-
-    node.player->setAudioOutput(node.audioOutput);
-    node.player->setSource(QUrl(source.sourcePath));
-
-    node.player->setLoops(QMediaPlayer::Infinite);
-
-    node.audioOutput->setVolume(0.0);
-
     node.rpm = source.rpm;
     node.baseVolume = source.volume;
 
-    node.player->play();
+    // Allocate the Wav object on the heap
+    node.wav = new SoLoud::Wav();
 
-    return node;
+    QString cleanPath = source.sourcePath;
+    cleanPath.replace("qrc:/", ":/");
+
+    QFile file(cleanPath);
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray data = file.readAll();
+
+        // Use arrow syntax (->) because wav is now a pointer
+        node.wav->loadMem((unsigned char*)data.data(), data.size(), true, false);
+        node.wav->setLooping(true);
+
+        samples.insert(key, node);
+    } else {
+        qWarning() << "Failed to load audio file:" << cleanPath;
+        delete node.wav; // Clean up the memory if the file fails to load
+    }
 }
 
 CrossFadeResult AudioManager::crossFade(double value, double start, double end) {
     double x = std::clamp((value - start) / (end - start), 0.0, 1.0);
     double gain1 = std::cos((1.0 - x) * 0.5 * M_PI);
     double gain2 = std::cos(x * 0.5 * M_PI);
-
     return {gain1, gain2};
 }
 
 void AudioManager::dispose() {
+    engine.deinit();
+
+    // You must manually free the heap memory before clearing the map
     for (auto& node : samples) {
-        if (node.player) {
-            node.player->stop();
-            node.player->deleteLater();
-        }
-        if (node.audioOutput) {
-            node.audioOutput->deleteLater();
+        if (node.wav) {
+            delete node.wav;
+            node.wav = nullptr;
         }
     }
     samples.clear();

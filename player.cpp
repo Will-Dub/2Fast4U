@@ -2,10 +2,11 @@
 
 Player::Player(): m_powertrainAudioController(&m_powertrain) {
     m_powertrainAudioController.initSounds();
+    m_powertrainAudioController.start();
     m_powertrain.setStarted(true);
 }
 
-const float ACCEL_SPEED = 2.0f;
+const float ACCEL_SPEED = 0.05f;
 const float STEERING_SPEED = 1.5f;
 const float FORCE_CENTRIFUGE = 1.2f;
 const float BRAKE_MULTIPLIER = 2.5f;
@@ -42,7 +43,9 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     if(m_potSteering > 1.0f) m_potSteering = 1.0f;
     if(m_potSteering < -1.0f) m_potSteering = -1.0f;
 
-    float m_potSteeringFromInput = input.brake != 0.0f ? -input.brake : input.acceleration;
+    float m_potAccelBrake = m_potAccel < 0.0f ? -1*m_potAccel : 0;
+    float m_potAccelAccel = m_potAccel > 0.0f ? m_potAccel : 0;
+    qInfo() << m_powertrain.getRevs();
 
     // Met à jour le shifter
     if(input.clutch >= 0.95){
@@ -50,11 +53,26 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     }
 
     // Met à jour le gear
+    if(key1){
+        m_shifter.setGear(Node::GEAR_1);
+    }else if(key2){
+        m_shifter.setGear(Node::GEAR_2);
+    }else if(key3){
+        m_shifter.setGear(Node::GEAR_3);
+    }else if(key4){
+        m_shifter.setGear(Node::GEAR_4);
+    }else if(key5){
+        m_shifter.setGear(Node::GEAR_5);
+    }else if(key6){
+        m_shifter.setGear(Node::GEAR_6);
+    }else if(keyN){
+        m_shifter.setGear(Node::NEUTRAL_CENTER);
+    }
     m_powertrain.setGear(m_shifter.getGear());
 
     float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
 
-    m_powertrain.everyRefresh(inputAcceleration, input.brake, currentSlopeAngle);
+    m_powertrain.everyRefresh(m_potAccelAccel*100, m_potAccelBrake*100, currentSlopeAngle);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 
@@ -77,7 +95,8 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
     // TODO enelver quand on veux ce faire niquer les oreilles
-    m_powertrainAudioController.update();
+    m_powertrainAudioController.handleEngineExplosion(dt);
+    //m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()
@@ -90,11 +109,10 @@ int Player::getRevs()
     return m_powertrain.getRevs();
 }
 
-void Player::crash(float distancePushBack)
+void Player::stop()
 {
     m_powertrain.setSpeed(0);
     m_powertrain.setAcceleration(0);
-    m_positionZ -= distancePushBack;
     m_powertrainAudioController.stop();
 }
 

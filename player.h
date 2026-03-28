@@ -10,7 +10,7 @@
 #include "virtualshifter.h"
 #include "racemanager.h"
 
-#define STEERING_INPUT input.steering
+#define STEERING_INPUT m_potSteering
 #define ACCEL_INPUT m_potSteeringFromInput
 //#define STEERING_INPUT m_potSteering
 //#define ACCEL_INPUT m_potAccel
@@ -31,6 +31,13 @@ public:
     bool keyUp = false;
     bool keyDown = false;
     bool keySpace = false;
+    bool key1 = false;
+    bool key2 = false;
+    bool key3 = false;
+    bool key4 = false;
+    bool key5 = false;
+    bool key6 = false;
+    bool keyN = false;
     float pitch = 0;
 
     float getPositionX() { return m_positionX; }
@@ -42,7 +49,7 @@ public:
     int getRevs();
 
     void tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input);
-    void crash(float distancePushBack);
+    void stop();
     void restart();
     void renderHabitacle(QPainter *painter, RaceState raceState, int screenWidth, int screenHeight);
 
