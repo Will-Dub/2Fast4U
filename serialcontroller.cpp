@@ -178,7 +178,11 @@ void SerialController::parsePacket(const QByteArray& packet) {
         }
         break;
     case PacketType::BUTTONS:
-        // TODO that shit
+        if (jsonObj.contains("g") && jsonObj.contains("b") && jsonObj.contains("c")) {
+            m_isAccelerationBtnPressed = jsonObj["g"].toBool();
+            m_isBrakeBtnPressed = jsonObj["b"].toBool();
+            m_isClutchBtnPressed = jsonObj["c"].toBool();
+        }
         break;
     case PacketType::PEDALES:
         if (jsonObj.contains("g") && jsonObj.contains("b") && jsonObj.contains("c")) {
