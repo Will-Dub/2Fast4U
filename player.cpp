@@ -45,7 +45,6 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
 
     float m_potAccelBrake = m_potAccel < 0.0f ? -1*m_potAccel : 0;
     float m_potAccelAccel = m_potAccel > 0.0f ? m_potAccel : 0;
-    qInfo() << m_powertrain.getRevs();
 
     // Met à jour le shifter
     if(input.clutch >= 0.95){
