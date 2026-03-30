@@ -119,6 +119,7 @@
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:\Users\willi\Documents\2Fast4U\build\Desktop_Qt_6_10_2_MSVC2022_64bit-Debug</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
+<<<<<<< Updated upstream
       <value type="QString" key="CMakeProjectManager.MakeStep.BuildPreset"></value>
       <valuelist type="QVariantList" key="CMakeProjectManager.MakeStep.BuildTargets">
        <value type="QString">clean</value>
@@ -240,6 +241,8 @@
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">./build/%{Asciify:%{Kit:FileSystemName}-%{BuildConfig:Name}}</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
+=======
+>>>>>>> Stashed changes
       <value type="QString" key="CMakeProjectManager.MakeStep.BuildPreset"></value>
       <valuelist type="QVariantList" key="CMakeProjectManager.MakeStep.BuildTargets">
        <value type="QString">all</value>
