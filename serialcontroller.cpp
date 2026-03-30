@@ -69,10 +69,12 @@ InputState SerialController::getState()
     state.isBrakePressed = m_isBrakeBtnPressed;
     state.isClutchPressed = m_isClutchBtnPressed;
 
+    state.isStarted = m_isStarted;
+
     return state;
 }
 
-void SerialController::sendInformation(float dt, int vitesse, int rpm)
+void SerialController::sendInformation(float dt, int vitesse, int rpm, bool isStarted)
 {
 
     if (!m_timer.isValid()) {
@@ -92,6 +94,7 @@ void SerialController::sendInformation(float dt, int vitesse, int rpm)
     QJsonObject json;
     json["v"] = vitesse;
     json["r"] = rpm;
+    json["e"] = isStarted;
 
     // Fais le payload(sans espace et new line)
     QJsonDocument doc(json);
@@ -182,6 +185,11 @@ void SerialController::parsePacket(const QByteArray& packet) {
             m_acceleration = std::clamp((float)jsonObj["g"].toDouble(), 0.0f, 1.0f);
             m_brake = std::clamp((float)jsonObj["b"].toDouble(), 0.0f, 1.0f);
             m_clutch = std::clamp((float)jsonObj["c"].toDouble(), 0.0f, 1.0f);
+        }
+        break;
+    case PacketType::STATUS:
+        if (jsonObj.contains("e")) {
+            m_isStarted = jsonObj["e"].toBool();
         }
         break;
     default:

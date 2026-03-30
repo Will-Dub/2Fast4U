@@ -72,6 +72,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
 
     float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
 
+    m_powertrain.setStarted(input.isStarted);
     m_powertrain.everyRefresh(m_potAccelAccel*100, m_potAccelBrake*100, currentSlopeAngle);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
@@ -94,7 +95,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
                         (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
-    // TODO enelver quand on veux ce faire niquer les oreilles
+    // TODO enlever quand on veux ce faire niquer les oreilles
     m_powertrainAudioController.update();
 }
 
@@ -119,8 +120,7 @@ void Player::stop()
 void Player::restart()
 {
     m_powertrainAudioController.stop();
-    m_powertrain.setSpeed(0);
-    m_powertrain.setAcceleration(0);
+    m_powertrain.reset();
     m_positionX=0;
     m_positionZ=0;
     m_positionZ=MIN_PLAYER_Y;
@@ -132,7 +132,7 @@ void Player::renderHabitacle(QPainter *painter, RaceState raceState, int screenW
 {
     QPixmap sprite;
 
-    if(raceState == RaceState::RACING){
+    if(raceState == RaceState::RACING || raceState == RaceState::MOTOR_EXPLODED){
         sprite = SpriteManager::get("habitacle");
     }else if(raceState == RaceState::CRASHED){
         sprite = SpriteManager::get("habitacleCrashed");
@@ -145,6 +145,21 @@ void Player::renderHabitacle(QPainter *painter, RaceState raceState, int screenW
         sprite,
         sprite.rect()
     );
+}
+
+void Player::allumer()
+{
+    m_powertrain.setStarted(true);
+}
+
+void Player::eteindre()
+{
+    m_powertrain.setStarted(false);
+}
+
+void Player::crash()
+{
+    m_powertrain.setSpeed(false);
 }
 
 float Player::getHitboxHalfWidth() const

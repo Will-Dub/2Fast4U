@@ -13,7 +13,7 @@ RaceManager::RaceManager(QObject *parent)
     }
 }
 
-void RaceManager::update(float positionZ, bool isCrashed, float deltaTime)
+void RaceManager::update(float positionZ, bool isCrashed, bool isMotorExploded, float deltaTime)
 {
     if(m_state != RaceState::RACING) return;
 
@@ -27,6 +27,11 @@ void RaceManager::update(float positionZ, bool isCrashed, float deltaTime)
             return;
         }
 
+        if(isMotorExploded){
+            m_state = RaceState::MOTOR_EXPLODED;
+            return;
+        }
+
         m_elapsedTime += deltaTime;
 
         if (positionZ >= m_finishLineZ) {
@@ -37,6 +42,7 @@ void RaceManager::update(float positionZ, bool isCrashed, float deltaTime)
         break;
 
     case RaceState::CRASHED:
+    case RaceState::MOTOR_EXPLODED:
     case RaceState::FINISHED:
         break;
     }

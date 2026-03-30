@@ -75,9 +75,7 @@ QPointF VirtualShifter::getPosition() const
 
 void VirtualShifter::executeTransition(bool goUp, bool goDown, bool goLeft, bool goRight)
 {
-    // This is the hardcoded metal gate. You define exactly where the cursor is allowed to go.
     switch (m_currentNode) {
-
     // Barre neutre
     case Node::NEUTRAL_CENTER:
         if (goLeft) m_currentNode = Node::NEUTRAL_LEFT;

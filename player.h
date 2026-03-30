@@ -44,7 +44,7 @@ public:
     float getPositionY() { return m_positionY; }
     float getPositionZ() { return m_positionZ; }
     float getAngle() { return m_angle; }
-    bool getIsCrashed() { return !m_powertrain.getStarted(); }
+    bool getIsMotorExploded() { return m_powertrain.getIsMotorExploded(); }
     int getSpeed();
     int getRevs();
 
@@ -52,6 +52,9 @@ public:
     void stop();
     void restart();
     void renderHabitacle(QPainter *painter, RaceState raceState, int screenWidth, int screenHeight);
+    void allumer();
+    void eteindre();
+    void crash();
 
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;

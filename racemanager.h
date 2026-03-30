@@ -13,6 +13,7 @@ enum class RaceState{
     WAITING,
     RACING,
     CRASHED,
+    MOTOR_EXPLODED,
     FINISHED
 };
 
@@ -33,7 +34,7 @@ class RaceManager : public QObject
 public:
     explicit RaceManager(QObject *parent = nullptr);
 
-    void update(float positionX, bool isCrashed, float deltaTime);
+    void update(float positionX, bool isCrashed, bool isMotorExploded, float deltaTime);
 
     RaceState getState() const;
     double getElapsedTime() const { return m_elapsedTime; }

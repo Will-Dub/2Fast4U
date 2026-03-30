@@ -117,7 +117,29 @@ void Powertrain::setStarted(bool started)
         setThrottle(gasPedalDeadZone);
     }
     m_started = started;
+}
 
+void Powertrain::explodeMotor(){
+    setSpeed(0);
+    setRevs(0);
+    setAcceleration(0);
+    setThrottle(0);
+    setOutputPower(0);
+    setOutputTorque(0);
+    m_started = false;
+    m_isMotorExploded = true;
+}
+
+void Powertrain::reset(){
+    setSpeed(0);
+    setRevs(0);
+    setAcceleration(0);
+    setThrottle(0);
+    setOutputPower(0);
+    setOutputTorque(0);
+    setGear(defaultGear);
+    m_started = false;
+    m_isMotorExploded = false;
 }
 
 bool Powertrain::getStarted()
@@ -188,7 +210,6 @@ void Powertrain::setBrakePedalPercent(int brakePedalPercent)
 
 void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle)
 {
-    m_started = true;
     setGasPedalPercent(gasPedalPercent);
     if (brakePedalPercent > 0/*brakePedalDeadZone*/)
     {

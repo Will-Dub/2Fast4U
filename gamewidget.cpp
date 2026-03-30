@@ -123,7 +123,7 @@ void GameWidget::gameLoop(){
     }
 
     // --- Manage la race et le temps ---
-    m_raceManager.update(m_player.getPositionZ(), isCrashed || m_player.getIsCrashed(), dt);
+    m_raceManager.update(m_player.getPositionZ(), isCrashed,  m_player.getIsMotorExploded(), dt);
 
     // Vérifie si le joueur a perdu ou gagné
     if(m_raceManager.getState() != RaceState::RACING){
@@ -131,6 +131,7 @@ void GameWidget::gameLoop(){
         QTimer::singleShot(5000, [=]() {
             this->restartGame();
         });
+        m_serialController.sendInformation(dt, 0, 0, false);
     }
 
     // --- Bouge les obstacles du terrain ---

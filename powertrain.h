@@ -104,6 +104,9 @@ public:
     float getEngineTorque();            //return torque, calculated from horsepower.
     float getOutputPower();
     float getOutputTorque();
+    void explodeMotor();
+    void reset();
+    bool getIsMotorExploded() { return m_isMotorExploded; }
     void setOutputPower(float power);
     void setOutputTorque(float torque);
     int getGasPedalPercent();
@@ -122,6 +125,7 @@ private:
     float m_outputTorque;   //IMPORTANT!!!! this is the torque at the AXLE, NOT at the wheels
     int m_redLineTickCounter;
     bool m_started;
+    bool m_isMotorExploded;
     int m_gasPedalPercent;
     int m_brakePedalPercent;
 };
