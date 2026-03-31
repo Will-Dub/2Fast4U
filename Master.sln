@@ -1,6 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soloud", "C:/Users/willi/Documents/2Fast4U/soloud\soloud.vcxproj", "{98DBF752-35F2-33CF-8571-605A8A3E95B0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soloud", "C:/Users/willi/Documents/Github/2Fast4U/soloud\soloud.vcxproj", "{FE479B37-12E9-328B-9BD2-3708CEAC23EE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2Fast4U", "C:/Users/willi/Documents/Github/2Fast4U/2Fast4U\2Fast4U.vcxproj", "{2C68BADE-41C1-30C0-923D-BA5DCA887D5D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FE479B37-12E9-328B-9BD2-3708CEAC23EE} = {FE479B37-12E9-328B-9BD2-3708CEAC23EE}
+		{FE479B37-12E9-328B-9BD2-3708CEAC23EE} = {FE479B37-12E9-328B-9BD2-3708CEAC23EE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,10 +14,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{98DBF752-35F2-33CF-8571-605A8A3E95B0}.Debug|x64.ActiveCfg = Debug|x64
-		{98DBF752-35F2-33CF-8571-605A8A3E95B0}.Debug|x64.Build.0 = Debug|x64
-		{98DBF752-35F2-33CF-8571-605A8A3E95B0}.Release|x64.ActiveCfg = Release|x64
-		{98DBF752-35F2-33CF-8571-605A8A3E95B0}.Release|x64.Build.0 = Release|x64
+		{FE479B37-12E9-328B-9BD2-3708CEAC23EE}.Debug|x64.ActiveCfg = Debug|x64
+		{FE479B37-12E9-328B-9BD2-3708CEAC23EE}.Debug|x64.Build.0 = Debug|x64
+		{FE479B37-12E9-328B-9BD2-3708CEAC23EE}.Release|x64.ActiveCfg = Release|x64
+		{FE479B37-12E9-328B-9BD2-3708CEAC23EE}.Release|x64.Build.0 = Release|x64
+		{2C68BADE-41C1-30C0-923D-BA5DCA887D5D}.Debug|x64.ActiveCfg = Debug|x64
+		{2C68BADE-41C1-30C0-923D-BA5DCA887D5D}.Debug|x64.Build.0 = Debug|x64
+		{2C68BADE-41C1-30C0-923D-BA5DCA887D5D}.Release|x64.ActiveCfg = Release|x64
+		{2C68BADE-41C1-30C0-923D-BA5DCA887D5D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
