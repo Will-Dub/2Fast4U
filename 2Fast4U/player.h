@@ -54,7 +54,6 @@ public:
     void renderHabitacle(QPainter *painter, RaceState raceState, int screenWidth, int screenHeight);
     void allumer();
     void eteindre();
-    void crash();
 
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;

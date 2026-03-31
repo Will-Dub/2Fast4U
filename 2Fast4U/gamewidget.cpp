@@ -1,12 +1,11 @@
 #include "gamewidget.h"
 
 GameWidget::GameWidget(QWidget *parent): m_serialController() {
-    QTimer *loopTimer = new QTimer(this);
-    loopTimer->setTimerType(Qt::PreciseTimer);
+    m_loopTimer.setTimerType(Qt::PreciseTimer);
 
-    connect(loopTimer, &QTimer::timeout, this, &GameWidget::gameLoop);
+    connect(&m_loopTimer, &QTimer::timeout, this, &GameWidget::gameLoop);
 
-    loopTimer->start(1000/FRAME_RATE);
+    m_loopTimer.start(1000/FRAME_RATE);
     m_timer.start();
 
     // Génère la map
@@ -224,15 +223,12 @@ void GameWidget::paintEvent(QPaintEvent *event){
     painter.restore();
 
     // --- Affiche les fps ---
-    QTextDocument doc;
-    QString fpsStr  = QString::number(m_currentFps);
-
-    doc.setHtml(QString("<font color='#f00'>FPS: %1</font>").arg(fpsStr));
-    doc.drawContents(&painter);
+    painter.drawText(10, 20, QString("FPS: %1").arg(m_currentFps));
 
     // --- Affiche le temps ---
     painter.save();
 
+    QTextDocument doc;
     qint64 totalMillis = static_cast<qint64>(m_raceManager.getElapsedTime() * 1000.0);
     QTime t(0, 0, 0);
     t = t.addMSecs(totalMillis);

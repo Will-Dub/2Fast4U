@@ -44,6 +44,7 @@ private:
     int m_currentFps = 0;
     QElapsedTimer m_timer;
     QElapsedTimer m_fpsTimer;
+    QTimer m_loopTimer;
     QLinearGradient m_sunset;
 };
 

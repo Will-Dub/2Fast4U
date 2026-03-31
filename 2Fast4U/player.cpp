@@ -43,8 +43,8 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     if(m_potSteering > 1.0f) m_potSteering = 1.0f;
     if(m_potSteering < -1.0f) m_potSteering = -1.0f;
 
-    float m_potAccelBrake = m_potAccel < 0.0f ? -1*m_potAccel : 0;
-    float m_potAccelAccel = m_potAccel > 0.0f ? m_potAccel : 0;
+    float potAccelBrake = m_potAccel < 0.0f ? -1*m_potAccel : 0;
+    float potAccelAccel = m_potAccel > 0.0f ? m_potAccel : 0;
 
     // Met à jour le shifter
     if(input.clutch >= 0.95){
@@ -72,7 +72,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
 
     m_powertrain.setStarted(input.isStarted);
-    m_powertrain.everyRefresh(m_potAccelAccel*100, m_potAccelBrake*100, currentSlopeAngle);
+    m_powertrain.everyRefresh(potAccelAccel*100, potAccelBrake*100, currentSlopeAngle);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 
@@ -122,7 +122,7 @@ void Player::restart()
     m_powertrain.reset();
     m_positionX=0;
     m_positionZ=0;
-    m_positionZ=MIN_PLAYER_Y;
+    m_positionY=MIN_PLAYER_Y;
     m_shifter.resetPosition();
     m_powertrainAudioController.start();
 }
@@ -154,11 +154,6 @@ void Player::allumer()
 void Player::eteindre()
 {
     m_powertrain.setStarted(false);
-}
-
-void Player::crash()
-{
-    m_powertrain.setSpeed(false);
 }
 
 float Player::getHitboxHalfWidth() const
