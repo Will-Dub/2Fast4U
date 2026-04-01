@@ -99,7 +99,7 @@ void Powertrain::setSpeed(float speed)
 
 void Powertrain::setStarted(bool started)
 {
-    if (started == false && m_started == true)
+    /*if (started == false && m_started == true)
     {
         setSpeed(0);
         setRevs(0);
@@ -115,8 +115,13 @@ void Powertrain::setStarted(bool started)
         setRevs(idleRevs);
         setGear(defaultGear);
         setThrottle(gasPedalDeadZone);
+    }*/
+    if (!m_isMotorExploded) {
+        m_started = started;
     }
-    m_started = started;
+    else {
+		m_started = false;
+    }
 }
 
 void Powertrain::explodeMotor(){
@@ -284,6 +289,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
             if (getRedLineTickCounter() > redLineTickLimit)
             {
                 qInfo() << "KABOOM! (moteur explose)";
+                explodeMotor();
                 setStarted(false);
                 return;
             }

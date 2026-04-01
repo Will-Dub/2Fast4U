@@ -72,7 +72,7 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
 
     m_powertrain.setStarted(input.isStarted);
-    m_powertrain.everyRefresh(potAccelAccel*100, potAccelBrake*100, currentSlopeAngle);
+    m_powertrain.everyRefresh(inputAcceleration, input.brake*100, currentSlopeAngle);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 

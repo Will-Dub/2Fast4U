@@ -16,7 +16,7 @@
 #include "serialcontroller.h"
 #include "racemanager.h"
 
-constexpr static int FRAME_RATE = 180;
+constexpr static int FRAME_RATE = 50;
 
 class GameWidget: public QWidget
 {

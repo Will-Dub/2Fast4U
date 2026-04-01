@@ -46,7 +46,7 @@ public:
     ~SerialController() override;
 
     InputState getState();
-    void sendInformation(float dt, int vitesse, int rpm, bool isStarted=true);
+    void sendInformation(float dt, int vitesse, int rpm, bool isStarted=true, bool force=false);
 
 private slots:
     void handleReadyRead();

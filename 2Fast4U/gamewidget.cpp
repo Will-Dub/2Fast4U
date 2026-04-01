@@ -130,7 +130,8 @@ void GameWidget::gameLoop(){
         QTimer::singleShot(5000, [=]() {
             this->restartGame();
         });
-        m_serialController.sendInformation(dt, 0, 0, false);
+        m_serialController.sendInformation(dt, 0, 0, false, true);
+        return;
     }
 
     // --- Bouge les obstacles du terrain ---

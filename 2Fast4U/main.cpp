@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     GameWidget *game = new GameWidget(&w);
     w.setCentralWidget(game);
-    w.resize(1024,768);
+    w.resize(1920,1080);
 
     w.show();
     return a.exec();

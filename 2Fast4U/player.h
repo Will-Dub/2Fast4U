@@ -10,7 +10,7 @@
 #include "virtualshifter.h"
 #include "racemanager.h"
 
-#define STEERING_INPUT m_potSteering
+#define STEERING_INPUT input.steering
 #define ACCEL_INPUT m_potSteeringFromInput
 //#define STEERING_INPUT m_potSteering
 //#define ACCEL_INPUT m_potAccel

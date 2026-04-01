@@ -74,14 +74,14 @@ InputState SerialController::getState()
     return state;
 }
 
-void SerialController::sendInformation(float dt, int vitesse, int rpm, bool isStarted)
+void SerialController::sendInformation(float dt, int vitesse, int rpm, bool isStarted, bool force)
 {
 
     if (!m_timer.isValid()) {
         m_timer.start();
     }
 
-    if (!m_timer.hasExpired(SERIAL_INTERVAL_MS)) {
+    if (!m_timer.hasExpired(SERIAL_INTERVAL_MS) && !force) {
         return;
     }
 
@@ -94,7 +94,8 @@ void SerialController::sendInformation(float dt, int vitesse, int rpm, bool isSt
     QJsonObject json;
     json["v"] = vitesse;
     json["r"] = rpm;
-    json["e"] = isStarted;
+    json["s"] = isStarted;
+    qInfo() << json;
 
     // Fais le payload(sans espace et new line)
     QJsonDocument doc(json);
@@ -192,8 +193,8 @@ void SerialController::parsePacket(const QByteArray& packet) {
         }
         break;
     case PacketType::STATUS:
-        if (jsonObj.contains("e")) {
-            m_isStarted = jsonObj["e"].toBool();
+        if (jsonObj.contains("s")) {
+            m_isStarted = jsonObj["s"].toBool();
         }
         break;
     default:
