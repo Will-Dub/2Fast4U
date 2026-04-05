@@ -7,6 +7,7 @@
         <file>roche.png</file>
         <file>habitacle.png</file>
         <file>habitacleCrashed.png</file>
+        <file>background.png</file>
     </qresource>
     <qresource prefix="/audio">
         <file>audio/BAC_Mono_offhigh.wav</file>
