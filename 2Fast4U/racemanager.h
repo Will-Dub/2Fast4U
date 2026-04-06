@@ -27,6 +27,7 @@ class RaceManager : public QObject
 {
     Q_OBJECT
     RaceState m_state = RaceState::PAUSED;
+    QString m_nom = "";
     double m_finishLineZ = 515.0;
 
     double m_elapsedTime = 0.0;
@@ -40,13 +41,15 @@ public:
     double getElapsedTime() const { return m_elapsedTime; }
     double getFinalTime() const { return m_finalTime; }
 
+    void setNom(const QString& nom);
+
     void restartRace();
     void resumeRace();
     void pauseRace();
-    QList<Score> getTopThree();
+    static QList<Score> getTopThree();
 
 private:
-    void saveResult(QString nom);
+    void saveResult();
 };
 
 #endif // RACEMANAGER_H

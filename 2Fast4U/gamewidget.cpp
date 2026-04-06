@@ -20,6 +20,11 @@ GameWidget::GameWidget(QWidget *parent): m_serialController(), QWidget(parent) {
     m_sunset.setColorAt(1.0, QColor(255, 170, 0));
 }
 
+void GameWidget::setNom(const QString& nom)
+{
+    m_raceManager.setNom(nom);
+}
+
 void GameWidget::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Left)  m_player.keyLeft = true;
     if (event->key() == Qt::Key_Right) m_player.keyRight = true;

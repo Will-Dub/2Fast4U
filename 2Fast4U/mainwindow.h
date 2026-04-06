@@ -34,7 +34,7 @@ private slots:
     void showMenuScreen();
     void showOptionsScreen();
     void showStartScreen();
-    void startGame();
+    void startGame(const QString& nom);
     void pauseGame();
     void quitter();
     void resumeGame();

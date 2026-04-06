@@ -17,39 +17,33 @@ void RaceManager::update(float positionZ, bool isCrashed, bool isMotorExploded, 
 {
     if(m_state != RaceState::RACING) return;
 
-    switch (m_state) {
+    if (isCrashed) {
+        m_state = RaceState::CRASHED;
+        return;
+    }
 
-    case RaceState::RACING:
-        if (isCrashed) {
-            m_state = RaceState::CRASHED;
-            return;
-        }
+    if (isMotorExploded) {
+        m_state = RaceState::MOTOR_EXPLODED;
+        return;
+    }
 
-        if(isMotorExploded){
-            m_state = RaceState::MOTOR_EXPLODED;
-            return;
-        }
+    m_elapsedTime += deltaTime;
 
-        m_elapsedTime += deltaTime;
-
-        if (positionZ >= m_finishLineZ) {
-            m_state = RaceState::FINISHED;
-            m_finalTime = m_elapsedTime;
-            saveResult("William");
-        }
-        break;
-
-    case RaceState::PAUSED:
-    case RaceState::CRASHED:
-    case RaceState::MOTOR_EXPLODED:
-    case RaceState::FINISHED:
-        break;
+    if (positionZ >= m_finishLineZ) {
+        m_state = RaceState::FINISHED;
+        m_finalTime = m_elapsedTime;
+        saveResult();
     }
 }
 
 RaceState RaceManager::getState() const
 {
     return m_state;
+}
+
+void RaceManager::setNom(const QString& nom)
+{
+    m_nom = nom;
 }
 
 void RaceManager::restartRace()
@@ -64,7 +58,7 @@ void RaceManager::resumeRace()
     m_state = RaceState::RACING;
 }
 
-void RaceManager::saveResult(QString nom) {
+void RaceManager::saveResult() {
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
     QDir().mkpath(path);
     QFile file(path + "/results.csv");
@@ -74,7 +68,7 @@ void RaceManager::saveResult(QString nom) {
 
         QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
 
-        out << nom << ","
+        out << m_nom << ","
             << QString::number(m_elapsedTime, 'f', 3) << ","
             << currentTime << "\n";
 

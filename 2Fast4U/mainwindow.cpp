@@ -55,12 +55,14 @@ void MainWindow::showStartScreen()
 {
     m_stack->setCurrentIndex(2);
     m_startWidget->setFocus();
+    m_startWidget->resetInput();
 }
 
-void MainWindow::startGame()
+void MainWindow::startGame(const QString& nom)
 {
     m_stack->setCurrentIndex(1);
     m_gameWidget->setFocus();
+    m_gameWidget->setNom(nom);
     m_gameWidget->restartGame();
 }
 
