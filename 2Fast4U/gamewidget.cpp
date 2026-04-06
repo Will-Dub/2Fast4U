@@ -1,6 +1,6 @@
 #include "gamewidget.h"
 
-GameWidget::GameWidget(QWidget *parent): m_serialController() {
+GameWidget::GameWidget(QWidget *parent): m_serialController(), QWidget(parent) {
     m_loopTimer.setTimerType(Qt::PreciseTimer);
 
     connect(&m_loopTimer, &QTimer::timeout, this, &GameWidget::gameLoop);

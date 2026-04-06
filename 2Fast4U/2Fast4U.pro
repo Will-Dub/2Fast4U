@@ -38,7 +38,9 @@ HEADERS += \
     powertrainaudiocontroller.h \
     racemanager.h \
     spritemanager.h \
-    menuwidget.h
+    menuwidget.h \
+    optionswidget.h \
+    startwidget.h
 
 # Project Sources (Game code ONLY. SoLoud is handled by the static library.)
 SOURCES += \
@@ -54,7 +56,9 @@ SOURCES += \
     powertrainaudiocontroller.cpp \
     racemanager.cpp \
     spritemanager.cpp \
-    menuwidget.cpp
+    menuwidget.cpp \
+    optionswidget.cpp \
+    startwidget.cpp
 
 # UI and Resources
 FORMS += mainwindow.ui

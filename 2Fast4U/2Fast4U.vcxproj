@@ -220,12 +220,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="menuwidget.cpp" />
+    <ClCompile Include="optionswidget.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="powertrain.cpp" />
     <ClCompile Include="powertrainaudiocontroller.cpp" />
     <ClCompile Include="racemanager.cpp" />
     <ClCompile Include="serialcontroller.cpp" />
     <ClCompile Include="spritemanager.cpp" />
+    <ClCompile Include="startwidget.cpp" />
     <ClCompile Include="terrain.cpp" />
     <ClCompile Include="virtualshifter.cpp" />
   </ItemGroup>
@@ -236,12 +238,14 @@
     <QtMoc Include="mainwindow.h" />
     <QtMoc Include="menuwidget.h" />
     <ClInclude Include="obstacle.h" />
+    <QtMoc Include="optionswidget.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="powertrain.h" />
     <ClInclude Include="powertrainaudiocontroller.h" />
     <QtMoc Include="racemanager.h" />
     <QtMoc Include="serialcontroller.h" />
     <ClInclude Include="spritemanager.h" />
+    <QtMoc Include="startwidget.h" />
     <ClInclude Include="terrain.h" />
     <ClInclude Include="virtualshifter.h" />
   </ItemGroup>
@@ -259,6 +263,7 @@
     <None Include="audio\BAC_Mono_onmid.wav" />
     <None Include="audio\REV.wav" />
     <None Include="arbre.png" />
+    <None Include="background.png" />
     <None Include="buche.png" />
     <None Include="audio\explosion_base.wav" />
     <None Include="audio\explosion_cable_break.wav" />

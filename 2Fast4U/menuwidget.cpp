@@ -1,6 +1,6 @@
 #include "menuwidget.h"
 
-MenuWidget::MenuWidget(QWidget* parent)
+MenuWidget::MenuWidget(QWidget* parent) : QWidget(parent)
 {
     // Fond d'écran
     this->setAttribute(Qt::WA_StyledBackground, true);
@@ -59,6 +59,6 @@ MenuWidget::MenuWidget(QWidget* parent)
 
     // Connection signal et slots
     connect(boutonCommencer, &QPushButton::clicked, this, &MenuWidget::commencerPressed);
-    connect(boutonCommencer, &QPushButton::clicked, this, &MenuWidget::optionPressed);
-    connect(boutonCommencer, &QPushButton::clicked, this, &MenuWidget::quitterPressed);
+    connect(boutonOption, &QPushButton::clicked, this, &MenuWidget::optionPressed);
+    connect(boutonQuitter, &QPushButton::clicked, this, &MenuWidget::quitterPressed);
 }
