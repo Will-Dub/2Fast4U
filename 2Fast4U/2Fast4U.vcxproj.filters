@@ -65,6 +65,9 @@
     <ClCompile Include="optionswidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pausewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,6 +115,12 @@
     <ClInclude Include="obstacle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <QtMoc Include="optionswidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="pausewidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <ClInclude Include="player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -130,18 +139,15 @@
     <ClInclude Include="spritemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <QtMoc Include="startwidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <ClInclude Include="terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="virtualshifter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <QtMoc Include="optionswidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="startwidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

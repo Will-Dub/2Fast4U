@@ -11,9 +11,6 @@ GameWidget::GameWidget(QWidget *parent): m_serialController(), QWidget(parent) {
     // Génère la map
     m_terrain.generateTerrain();
 
-    // Start le timer TODO a changer
-    m_raceManager.startRace();
-
     setFocusPolicy(Qt::StrongFocus);
 
     // Crée le background
@@ -36,6 +33,7 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_5) m_player.key5 = true;
     if (event->key() == Qt::Key_6) m_player.key6 = true;
     if (event->key() == Qt::Key_N) m_player.keyN = true;
+    if (event->key() == Qt::Key_Escape) m_isEscapePressed = true;
 }
 
 void GameWidget::keyReleaseEvent(QKeyEvent *event) {
@@ -51,10 +49,29 @@ void GameWidget::keyReleaseEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_5) m_player.key5 = false;
     if (event->key() == Qt::Key_6) m_player.key6 = false;
     if (event->key() == Qt::Key_N) m_player.keyN = false;
+    if (event->key() == Qt::Key_Escape) m_isEscapePressed = false;
+}
+
+void GameWidget::resumeGame()
+{
+    m_raceManager.resumeRace();
+    m_player.resume();
+}
+
+void GameWidget::pauseGame()
+{
+    m_raceManager.pauseRace();
+    m_player.pause();
 }
 
 void GameWidget::gameLoop(){
     if(m_raceManager.getState() != RaceState::RACING) return;
+
+    if (m_isEscapePressed) {
+        m_isEscapePressed = false;
+        emit pausePressed();
+        return;
+    }
 
     float dt = m_timer.restart() / 1000.0f;
 
@@ -126,7 +143,7 @@ void GameWidget::gameLoop(){
 
     // Vérifie si le joueur a perdu ou gagné
     if(m_raceManager.getState() != RaceState::RACING){
-        m_player.stop();
+        m_player.crash();
         QTimer::singleShot(5000, [=]() {
             this->restartGame();
         });
@@ -146,8 +163,7 @@ void GameWidget::gameLoop(){
 
 void GameWidget::restartGame()
 {
-    m_player.stop();
-    m_raceManager.startRace();
+    m_raceManager.restartRace();
     m_player.restart();
 }
 
@@ -224,7 +240,10 @@ void GameWidget::paintEvent(QPaintEvent *event){
     painter.restore();
 
     // --- Affiche les fps ---
-    painter.drawText(10, 20, QString("FPS: %1").arg(m_currentFps));
+    painter.save();
+    painter.setPen(Qt::red);
+    painter.drawText(10, 20, QString("FPS: %1, %2").arg(m_currentFps).arg(m_player.getIsMotorStarted() ? "Allumé" : "Éteint"));
+    painter.restore();
 
     // --- Affiche le temps ---
     painter.save();

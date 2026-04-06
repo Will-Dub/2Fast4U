@@ -30,9 +30,16 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
+public slots:
+    void restartGame();
+    void resumeGame();
+    void pauseGame();
+
 private slots:
     void gameLoop();
-    void restartGame();
+
+signals:
+    void pausePressed();
 
 private:
     Player m_player;
@@ -46,6 +53,7 @@ private:
     QElapsedTimer m_fpsTimer;
     QTimer m_loopTimer;
     QLinearGradient m_sunset;
+    bool m_isEscapePressed = false;
 };
 
 #endif // GAMEWIDGET_H

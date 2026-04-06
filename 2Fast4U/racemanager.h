@@ -10,7 +10,7 @@
 #include <algorithm>
 
 enum class RaceState{
-    WAITING,
+    PAUSED,
     RACING,
     CRASHED,
     MOTOR_EXPLODED,
@@ -26,7 +26,7 @@ struct Score {
 class RaceManager : public QObject
 {
     Q_OBJECT
-    RaceState m_state = RaceState::WAITING;
+    RaceState m_state = RaceState::PAUSED;
     double m_finishLineZ = 515.0;
 
     double m_elapsedTime = 0.0;
@@ -40,7 +40,9 @@ public:
     double getElapsedTime() const { return m_elapsedTime; }
     double getFinalTime() const { return m_finalTime; }
 
-    void startRace();
+    void restartRace();
+    void resumeRace();
+    void pauseRace();
     QList<Score> getTopThree();
 
 private:

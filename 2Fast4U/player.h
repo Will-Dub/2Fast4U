@@ -44,12 +44,15 @@ public:
     float getPositionY() { return m_positionY; }
     float getPositionZ() { return m_positionZ; }
     float getAngle() { return m_angle; }
+    bool getIsMotorStarted() { return m_powertrain.getStarted(); }
     bool getIsMotorExploded() { return m_powertrain.getIsMotorExploded(); }
     int getSpeed();
     int getRevs();
 
     void tick(float dt, float currentCurve, float currentSlopeAngle, float terrainFriction, const InputState& input);
-    void stop();
+    void crash();
+    void pause();
+    void resume();
     void restart();
     void renderHabitacle(QPainter *painter, RaceState raceState, int screenWidth, int screenHeight);
     void allumer();

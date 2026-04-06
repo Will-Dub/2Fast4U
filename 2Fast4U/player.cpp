@@ -108,12 +108,22 @@ int Player::getRevs()
     return m_powertrain.getRevs();
 }
 
-void Player::stop()
+void Player::crash()
 {
     m_powertrain.setSpeed(0);
     m_powertrain.setAcceleration(0);
     m_powertrainAudioController.stop();
     m_powertrainAudioController.handleCatastrophicFailure();
+}
+
+void Player::pause()
+{
+    m_powertrainAudioController.stop();
+}
+
+void Player::resume()
+{
+    m_powertrainAudioController.start();
 }
 
 void Player::restart()

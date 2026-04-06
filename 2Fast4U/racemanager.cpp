@@ -18,8 +18,6 @@ void RaceManager::update(float positionZ, bool isCrashed, bool isMotorExploded, 
     if(m_state != RaceState::RACING) return;
 
     switch (m_state) {
-    case RaceState::WAITING:
-        break;
 
     case RaceState::RACING:
         if (isCrashed) {
@@ -41,6 +39,7 @@ void RaceManager::update(float positionZ, bool isCrashed, bool isMotorExploded, 
         }
         break;
 
+    case RaceState::PAUSED:
     case RaceState::CRASHED:
     case RaceState::MOTOR_EXPLODED:
     case RaceState::FINISHED:
@@ -53,10 +52,15 @@ RaceState RaceManager::getState() const
     return m_state;
 }
 
-void RaceManager::startRace()
+void RaceManager::restartRace()
 {
     m_elapsedTime = 0;
     m_finalTime = 0;
+    m_state = RaceState::RACING;
+}
+
+void RaceManager::resumeRace()
+{
     m_state = RaceState::RACING;
 }
 
@@ -76,6 +80,11 @@ void RaceManager::saveResult(QString nom) {
 
         file.close();
     }
+}
+
+void RaceManager::pauseRace()
+{
+    m_state = RaceState::PAUSED;
 }
 
 QList<Score> RaceManager::getTopThree() {
