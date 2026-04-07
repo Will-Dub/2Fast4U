@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 class OptionsWidget : public QWidget
 {

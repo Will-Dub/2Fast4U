@@ -55,6 +55,16 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(1);
 
     // Connection signal et slots
-    connect(boutonRetour, &QPushButton::clicked, this, &OptionsWidget::retourPressed);
-    connect(boutonSauvegarder, &QPushButton::clicked, this, &OptionsWidget::sauvegarderPressed);
+    connect(boutonRetour, &QPushButton::clicked, this, [=]() {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Confirme", "Voulez-vous quitter sans sauvegarder?",
+            QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            emit retourPressed();
+        }
+    });
+    connect(boutonSauvegarder, &QPushButton::clicked, this, [=]() {
+        emit sauvegarderPressed();
+    });
 }
