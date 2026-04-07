@@ -144,7 +144,23 @@ void GameWidget::gameLoop(){
     if(m_raceManager.getState() != RaceState::RACING){
         m_player.crash();
         QTimer::singleShot(2000, [=]() {
-			emit endGame(EndType::Crash, m_raceManager.getNom(), m_raceManager.getFinalTime());
+            EndType endType;
+
+            switch (m_raceManager.getState()) {
+            case RaceState::CRASHED:
+                endType = EndType::Crash;
+				break;
+            case RaceState::MOTOR_EXPLODED:
+				endType = EndType::MotorExploded;
+                break;
+			case RaceState::FINISHED:
+                endType = EndType::Win;
+                break;
+            default:
+				endType = EndType::Crash;
+            }
+
+			emit endGame(endType, m_raceManager.getNom(), m_raceManager.getFinalTime());
         });
         m_serialController.sendInformation(dt, 0, 0, false, true);
         update();
