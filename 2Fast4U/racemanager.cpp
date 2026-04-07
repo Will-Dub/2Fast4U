@@ -22,6 +22,11 @@ void RaceManager::update(float positionZ, bool isCrashed, bool isMotorExploded, 
 
     m_elapsedTime += deltaTime;
 
+    if (m_elapsedTime > 7) {
+		m_state = RaceState::CRASHED;
+        return;
+    }
+
     if (positionZ >= m_finishLineZ) {
         m_state = RaceState::FINISHED;
         m_finalTime = m_elapsedTime;

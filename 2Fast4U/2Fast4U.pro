@@ -41,7 +41,8 @@ HEADERS += \
     menuwidget.h \
     optionswidget.h \
     startwidget.h \
-    pausewidget.h
+    pausewidget.h \
+    endwidget.h 
 
 # Project Sources (Game code ONLY. SoLoud is handled by the static library.)
 SOURCES += \
@@ -60,7 +61,8 @@ SOURCES += \
     menuwidget.cpp \
     optionswidget.cpp \
     startwidget.cpp \
-    pausewidget.cpp
+    pausewidget.cpp \
+    endwidget.cpp
 
 # UI and Resources
 FORMS += mainwindow.ui

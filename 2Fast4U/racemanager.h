@@ -40,6 +40,7 @@ public:
     RaceState getState() const;
     double getElapsedTime() const { return m_elapsedTime; }
     double getFinalTime() const { return m_finalTime; }
+	QString getNom() const { return m_nom; }
 
     void setNom(const QString& nom);
 

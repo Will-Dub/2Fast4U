@@ -143,10 +143,11 @@ void GameWidget::gameLoop(){
     // Vérifie si le joueur a perdu ou gagné
     if(m_raceManager.getState() != RaceState::RACING){
         m_player.crash();
-        QTimer::singleShot(5000, [=]() {
-            this->restartGame();
+        QTimer::singleShot(2000, [=]() {
+			emit endGame(EndType::Crash, m_raceManager.getNom(), m_raceManager.getFinalTime());
         });
         m_serialController.sendInformation(dt, 0, 0, false, true);
+        update();
         return;
     }
 

@@ -8,12 +8,7 @@
 #include "optionswidget.h"
 #include "startwidget.h"
 #include "pausewidget.h"
-
-enum class EndType {
-    Crash,
-    MotorExploded,
-    Win
-};
+#include "endwidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +24,7 @@ private:
     OptionsWidget* m_optionsWidget;
     StartWidget* m_startWidget;
     PauseWidget* m_pauseWidget;
+	EndWidget* m_endWidget;
 
 private slots:
     void showMenuScreen();
@@ -38,6 +34,6 @@ private slots:
     void pauseGame();
     void quitter();
     void resumeGame();
-    void handleEnd(EndType type);
+    void showEndWidget(EndType type, const QString& nom, double temps);
 };
 #endif // MAINWINDOW_H

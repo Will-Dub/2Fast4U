@@ -1,12 +1,12 @@
 <FlowDocument xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Segoe UI" FontSize="12">
   <FlowDocument.Tag><![CDATA[{
-  "timestamp": "2026-04-05 22:18:10",
+  "timestamp": "2026-04-07 10:36:49",
   "files": {
-    "C:\\Users\\willi\\Documents\\Github\\2Fast4U\\soloud\\soloud.vcxproj": {
-      "before": "7Rppb9s2dJ8H7D8YRjYkH3zE9pK0tjX4SmbMcdLYaYrBgEBLtMNVEjWScpKt+6H7N3sURR0+0tpui25rgFg2+Q7yXXzvUX8ffPNN46dH18ktMOOEes38cbGcz2HPojbx5s18IGaFs/xPxnffNq4Z/Q1bItfFMxQ4YozYHAvezLcD4tj5HFDx4Ne9EP7LUolb99hFvOgSi1FOZ6JoUbdk4wV2qI9ZyeVTiVaqlMvVPFDP5Rp9gd0LRgM/N0BT7DTzEcMO9WZkHjAkYIFcAQP4utlc37OcwMbN/A12MOL43eNJTWMAToaUEcE0StlhuRj517h2kJhR5hpApFGKf6l5GFDyWIf8nsV18TSYP7u0EOKjL6xRimWsRA5bAGWIp4zYLxw6Rc6KoC8CYht/nvdqpy/a1dPCcaX3olCtnLULL9rdSqF6Wj7r9FqdSrXX+yuWTYgTyeuGUjFELuY+srDBqUMDu1HKjkagv+CnB8ps45WovR4twCIbJT0UQdwRz6YPXNmg1sxrZcPGcblYLlYqJ5UQ81nQ58hdEm8LiiloSTQUQSLbyMJdnzKRiwynmT84fN2J3OgaifujyWXsLR3fL0aOVvRBSzyfK63TGVifTaRjNPM/IJ/y+sFhxiCP3h0cavkcKYhmUz1TLqIG8trxMhS0+8TuMKbU4VgYi+NaNXELPRpJ9CoQfiC6hEHEoOzJYMofJ43S8kyE0BoPQITEJX9g3rkJvDFx8YBMGWJPtxzNsTEDm8SN0nvhInqde8SQJTAbwVKHVMAD/Ck9qAHT4WX85GNjJCDUWBHzJScMASLMvgfkXWwTJPC6na6fj5CvGXFhb0oasTtkRyXoWkPK+u0eNhBHok9vAbYMev8D/et9fjrt97cLI9nwoZAzAb/3KLAnT3/wEQGnfhJr0sB7WNnmSKMNeXSPIZeIQ83qDm85ZvKsAD9bDpOpAFcMAEzHy9SC8SPhgh8qIz843JqYQjyKY3ApJZh0aFdiTTHWHGEoyWGeicmb/PE/Iye9kYwBSn1cIpkoxhLOwIUihlAIwRL0n9tDvquWmD2ZgLxmBv77KZkp8pqZygJkevSRd6fzrISBZtmfe5RhZcjRWfeReQsWwIG9ho9ewv76XPYXQ0dfRVoz2l+XGxl9Cj2uMPtsWlzh/LwO1yYnssaA1BWSOZmX7h0S17isztycDnV94uBIzRAhWrbKhpETVYLgwmEGSjA3inWiysP6+csJBJg5Q66LJ6/Gk5Mi1AyVicsXVqVcqZgntYn7lvvY4pMH4lUrBTlT//7wOfJHkJs+x10tOrPGKz8saY3Cr9ZLtkBOgDuIi5z8STyHeDj8ygUjlhjBJxzN4Yi4ZxTWNR/ih1wBigyXcE4WuBBOmqblOwGX/+FvDKc78yBmcoEffZYrhCV9rvBQrR2Xy+p59gKetVrtx5PoeRo9z3LpTUfrzexU7yHZHufYnTqYDeDMhUUOqBVW7qlA29oEEhNpwwY57nuy/FbYUfq/OhHjhLabQjkPcSH39yAKbZhMkAlHsOgR6JzMiHWHmCfFbdR+PD2t12onp6D97noYEMeGmcQue48WDpX9M/Js0OzcGD15VqO0Oh6vaIC8eQCFD1Qjno2gGubCtnz/+LRRWpmKka6mskVzDj4hz5KUyJcmEgRYFdRcSsaX6BEEgKEsl1qNh2Pga4Z9Ri3MOWWJh3PDvOsPu1d3o/rtsN+56vbqpv4CE9VK3ewNW+1Bz+y9GfeG3V7XbA36F0N4jsZXN62LXh3ATmrwOf7ZvOwP+63bbv+qPryC75etN3VAad9egAI28AcFbJhJFJAAjKkUjy4nV8ZTmw0DRBcJ1IZOUizTMObJ0LEyE6NC+Qri0+WrcQndMjK+ZxjZ2O4OBtD1yALEiKPA9xmIF3TOROC3kedhZqgYvH4uRh0DeXEnC1xTtLjsyYm+F1arCn3zfEwC0rDzwHFkK4Jr+WTGYsjIPQaynWeEn9AJyAwqUCiel2J0A1KNRCuq+g31cXCojuyjiTrsig6Z6mZBCBAzXy+I9wsJ/Cbm3bgktpOsI+q0SOmFIruFcmjuSUdYnolX0fNkvOgxRlnnHltveRRoVsdjlIyAoKeV+a0FllpY4wZzGjALrxxzidX+uxwRLH/NllRbMgkoYcoQKifsCS9N7JOkrqQ3kdSXrTRzSn/NJL60TMKOWkmfNY+IEkYZ9adwHvxfUwot+w9KKKK86EtLKD5zJrF02mfTAWnKX3OCrzmBzKT+jTmBuW9yvlNOkKQIcFTHp3dy/cuZNUGBTeDqWSZQkwe0mNjMJK7vFKGI0m3GzcgW9MZ0JrotgpnivDU3cxrw7ZHkcs2qvSMinGfEgjvGHdFnUNfIK8pd0aFU2Qcf3kIA/F25w03mHtgLSiw8ly8t7Lj5kMBOsgulvj3XmXwVY0sPMAHJdIJdEKHU3oFdaBEfhjdF1lvs2RMX+o2h30Vea8YDH0Yn5fCAyq3tsX4PcLDDZqGZB42BD2OXCixhSFOlsgnRbV98aDJi5O5IRUzNBWVTAj6oI+vKqyarV3rPvvsADRD5dlFMLnXhpt9SiK8t1d1GBBu2Z2QTzPgH",
-      "after": "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"
+    "C:\\Users\\willi\\Documents\\2Fast4U\\soloud\\soloud.vcxproj": {
+      "before": "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",
+      "after": "7Rprb+O48T4X6H9QjS2SAI3tJM5j17YOju1kjdrOw87mUAQQaIlx2NPrSMpJ2uun/vEOH6IkP7Kxs7u4YjdALJucGZLznqH+u/3TT42fnwLfmmHKSBQ2S3vlasnCoRt5JJw2Swm/3z0p/Wz/+U+NSxr9E7vc6uB7lPh8jOgUc9YsnSbE90oWUAnh1wPn8YdKhbkPOECsHBCXRiy652U3CioenmE/ijGtBGwi0Cr71epBCahbVqPHcXBOoyS2+miC/WZJL9iOwnsyTSjisEGmgAF82azVC10/8XCzdI19jBj+/emolmIAToGUrWEaleKw2Iz4a1z6iN9HNLCBSKNifql5GFD8WIb8mc118CSZvrg1CfHFN9aoGB4rlsMRQBj8ucD2cz+aIH+B0ecJ8ex/vz/pnJ4dH+7vHhyewcdB+2z35PB4b/eoetg6aR103x+eVv9jeCNxNL+uo4gPUYBZjFxss8iPEq9RKY5q0L/j58eIevYV/zRyZgdV4H46pCFuSehFj0zpYCqZT0qH7b1quVreP9qrwrNReRH0JXIDEq5BMQetiV7xAZO2YYGKeERob7O09W7bjO9sNZtbW9bFtfWX7hNhnG0XZu9+42WujGxrp2S/2x6MJDmtdx1CwRoj+rxzZyg2KuarErBQ0kzC2s6COKLc0mSapXfbn9ramC8Rf9i5GxibbcdxWZt7OQZKrGRVlmlO8YAFi9j5/d12KiB54JxlbpVSUy+gpAZrDHAcRT7D3J7t1Q4yQ0xHNbsvEh4n3HDFpsoD3DUq8zMaoTXug9BIQP6FWfs6CcckwH0yoYg+3zA0xfY9WAFuVD4Lp+m1HxBFLsd0BFsdRhweYMH5wRQw79DGzzG2Rxycm6sXnzN7CaAxeyGQD7BHEMfLTrp8XiNfUhLA2RQ3jAEWRwWotN55pSno0ZxCF4S3IG/j7L6qtD3hUr8DWafn/HqS7q3nHopuYRHZOKQd8GeOp3IHlnqTnONY4QLnUMATLndBOme4EmbHIXUBV5UjDo71ZS0teCXp4sAQrngvZBz5vn1UhqCy7wRs5u5X9/cdkRBks9rA4KiRl/iY2dIP6++vNKk37j9nZd9m9ypiWCKiN0tGyOD2zqIkhHTwFEPqhHVcaZbaCeNRIONXve23oyAmPi6I6PMxcHWkvOJKoUSc1MIYYCacuKU0EoUubPMjmT6UrDF+4rktf7DcKPE9K4y45UcueFYrC7x/E9+litcteMj8N0DPElgmsIBMRRz2n8tGMSvq1CpQqvULCVb3ieNQZNuZquqomgfeWHvTmJq67NEDhjzdMGbRRG8YpiIPg4gyH/xzsbucANgSu8UmdVmbTmbMYGyL+zJaJTKcdGXNqUqOVYuMXod3Ocv5TjmXKkpBSYUwB0gUb0avC3CpnUE6AXrzBl9byNOAVEoYItyXIqxIpYSVdQrH9YZdp/VLRiwl35uG4PiUeuqM7g3rcJpACrqEZrrcBvzPabyd5hOKTEp0A94vI/pF+J4n/PW4nl/lZZ4vTY9FXQ2FEpQTosxThrSOE1qafpg4qcUCTrLlqUIS+brTASYiq0ACWcc5DjF0SbB3BrGV3c2lPELhd+pFmHq5TlTHpP7X7Zdo70AZ9NLSKugWNngRy36NvfsP9wOdIT/BbcS4JX6S0Cchll8Zp8TlI/iElE2O8AcaPcKvIX60dqEMCQhjZIZ35aTjuLGfMPEvf0MoxzQETjOOn2Jq7cp+lbX7eFCD8l89T97Ds1arHR7p57F+nlj5Q+v9Fk6aniE7HmM4mPiY9qFeh032RcIAEs9Vm61VIIbIKRyQ4V4oeksKW1eaixMGR+pnDuVM4kKZGYJ7WDGZIROGYNOjGLvknri3iIaC3Xbt8Pi4XqsdHYP0O8thgB0rZjKl7D65WAr7Iwo9kOzUHj2HbqOyOG521EfhNIH0DArf0EPQ6mHcc+N477hRWZgySBcTkX8J5Ra6nGP53ESGALuC8l7xeICegAEYek5CqmbYAF9SDBmeC2ljRDNTZrZz2xt2Lm5H9Zthr33R6dad9AtMHOzXne6wddrvOt1fxt1hp9txWv3e+RCeo/HFdeu8Wwewoxp8jj86g96w17rp9C7qwwv4Pmj9UgeU05tzEMCK9UEAK2YyAWQA40iwJ+1cLIznDhtNKQo6iKNTaJMankrntnTGoEKnBNiXdkrsAbSCyfiBYuRhr9PvQ0uvCGAQR0kcU2AvyJzyJD5FIbgrWznb5XMGdQzk+a3opTi8JZtqUJnJxohCXz1vSEA+c5b4vuhwsZQ/hTEDqc2jL3rVtvyEplNh0IDKw0NapLRGVTVK29S+Vs8rEtDqSWuhNPRCypAJVvVqpEjfbasQvXOngmDZJ5O0tSUBzKaW8/LzfAbTM2s3BsTzs33oHqAQgOT6DZQv01DY0vyM2UU3FC6nS2lE2w/Y/ZVpX7U4blAKPBadW+WnlCBShuU21rjGLEqoi3U5me03U/z/L1sG41lyJNW2z3ySTC/kYeWdydzEWslmPu3RHJ7XyEJQ/5F1iPzlD5N1eLrr+U1zDvB3aYSYQOz4XtOPlPevSj50DvVHSz6+cdYxlxkUUwehyj/yBwJ3zqKe+JE/fIf5g/PWWmCj/CFLJyDUm+ifvUrBqHuHEo/Aaxwi2bp7RLM7jzokiP0y1Gxpe3A1MrTIcZq1rovg5FZeezVnkrD1kcR2nQNvQ0QIicSFm/IN0e+hjBIX7ZuiEx8aIpvjwxs9gL/p6uxN2LOIuHgqXgDa8PCSwEZnl1xff9V78VrTmhbgAJLjJ5sgQmW/wXJSI16HN0Hurzj07gLoY0q701brmIHX0ckZPKAyd32s3xKcbHBY6B1CH+J1y+Uci3Rpqqx2wLu9FR96mhgFG1LhE2cW0QkBG0w968JrW4tXZS++wQP9FvGmniG3iJ67acvuPgu3sytu53MvKKXX8oq6aoHrS21z4aluS/ROZK9JdPTs/wE="
     },
-    "C:\\Users\\willi\\Documents\\Github\\2Fast4U\\soloud\\soloud.vcxproj.user": {
+    "C:\\Users\\willi\\Documents\\2Fast4U\\soloud\\soloud.vcxproj.user": {
       "before": "tZE9a8MwEIbTtdD/IETAyVDL/aCUYiVDCl06JG3obstnW0XWGekUUsgf7r+o7OItYzvee8f7PHDfF7NZvj52hh3AeY1W8ps04wyswkrbRvJA9fUjX6+uLvOtw09QxPaIxn9M95vgHFjiLLZYL3lL1D8J4VULXeHTTiuHHmtKFXaiggMY7MGJzpdBm0rcZtkdj+2MDf1xQ18vDkPPxLnwtSjBSL6jdyCKfp6zDdpK06iezBdxqnUTXDEky9N8sTUF1ei6ZSJl8gxlaE7Hh/vkFxmhO9pjUO3EHqExFufyXExno+I/CL6BgcLDXyqO0sPfVj8=",
       "after": "tZHNSsNAFIXrVvAdhqGQdmEm/iAimXRRwY2LVov7ZHKTjMzkhpk7pUJf1XdxEulGXOrynns454PzeTab5auDNWwPzmvsJb9KM86gV1jrvpU8UHN5z1fFxXm+cfgOitgO0fi3k38dnIOeOIspvZe8IxoehPCqA1v61Grl0GNDqUIratiDwQGcsL4K2tTiOstueExnbMyPH/p4chgGJn4Tn8sKjORbegWiyOc5W2Nfa5rQk/kiXo1ugytHZXmcLzampAadXSZSJo9QhfZ4uLtNvitj6ZZ2GFR36i5y8VOZ2MTJMMH9A9oLGCg9/A1cPuKOWxVf"
     }
@@ -21,7 +21,7 @@
       <Span TextDecorations="Underline">Project Format Conversion</Span>
     </Paragraph>
     <Paragraph Margin="12,8" FontSize="18">
-      <Span>Report generated on 2026-04-05 22:18:10</Span>
+      <Span>Report generated on 2026-04-07 10:36:49</Span>
     </Paragraph>
   </Section>
   <Section>
@@ -29,33 +29,33 @@
       <Span>Files</Span>
     </Paragraph>
     <Paragraph Margin="24,12,0,0">
-      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
       <LineBreak />
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj?before">[Before]</Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj?after">[After]</Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj?diff&amp;before&amp;after">
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj?before">[Before]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj?after">[After]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj?diff&amp;before&amp;after">
                         [Diff before/after]
                     </Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj?diff&amp;before&amp;current">
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj?diff&amp;before&amp;current">
                         [Diff before/current]
                     </Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj?diff&amp;after&amp;current">
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj?diff&amp;after&amp;current">
                         [Diff after/current]
                     </Hyperlink>
       <LineBreak />
     </Paragraph>
     <Paragraph Margin="24,12,0,0">
-      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj.user]]></Span>
+      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj.user]]></Span>
       <LineBreak />
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj.user?before">[Before]</Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj.user?after">[After]</Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj.user?diff&amp;before&amp;after">
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj.user?before">[Before]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj.user?after">[After]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj.user?diff&amp;before&amp;after">
                         [Diff before/after]
                     </Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj.user?diff&amp;before&amp;current">
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj.user?diff&amp;before&amp;current">
                         [Diff before/current]
                     </Hyperlink>
-      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj.user?diff&amp;after&amp;current">
+      <Hyperlink NavigateUri="file://C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj.user?diff&amp;after&amp;current">
                         [Diff after/current]
                     </Hyperlink>
       <LineBreak />
@@ -77,7 +77,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -87,7 +87,7 @@
         <TableRow>
           <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
             <Paragraph FontFamily="Consolas" Margin="4, 0">
-              <Span><![CDATA[      <AdditionalIncludeDirectories>.;include;]]></Span><Span Background="LightCoral"><![CDATA[F:\Programme\QT\6.10.2\msvc2022_64\mkspecs\win32-msvc]]></Span><Span><![CDATA[;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>]]></Span>
+              <Span><![CDATA[      <AdditionalIncludeDirectories>.;include;]]></Span><Span Background="LightCoral"><![CDATA[D:\Programme\Qt\6.10.2\msvc2022_64\mkspecs\win32-msvc]]></Span><Span><![CDATA[;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>]]></Span>
             </Paragraph>
           </TableCell>
           <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
@@ -102,7 +102,7 @@
         <TableRow>
           <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
             <Paragraph FontFamily="Consolas" Margin="4, 0">
-              <Span><![CDATA[      <AdditionalIncludeDirectories>.;include;]]></Span><Span Background="LightCoral"><![CDATA[F:\Programme\QT\6.10.2\msvc2022_64\mkspecs\win32-msvc]]></Span><Span><![CDATA[;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>]]></Span>
+              <Span><![CDATA[      <AdditionalIncludeDirectories>.;include;]]></Span><Span Background="LightCoral"><![CDATA[D:\Programme\Qt\6.10.2\msvc2022_64\mkspecs\win32-msvc]]></Span><Span><![CDATA[;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>]]></Span>
             </Paragraph>
           </TableCell>
           <TableCell BorderThickness="0, 0, 0.5, 0" BorderBrush="Gray">
@@ -125,7 +125,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -173,7 +173,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -217,7 +217,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -250,7 +250,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -281,7 +281,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -312,7 +312,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -353,7 +353,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -404,7 +404,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -448,7 +448,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -479,7 +479,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -564,7 +564,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -612,7 +612,7 @@
         <TableRow Background="Orange">
           <TableCell ColumnSpan="2" BorderThickness="0.5" BorderBrush="Gray">
             <Paragraph Margin="10,5" FontWeight="Bold">
-              <Span><![CDATA[C:\Users\willi\Documents\Github\2Fast4U\soloud\soloud.vcxproj]]></Span>
+              <Span><![CDATA[C:\Users\willi\Documents\2Fast4U\soloud\soloud.vcxproj]]></Span>
             </Paragraph>
           </TableCell>
         </TableRow>
@@ -649,4 +649,4 @@
     <Paragraph />
   </Section>
 </FlowDocument>
-<!--TEu10tqw7kWaDwEyKcg+hfX/m5aDT92YwsX/ByBg0v8=-->
+<!--sKZvrZ9jmYCcXPx8U85d0oI5u56gZPh6vbtNya84XdU=-->

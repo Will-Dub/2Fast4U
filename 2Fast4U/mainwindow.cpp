@@ -10,17 +10,20 @@ MainWindow::MainWindow(QWidget *parent)
     m_startWidget = new StartWidget(this);
     m_optionsWidget = new OptionsWidget(this);
     m_pauseWidget = new PauseWidget(this);
+    m_endWidget = new EndWidget(this);
 
     m_stack->addWidget(m_menuWidget); // Menu = 0
     m_stack->addWidget(m_gameWidget); // Jeu = 1
     m_stack->addWidget(m_startWidget); // Start = 2
     m_stack->addWidget(m_optionsWidget); // Options = 3
     m_stack->addWidget(m_pauseWidget); // Pause = 4
+    m_stack->addWidget(m_endWidget); // End = 5
 
     setCentralWidget(m_stack);
 
     // Game
     connect(m_gameWidget, &GameWidget::pausePressed, this, &MainWindow::pauseGame);
+    connect(m_gameWidget, &GameWidget::endGame, this, &MainWindow::showEndWidget);
 
     // Menu
     connect(m_menuWidget, &MenuWidget::commencerPressed, this, &MainWindow::showStartScreen);
@@ -37,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent)
     // Pause
     connect(m_pauseWidget, &PauseWidget::reprendrePressed, this, &MainWindow::resumeGame);
     connect(m_pauseWidget, &PauseWidget::quitterPressed, this, &MainWindow::showMenuScreen);
+
+    // End
+    connect(m_endWidget, &EndWidget::quitterPressed, this, &MainWindow::showMenuScreen);
+    connect(m_endWidget, &EndWidget::recommencerPressed, this, &MainWindow::startGame);
 }
 
 void MainWindow::showMenuScreen()
@@ -88,6 +95,30 @@ void MainWindow::resumeGame()
     m_gameWidget->resumeGame();
 }
 
-void MainWindow::handleEnd(EndType type)
+void MainWindow::showEndWidget(EndType type, const QString& nom, double temps)
 {
+    QPixmap snapshot = m_gameWidget->grab();
+    m_endWidget->setGameSnapshot(snapshot);
+
+    m_stack->setCurrentIndex(5);
+    m_endWidget->setFocus();
+
+	QString titre, sousTitre;
+    switch (type) {
+    case EndType::Crash:
+        titre = "Vous avez perdu";
+        sousTitre = "";
+        break;
+    case EndType::MotorExploded:
+        titre = "Vous avez perdu";
+        sousTitre = "Le moteur a explose";
+        break;
+    case EndType::Win:
+        titre = "Vous avez gagne!";
+        sousTitre = "01:42.234";
+        break;
+    }
+
+    m_endWidget->setText(titre, sousTitre);
+    m_endWidget->setNom(nom);
 }

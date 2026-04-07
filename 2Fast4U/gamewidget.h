@@ -16,7 +16,13 @@
 #include "serialcontroller.h"
 #include "racemanager.h"
 
-constexpr static int FRAME_RATE = 50;
+constexpr static int FRAME_RATE = 120;
+
+enum class EndType {
+    Crash,
+    MotorExploded,
+    Win
+};
 
 class GameWidget: public QWidget
 {
@@ -40,6 +46,7 @@ private slots:
 
 signals:
     void pausePressed();
+	void endGame(EndType type, QString nom, double temps);
 
 private:
     Player m_player;

@@ -50,6 +50,9 @@
     <ClCompile Include="audiomanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="endwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="gamewidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -148,6 +151,9 @@
     <ClInclude Include="virtualshifter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <QtMoc Include="endwidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
