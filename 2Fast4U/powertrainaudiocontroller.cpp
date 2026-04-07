@@ -42,21 +42,29 @@ void PowertrainAudioController::update() {
     double limiterMin = m_softLimiter * 0.93;
     double limiterGain = std::clamp((currentRevs - limiterMin) / (m_limiter - limiterMin), 0.0, 1.0);
 
+    double stallRpm = 600.0;
+    double masterEngineGain = std::clamp(currentRevs / stallRpm, 0.0, 1.0);
+
     // Apply basic engine loops
     auto applySample = [&](const QString& key, double gain, bool applyPitch = true) {
         if (!m_audioManager.samples.contains(key)) return;
         auto& node = m_audioManager.samples[key];
 
+        double finalVolume = gain * node.baseVolume * masterEngineGain;
+
+        if (finalVolume <= 0.001) {
+            m_audioManager.engine.setVolume(node.handle, 0.0);
+            return;
+        }
+
         if (applyPitch) {
             double cents = (currentRevs - node.rpm) * m_rpmPitchFactor;
             double pitchMultiplier = std::pow(2.0, cents / 1200.0);
             pitchMultiplier = std::clamp(pitchMultiplier, 0.1, 4.0);
-
-            // SoLoud handles continuous speed modulation natively
             m_audioManager.engine.setRelativePlaySpeed(node.handle, pitchMultiplier);
         }
 
-        m_audioManager.engine.setVolume(node.handle, gain * node.baseVolume);
+        m_audioManager.engine.setVolume(node.handle, finalVolume);
     };
 
     applySample("on_low", on * low);

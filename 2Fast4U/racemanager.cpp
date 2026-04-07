@@ -3,14 +3,7 @@
 RaceManager::RaceManager(QObject *parent)
     : QObject{parent}
 {
-    QList<Score> scores = getTopThree();
 
-    for (int i = 0; i < scores.size(); ++i) {
-        qInfo() << QString("%1. %2: %3s")
-            .arg(i + 1)
-            .arg(scores[i].nom)
-            .arg(scores[i].temps, 0, 'f', 2);
-    }
 }
 
 void RaceManager::update(float positionZ, bool isCrashed, bool isMotorExploded, float deltaTime)

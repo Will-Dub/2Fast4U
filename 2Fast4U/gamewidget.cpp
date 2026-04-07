@@ -12,12 +12,6 @@ GameWidget::GameWidget(QWidget *parent): m_serialController(), QWidget(parent) {
     m_terrain.generateTerrain();
 
     setFocusPolicy(Qt::StrongFocus);
-
-    // Crée le background
-    m_sunset = QLinearGradient(0, 0, 0, height());
-    m_sunset.setColorAt(0.0, QColor(20, 20, 110));
-    m_sunset.setColorAt(0.5, QColor(150, 50, 150));
-    m_sunset.setColorAt(1.0, QColor(255, 170, 0));
 }
 
 void GameWidget::setNom(const QString& nom)
@@ -176,9 +170,12 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
     // --- Ciel ---
-    painter.fillRect(rect(), m_sunset);
+    QLinearGradient skyGradient(0, 0, 0, height() / 2.0f);
+    skyGradient.setColorAt(0.0, QColor(20, 80, 180));
+    skyGradient.setColorAt(1.0, QColor(135, 206, 235));
+    painter.fillRect(0, 0, width(), height() / 2.0f, skyGradient);
+
     painter.setPen(Qt::NoPen);
-    painter.drawEllipse(QRect(150, 300, 100, 100));
 
     // --- Terrain ---
     m_terrain.render(painter, m_player, width(), height());

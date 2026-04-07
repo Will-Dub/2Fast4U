@@ -52,7 +52,6 @@ private:
     QElapsedTimer m_timer;
     QElapsedTimer m_fpsTimer;
     QTimer m_loopTimer;
-    QLinearGradient m_sunset;
     bool m_isEscapePressed = false;
 };
 

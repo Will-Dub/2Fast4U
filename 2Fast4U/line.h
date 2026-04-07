@@ -39,8 +39,10 @@ struct Line {
         }
     }
 
-    void drawSprite(QPainter &painter, int screenWidth, int screenHeight) const{
+    void drawSprite(QPainter &painter, int screenWidth, int screenHeight, float fogFactor) const{
         if (obstacles.isEmpty()) return;
+
+        static const QColor FOG_COLOR(135, 206, 235);
 
         for(const Obstacle& obstacle : obstacles){
             QPixmap sprite = obstacle.getCurrentFrame();
@@ -59,7 +61,6 @@ struct Line {
             float clipY = clip;
 
             if (clipY == 0) clipY = screenHeight;
-
             if (destY >= clipY) continue;
 
             if (destY + destH > clipY) {
@@ -69,9 +70,29 @@ struct Line {
             if (visibleH <= 0) continue;
 
             float srcVisibleH = (visibleH / destH) * h;
+            QPixmap finalSprite = sprite;
+
+            // Applique le brouillard
+            if (fogFactor > 0.05f) {
+                QPixmap tintedPixmap(sprite.size());
+                tintedPixmap.fill(Qt::transparent);
+
+                QPainter p(&tintedPixmap);
+                p.drawPixmap(0, 0, sprite);
+                p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+
+                QColor currentFog = FOG_COLOR;
+                currentFog.setAlphaF(fogFactor);
+                p.fillRect(tintedPixmap.rect(), currentFog);
+                p.end();
+
+                // Remplace par le nouveau avec brouillard
+                finalSprite = tintedPixmap;
+            }
+
             painter.drawPixmap(
                 QRectF(destX, destY, destW, visibleH),
-                sprite,
+                finalSprite,
                 QRectF(0, 0, w, srcVisibleH)
             );
 

@@ -103,7 +103,8 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(1);
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
-    QString styleBoutons = "background-color: white; color: #1a1a1a; border-radius: 10px;";
+    QString styleCommencer = "background-color: gray; color: #1a1a1a; border-radius: 10px;";
+    QString styleRetour = "background-color: white; color: #1a1a1a; border-radius: 10px;";
 
     QHBoxLayout* boutonLayout = new QHBoxLayout();
     boutonLayout->setAlignment(Qt::AlignCenter);
@@ -113,15 +114,15 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     QPushButton* boutonRetour = new QPushButton("Retour", darkOverlay);
     boutonRetour->setFixedSize(200, 80);
     boutonRetour->setFont(fontBoutons);
-    boutonRetour->setStyleSheet(styleBoutons);
+    boutonRetour->setStyleSheet(styleRetour);
     boutonLayout->addWidget(boutonRetour);
 
     // Bouton sauvegarder
-    QPushButton* boutonCommencer = new QPushButton("Commencer", darkOverlay);
-    boutonCommencer->setFixedSize(250, 80);
-    boutonCommencer->setFont(fontBoutons);
-    boutonCommencer->setStyleSheet(styleBoutons);
-    boutonLayout->addWidget(boutonCommencer);
+    m_commencerButton = new QPushButton("Commencer", darkOverlay);
+    m_commencerButton->setFixedSize(250, 80);
+    m_commencerButton->setFont(fontBoutons);
+    m_commencerButton->setStyleSheet(styleCommencer);
+    boutonLayout->addWidget(m_commencerButton);
 
     layout->addLayout(boutonLayout);
 
@@ -129,13 +130,32 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
 
     // Connection signal et slots
     connect(boutonRetour, &QPushButton::clicked, this, &StartWidget::retourPressed);
-    connect(boutonCommencer, &QPushButton::clicked, this, [this]() {
+    connect(m_nomInput, &QLineEdit::textChanged, this, &StartWidget::nomTextChanged);
+    connect(m_commencerButton, &QPushButton::clicked, this, [this]() {
         const QString nom = m_nomInput->text();
+        if (!isValidInput(nom)) return;
+
         emit commencerPressed(nom);
     });
+}
+
+void StartWidget::nomTextChanged(const QString& newNom) {
+    QString style;
+    if (!isValidInput(newNom)) {
+        style = "background-color: gray; color: #1a1a1a; border-radius: 10px;";
+    }else{
+        style = "background-color: white; color: #1a1a1a; border-radius: 10px;";
+    }
+
+    m_commencerButton->setStyleSheet(style);
 }
 
 void StartWidget::resetInput()
 {
     m_nomInput->clear();
+}
+
+bool StartWidget::isValidInput(const QString& nom)
+{
+    return !nom.isEmpty();
 }

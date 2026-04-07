@@ -14,7 +14,13 @@ public:
 	void resetInput();
 
 private:
+	bool isValidInput(const QString& nom);
+
 	QLineEdit* m_nomInput;
+	QPushButton* m_commencerButton;
+
+private slots:
+	void nomTextChanged(const QString& newNom);
 
 signals:
 	void commencerPressed(const QString& nom);
