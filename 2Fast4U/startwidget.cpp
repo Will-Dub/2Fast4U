@@ -103,25 +103,22 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(1);
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
-    QString styleCommencer = "background-color: gray; color: #1a1a1a; border-radius: 10px;";
-    QString styleRetour = "background-color: white; color: #1a1a1a; border-radius: 10px;";
 
     QHBoxLayout* boutonLayout = new QHBoxLayout();
     boutonLayout->setAlignment(Qt::AlignCenter);
     boutonLayout->setSpacing(15);
 
     // Bouton retour
-    QPushButton* boutonRetour = new QPushButton("Retour", darkOverlay);
+    HoverButton* boutonRetour = new HoverButton("Retour", darkOverlay);
     boutonRetour->setFixedSize(200, 80);
     boutonRetour->setFont(fontBoutons);
-    boutonRetour->setStyleSheet(styleRetour);
     boutonLayout->addWidget(boutonRetour);
 
     // Bouton sauvegarder
-    m_commencerButton = new QPushButton("Commencer", darkOverlay);
+    m_commencerButton = new HoverButton("Commencer", darkOverlay);
+	m_commencerButton->setEnabled(false);
     m_commencerButton->setFixedSize(250, 80);
     m_commencerButton->setFont(fontBoutons);
-    m_commencerButton->setStyleSheet(styleCommencer);
     boutonLayout->addWidget(m_commencerButton);
 
     layout->addLayout(boutonLayout);
@@ -140,14 +137,7 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
 }
 
 void StartWidget::nomTextChanged(const QString& newNom) {
-    QString style;
-    if (!isValidInput(newNom)) {
-        style = "background-color: gray; color: #1a1a1a; border-radius: 10px;";
-    }else{
-        style = "background-color: white; color: #1a1a1a; border-radius: 10px;";
-    }
-
-    m_commencerButton->setStyleSheet(style);
+    m_commencerButton->setEnabled(isValidInput(newNom));
 }
 
 void StartWidget::resetInput()

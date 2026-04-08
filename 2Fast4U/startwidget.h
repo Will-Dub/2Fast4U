@@ -1,6 +1,6 @@
 #pragma once
 #include <QWidget>
-#include <QPushButton>
+#include "hoverbutton.h"
 #include <QLabel>
 #include <QLineEdit>
 #include <QVBoxLayout>
@@ -17,7 +17,7 @@ private:
 	bool isValidInput(const QString& nom);
 
 	QLineEdit* m_nomInput;
-	QPushButton* m_commencerButton;
+	HoverButton* m_commencerButton;
 
 private slots:
 	void nomTextChanged(const QString& newNom);

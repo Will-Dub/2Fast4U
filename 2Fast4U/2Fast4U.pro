@@ -42,7 +42,8 @@ HEADERS += \
     optionswidget.h \
     startwidget.h \
     pausewidget.h \
-    endwidget.h 
+    endwidget.h \
+    hoverbutton.h
 
 # Project Sources (Game code ONLY. SoLoud is handled by the static library.)
 SOURCES += \
@@ -62,8 +63,10 @@ SOURCES += \
     optionswidget.cpp \
     startwidget.cpp \
     pausewidget.cpp \
-    endwidget.cpp
+    endwidget.cpp \
+    hoverbutton.cpp
 
 # UI and Resources
 FORMS += mainwindow.ui
 RESOURCES += resources.qrc
+RESOURCES += sounds.qrc

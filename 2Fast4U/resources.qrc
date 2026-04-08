@@ -9,22 +9,4 @@
         <file>habitacleCrashed.png</file>
         <file>background.png</file>
     </qresource>
-    <qresource prefix="/audio">
-        <file>audio/BAC_Mono_offhigh.wav</file>
-        <file>audio/BAC_Mono_offlow.wav</file>
-        <file>audio/BAC_Mono_offmid.wav</file>
-        <file>audio/BAC_Mono_offveryhigh.wav</file>
-        <file>audio/BAC_Mono_onhigh.wav</file>
-        <file>audio/BAC_Mono_onlow.wav</file>
-        <file>audio/BAC_Mono_onmid.wav</file>
-        <file>audio/limiter.wav</file>
-        <file>audio/REV.wav</file>
-        <file>audio/trany_power_high.wav</file>
-        <file>audio/tw_offlow_4.wav</file>
-        <file>audio/explosion_base.wav</file>
-        <file>audio/explosion_cable_break.wav</file>
-        <file>audio/tw_offhigh_4.wav</file>
-        <file>audio/tw_offlowmid_4.wav</file>
-        <file>audio/tw_offverylow_4.wav</file>
-    </qresource>
 </RCC>

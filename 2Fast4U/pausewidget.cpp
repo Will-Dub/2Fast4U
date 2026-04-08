@@ -24,24 +24,21 @@ PauseWidget::PauseWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(8);
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
-    QString styleBoutons = "background-color: white; color: #1a1a1a; border-radius: 10px;";
 
     QHBoxLayout* boutonLayout = new QHBoxLayout();
     boutonLayout->setAlignment(Qt::AlignCenter);
     boutonLayout->setSpacing(15);
 
     // Bouton retour
-    QPushButton* boutonReprendre = new QPushButton("Reprendre", darkOverlay);
+    HoverButton* boutonReprendre = new HoverButton("Reprendre", darkOverlay);
     boutonReprendre->setFixedSize(250, 80);
     boutonReprendre->setFont(fontBoutons);
-    boutonReprendre->setStyleSheet(styleBoutons);
     boutonLayout->addWidget(boutonReprendre);
 
     // Bouton sauvegarder
-    QPushButton* boutonQuitter = new QPushButton("Quitter", darkOverlay);
+    HoverButton* boutonQuitter = new HoverButton("Quitter", darkOverlay);
     boutonQuitter->setFixedSize(200, 80);
     boutonQuitter->setFont(fontBoutons);
-    boutonQuitter->setStyleSheet(styleBoutons);
     boutonLayout->addWidget(boutonQuitter);
 
     layout->addLayout(boutonLayout);

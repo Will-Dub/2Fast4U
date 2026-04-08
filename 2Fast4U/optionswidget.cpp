@@ -29,24 +29,21 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(8);
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
-    QString styleBoutons = "background-color: white; color: #1a1a1a; border-radius: 10px;";
 
     QHBoxLayout* boutonLayout = new QHBoxLayout();
     boutonLayout->setAlignment(Qt::AlignCenter);
     boutonLayout->setSpacing(15);
 
     // Bouton retour
-    QPushButton* boutonRetour = new QPushButton("Retour", darkOverlay);
+    HoverButton* boutonRetour = new HoverButton("Retour", darkOverlay);
     boutonRetour->setFixedSize(200, 80);
     boutonRetour->setFont(fontBoutons);
-    boutonRetour->setStyleSheet(styleBoutons);
     boutonLayout->addWidget(boutonRetour);
 
     // Bouton sauvegarder
-    QPushButton* boutonSauvegarder = new QPushButton("Sauvegarder", darkOverlay);
+    HoverButton* boutonSauvegarder = new HoverButton("Sauvegarder", darkOverlay);
     boutonSauvegarder->setFixedSize(250, 80);
     boutonSauvegarder->setFont(fontBoutons);
-    boutonSauvegarder->setStyleSheet(styleBoutons);
     boutonLayout->addWidget(boutonSauvegarder);
 
     layout->addLayout(boutonLayout);
@@ -55,7 +52,7 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(1);
 
     // Connection signal et slots
-    connect(boutonRetour, &QPushButton::clicked, this, [=]() {
+    connect(boutonRetour, &HoverButton::clicked, this, [=]() {
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, "Confirme", "Voulez-vous quitter sans sauvegarder?",
             QMessageBox::Yes | QMessageBox::No);
@@ -64,7 +61,7 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
             emit retourPressed();
         }
     });
-    connect(boutonSauvegarder, &QPushButton::clicked, this, [=]() {
+    connect(boutonSauvegarder, &HoverButton::clicked, this, [=]() {
         emit sauvegarderPressed();
     });
 }

@@ -31,24 +31,21 @@ EndWidget::EndWidget(QWidget* parent) : QWidget(parent)
     layout->addStretch(3);
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
-    QString styleBoutons = "background-color: white; color: #1a1a1a; border-radius: 10px;";
 
     QHBoxLayout* boutonLayout = new QHBoxLayout();
     boutonLayout->setAlignment(Qt::AlignCenter);
     boutonLayout->setSpacing(15);
 
     // Bouton retour
-    QPushButton* boutonRecommencer = new QPushButton("Recommencer", darkOverlay);
+    HoverButton* boutonRecommencer = new HoverButton("Recommencer", darkOverlay);
     boutonRecommencer->setFixedSize(250, 80);
     boutonRecommencer->setFont(fontBoutons);
-    boutonRecommencer->setStyleSheet(styleBoutons);
     boutonLayout->addWidget(boutonRecommencer);
 
     // Bouton sauvegarder
-    QPushButton* boutonQuitter = new QPushButton("Quitter", darkOverlay);
+    HoverButton* boutonQuitter = new HoverButton("Quitter", darkOverlay);
     boutonQuitter->setFixedSize(200, 80);
     boutonQuitter->setFont(fontBoutons);
-    boutonQuitter->setStyleSheet(styleBoutons);
     boutonLayout->addWidget(boutonQuitter);
 
     layout->addLayout(boutonLayout);

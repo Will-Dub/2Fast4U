@@ -1,6 +1,6 @@
 #pragma once
 #include <QWidget>
-#include <QPushButton>
+#include "hoverbutton.h"
 #include <QLabel>
 #include <QTextEdit>
 #include <QVBoxLayout>

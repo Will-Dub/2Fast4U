@@ -28,31 +28,27 @@ MenuWidget::MenuWidget(QWidget* parent) : QWidget(parent)
     // Espace
     layout->addSpacerItem(new QSpacerItem(20, 150, QSizePolicy::Minimum, QSizePolicy::Expanding));
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
-    QString styleBoutons = "background-color: white; color: #1a1a1a; border-radius: 10px;";
 
     // Bouton commencer
-    QPushButton* boutonCommencer = new QPushButton("Commencer");
+    HoverButton* boutonCommencer = new HoverButton("Commencer");
     boutonCommencer->setFixedSize(400, 80);
     boutonCommencer->setFont(fontBoutons);
-    boutonCommencer->setStyleSheet(styleBoutons);
     layout->addWidget(boutonCommencer, 0, Qt::AlignCenter);
 
     layout->addSpacing(15);
 
     // Bouton options
-    QPushButton* boutonOption = new QPushButton("Options");
+    HoverButton* boutonOption = new HoverButton("Options");
     boutonOption->setFixedSize(400, 80);
     boutonOption->setFont(fontBoutons);
-    boutonOption->setStyleSheet(styleBoutons);
     layout->addWidget(boutonOption, 0, Qt::AlignCenter);
 
     layout->addSpacing(15);
 
     // Bouton quitter
-    QPushButton* boutonQuitter = new QPushButton("Quitter");
+    HoverButton* boutonQuitter = new HoverButton("Quitter");
     boutonQuitter->setFixedSize(400, 80);
     boutonQuitter->setFont(fontBoutons);
-    boutonQuitter->setStyleSheet(styleBoutons);
     layout->addWidget(boutonQuitter, 0, Qt::AlignCenter);
 
     layout->addSpacerItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
