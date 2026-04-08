@@ -38,7 +38,7 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     classementLabel->setAlignment(Qt::AlignCenter);
     layout->addWidget(classementLabel);
 
-    QList<Score> scores = RaceManager::getTopThree();
+    QList<Score> scores = RaceManager::getTop();
     QFont scoreFont("Courier", 24, QFont::Bold);
 
     // Aucun score
@@ -77,7 +77,7 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
             layout->addWidget(scoreLabel);
 
             if (i < scores.size() - 1) {
-                layout->addSpacing(10);
+                layout->addSpacing(5);
             }
         }
     }
