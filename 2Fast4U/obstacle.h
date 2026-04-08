@@ -17,7 +17,10 @@ public:
         m_spriteX(spriteX),
         m_spriteScale(spriteScale),
         m_hitboxWidth(hitboxWidth),
-        m_movingSpeed(movingSpeed){}
+        m_movingSpeed(movingSpeed)
+    {
+        generateFogCache();
+    }
 
     void nextFrame() {
         if (m_maxFrame > 0) {
@@ -37,6 +40,47 @@ public:
             m_spriteX -= m_movingSpeed;
             m_timeElapsed -= 0.100f;
         }
+    }
+
+    void generateFogCache() {
+        static const QColor FOG_COLOR(135, 206, 235);
+
+        int totalFrames = (m_maxFrame > 0) ? m_maxFrame : 1;
+        m_foggedFrames.resize(totalFrames);
+
+        for (int f = 0; f < totalFrames; ++f) {
+            QString cacheFrameKey = m_spriteName + QString::number(f);
+            QPixmap baseSprite = SpriteManager::get(cacheFrameKey);
+
+            // Pour chaque frame, on génère les 10 niveaux de brouillard
+            for (int i = 0; i < 10; ++i) {
+                float fogFactor = i / 10.0f;
+
+                QPixmap tintedPixmap(baseSprite.size());
+                tintedPixmap.fill(Qt::transparent);
+
+                QPainter p(&tintedPixmap);
+                p.drawPixmap(0, 0, baseSprite);
+                p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+
+                QColor currentFog = FOG_COLOR;
+                currentFog.setAlphaF(fogFactor);
+                p.fillRect(tintedPixmap.rect(), currentFog);
+                p.end();
+
+                m_foggedFrames[f].append(tintedPixmap);
+            }
+        }
+    }
+
+    // Get le bon frame en fonction du facteur
+    QPixmap getFoggedFrame(float fogFactor) const {
+        if (m_foggedFrames.isEmpty()) {
+            return getCurrentFrame();
+        }
+
+        int index = std::max(0, std::min(9, (int)(fogFactor * 10)));
+        return m_foggedFrames[m_currentFrame][index];
     }
 
     float getSpriteX() const{
@@ -61,6 +105,7 @@ private:
     float m_movingSpeed;
     float m_timeElapsed = 0.0f;
 
+    QVector<QVector<QPixmap>> m_foggedFrames;
 };
 
 #endif // OBSTACLE_H

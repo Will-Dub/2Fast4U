@@ -116,7 +116,9 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
 
     // Bouton sauvegarder
     m_commencerButton = new HoverButton("Commencer", darkOverlay);
-	m_commencerButton->setEnabled(false);
+    m_commencerButton->setEnabled(true);
+    // TODO: Remettre
+    //m_commencerButton->setEnabled(false);
     m_commencerButton->setFixedSize(250, 80);
     m_commencerButton->setFont(fontBoutons);
     boutonLayout->addWidget(m_commencerButton);
@@ -130,7 +132,8 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     connect(m_nomInput, &QLineEdit::textChanged, this, &StartWidget::nomTextChanged);
     connect(m_commencerButton, &QPushButton::clicked, this, [this]() {
         const QString nom = m_nomInput->text();
-        if (!isValidInput(nom)) return;
+        // TODO: Remettre
+        //if (!isValidInput(nom)) return;
 
         emit commencerPressed(nom);
     });
