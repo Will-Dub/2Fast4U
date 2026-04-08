@@ -70,25 +70,9 @@ struct Line {
             if (visibleH <= 0) continue;
 
             float srcVisibleH = (visibleH / destH) * h;
-            QPixmap finalSprite = sprite;
 
             // Applique le brouillard
-            if (fogFactor > 0.05f) {
-                QPixmap tintedPixmap(sprite.size());
-                tintedPixmap.fill(Qt::transparent);
-
-                QPainter p(&tintedPixmap);
-                p.drawPixmap(0, 0, sprite);
-                p.setCompositionMode(QPainter::CompositionMode_SourceAtop);
-
-                QColor currentFog = FOG_COLOR;
-                currentFog.setAlphaF(fogFactor);
-                p.fillRect(tintedPixmap.rect(), currentFog);
-                p.end();
-
-                // Remplace par le nouveau avec brouillard
-                finalSprite = tintedPixmap;
-            }
+            QPixmap finalSprite = obstacle.getFoggedFrame(fogFactor);
 
             painter.drawPixmap(
                 QRectF(destX, destY, destW, visibleH),
