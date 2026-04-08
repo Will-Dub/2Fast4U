@@ -114,7 +114,7 @@ void MainWindow::showEndWidget(EndType type, const QString& nom, double temps)
         sousTitre = "Le moteur a explose";
         break;
     case EndType::Win:
-        titre = "Bravo " + nom + " avez gagne!";
+        titre = "Bravo avez gagne!";
 
         qint64 totalMillis = static_cast<qint64>(temps * 1000.0);
         QTime t(0, 0, 0);

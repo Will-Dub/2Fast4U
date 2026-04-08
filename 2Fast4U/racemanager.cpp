@@ -81,7 +81,7 @@ void RaceManager::pauseRace()
     m_state = RaceState::PAUSED;
 }
 
-QList<Score> RaceManager::getTopThree() {
+QList<Score> RaceManager::getTop() {
     QList<Score> allScores;
 
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/results.csv";
@@ -114,9 +114,9 @@ QList<Score> RaceManager::getTopThree() {
         return a.temps < b.temps;
     });
 
-    // Retourne le top 3
-    if (allScores.size() > 3) {
-        return allScores.mid(0, 3);
+    // Retourne le top 5
+    if (allScores.size() > 5) {
+        return allScores.mid(0, 5);
     }
 
     return allScores;

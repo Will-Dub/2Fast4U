@@ -141,12 +141,10 @@ void Player::renderHabitacle(QPainter *painter, RaceState raceState, int screenW
 {
     QPixmap sprite;
 
-    if(raceState == RaceState::RACING || raceState == RaceState::MOTOR_EXPLODED){
-        sprite = SpriteManager::get("habitacle");
-    }else if(raceState == RaceState::CRASHED){
+    if(raceState == RaceState::CRASHED){
         sprite = SpriteManager::get("habitacleCrashed");
     }else{
-        return;
+        sprite = SpriteManager::get("habitacle");
     }
 
     painter->drawPixmap(

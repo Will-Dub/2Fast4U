@@ -47,7 +47,7 @@ public:
     void restartRace();
     void resumeRace();
     void pauseRace();
-    static QList<Score> getTopThree();
+    static QList<Score> getTop();
 
 private:
     void saveResult();
