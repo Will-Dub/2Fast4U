@@ -63,3 +63,8 @@ build/
 .vs/
 debug/
 release/
+build/
+*.qtvscr
+*.vcxproj
+*.filters
+*.user
