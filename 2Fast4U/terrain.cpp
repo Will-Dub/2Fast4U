@@ -2,17 +2,19 @@
 
 Terrain::Terrain() {}
 
-void Terrain::render(QPainter &painter, Player &player, int screenWidth, int screenHeight)
+void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
 {
-    static const QColor GRASS_LIGHT(8, 150, 0);
-    static const QColor GRASS_DARK(0, 124, 0);
+    static const QColor GRASS_LIGHT(34, 164, 83);
+    static const QColor GRASS_DARK(20, 130, 72);
     static const QColor RUMBLE_LIGHT(143, 143, 143);
     static const QColor RUMBLE_DARK(121, 121, 121);
-    static const QColor ROAD_LIGHT(107, 107, 107);
-    static const QColor ROAD_DARK(105, 105, 105);
-    static const QColor LINE(255, 204, 0);
+    static const QColor SHOULDER_LIGHT(160, 110, 70);
+    static const QColor SHOULDER_DARK(120, 80, 50);
+    static const QColor ROAD_LIGHT(72, 77, 91);
+    static const QColor ROAD_DARK(57, 62, 77);
+    static const QColor LINE(255, 220, 70);
 
-    int startPos = player.getPositionZ()/SEG_L;
+    int startPos = player.getPositionZ() / SEG_L;
     float percent = (player.getPositionZ() - (startPos * SEG_L)) / (float)SEG_L;
 
     int safeStart = (startPos % N_LINES + N_LINES) % N_LINES;
@@ -49,29 +51,29 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
     int maxy = screenHeight;
     float cameraAngle = player.getAngle();
 
-    static const QColor FOG_COLOR(135, 206, 235);
+    static const QColor FOG_COLOR(126, 185, 224);
 
     auto applyFog = [](const QColor& baseColor, const QColor& fogColor, float fogFactor) -> QColor {
         fogFactor = std::max(0.0f, std::min(1.0f, fogFactor));
         int r = baseColor.red() + (fogColor.red() - baseColor.red()) * fogFactor;
         int g = baseColor.green() + (fogColor.green() - baseColor.green()) * fogFactor;
         int b = baseColor.blue() + (fogColor.blue() - baseColor.blue()) * fogFactor;
-        return QColor(r, g, b);
+        return QColor(r, g, b, baseColor.alpha());
         };
 
     // Montre les 600 lignes devant
     int maxDrawDistance = 600;
-    for(int n=startPos; n<startPos+maxDrawDistance;n++){
+    for (int n = startPos; n < startPos + maxDrawDistance; n++) {
         int index = (n % N_LINES + N_LINES) % N_LINES;
         Line& l = lines[index];
 
-        l.project(player.getPositionX()*ROAD_W-x, camHeight, player.getPositionZ() - ((n>=N_LINES)?N_LINES*SEG_L:0), screenWidth, screenHeight, cameraAngle, player.pitch, cameraDepth);
+        l.project(player.getPositionX() * ROAD_W - x, camHeight, player.getPositionZ() - ((n >= N_LINES) ? N_LINES * SEG_L : 0), screenWidth, screenHeight, cameraAngle, player.pitch, cameraDepth);
 
-        x+=dx;
-        dx+=l.curve;
+        x += dx;
+        dx += l.curve;
 
         l.clip = maxy;
-        if (l.Y>maxy) continue;
+        if (l.Y > maxy) continue;
         maxy = l.Y;
 
         if (maxy <= 0) break;
@@ -83,7 +85,8 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
             p.Y = screenHeight;
             p.W = l.W * 1.5f;
             p.X = (screenWidth / 2.0f) + ((l.X - (screenWidth / 2.0f)) * 1.5f);
-        } else {
+        }
+        else {
             p = lines[(n - 1 + N_LINES) % N_LINES];
         }
 
@@ -93,36 +96,51 @@ void Terrain::render(QPainter &painter, Player &player, int screenWidth, int scr
 
         QColor grass = applyFog(isDark ? GRASS_DARK : GRASS_LIGHT, FOG_COLOR, fogFactor);
         QColor rumble = applyFog(isDark ? RUMBLE_DARK : RUMBLE_LIGHT, FOG_COLOR, fogFactor);
+        QColor shoulder = applyFog(isDark ? SHOULDER_DARK : SHOULDER_LIGHT, FOG_COLOR, fogFactor);
         QColor road = applyFog(isDark ? ROAD_DARK : ROAD_LIGHT, FOG_COLOR, fogFactor);
 
         drawQuad(painter, grass, 0, p.Y, screenWidth, 0, l.Y, screenWidth);
-        drawQuad(painter, rumble, p.X, p.Y, p.W*1.2, l.X, l.Y, l.W*1.2);
+        drawQuad(painter, shoulder, p.X, p.Y, p.W * 1.42, l.X, l.Y, l.W * 1.42);
+        drawQuad(painter, rumble, p.X, p.Y, p.W * 1.24, l.X, l.Y, l.W * 1.24);
         drawQuad(painter, road, p.X, p.Y, p.W, l.X, l.Y, l.W);
 
+        if ((n / 18) % 2 == 0) {
+            QColor roadGlow = applyFog(QColor(255, 255, 255, 22), FOG_COLOR, fogFactor);
+            drawQuad(painter, roadGlow, p.X, p.Y, p.W * 0.98f, l.X, l.Y, l.W * 0.98f);
+        }
+
         bool isLine = l.isLineFull || (n / 6) % 2;
-        if(isLine){
+        if (isLine) {
             float widthLigneP = std::max(1.0f, (float)(p.W * 0.02));
             float widthLigneL = std::max(1.0f, (float)(l.W * 0.02));
 
             int nbLigne = l.nbLane - 1;
-            if(nbLigne == 0) continue;
+            if (nbLigne == 0) continue;
 
             float laneWidthP = (p.W * 2) / l.nbLane;
             float laneWidthL = (l.W * 2) / l.nbLane;
 
             QColor fadedLine = applyFog(LINE, FOG_COLOR, fogFactor);
 
-            for(int i = 1; i<nbLigne+1; i++){
+            for (int i = 1; i < nbLigne + 1; i++) {
                 float offsetP = -p.W + (laneWidthP * i);
                 float offsetL = -l.W + (laneWidthL * i);
-                drawQuad(painter, fadedLine, p.X+offsetP, p.Y, widthLigneP, l.X+offsetL, l.Y, widthLigneL);
+                drawQuad(painter, fadedLine, p.X + offsetP, p.Y, widthLigneP, l.X + offsetL, l.Y, widthLigneL);
             }
+        }
+
+        if (l.isLineFull || (n / 10) % 2) {
+            QColor edgeLine = applyFog(QColor(250, 250, 255), FOG_COLOR, fogFactor);
+            float widthEdgeP = std::max(1.0f, (float)(p.W * 0.012f));
+            float widthEdgeL = std::max(1.0f, (float)(l.W * 0.012f));
+            drawQuad(painter, edgeLine, p.X - p.W * 0.92f, p.Y, widthEdgeP, l.X - l.W * 0.92f, l.Y, widthEdgeL);
+            drawQuad(painter, edgeLine, p.X + p.W * 0.92f, p.Y, widthEdgeP, l.X + l.W * 0.92f, l.Y, widthEdgeL);
         }
     }
 
     // Affiche les sprites
-    for(int n=startPos+maxDrawDistance; n>startPos;n--){
-        Line& l = lines[n%N_LINES];
+    for (int n = startPos + maxDrawDistance; n > startPos; n--) {
+        Line& l = lines[n % N_LINES];
 
         float distanceRatio = (float)(n - startPos) / maxDrawDistance;
         float fogFactor = std::pow(distanceRatio, 1.5f);

@@ -215,43 +215,55 @@ void GameWidget::paintEvent(QPaintEvent *event){
     painter.save();
 
     // Place le centre
-    int hudOffsetX = width() - 80;
+    int hudOffsetX = width() - 92;
     //int hudOffsetY = height() - 80;
-    int hudOffsetY = 80;
+    int hudOffsetY = 92;
+    QRectF shifterPanel(hudOffsetX - 62, hudOffsetY - 72, 124, 144);
+    QLinearGradient shifterGradient(shifterPanel.topLeft(), shifterPanel.bottomRight());
+    shifterGradient.setColorAt(0.0, QColor(255, 255, 255, 210));
+    shifterGradient.setColorAt(1.0, QColor(180, 195, 220, 180));
+    painter.setBrush(shifterGradient);
+    painter.setPen(QPen(QColor(255, 255, 255, 170), 2));
+    painter.drawRoundedRect(shifterPanel, 18, 18);
     painter.translate(hudOffsetX, hudOffsetY);
 
     // Écrit le texte
-    painter.setPen(Qt::black);
+    painter.setPen(QColor(20, 27, 38));
     QFont font = painter.font();
     font.setPixelSize(14);
     font.setBold(true);
     painter.setFont(font);
 
     painter.drawText(-28, -45, "1");
-    painter.drawText(-28,  55, "2");
+    painter.drawText(-28, 55, "2");
 
-    painter.drawText( -4, -45, "3");
-    painter.drawText( -4,  55, "4");
+    painter.drawText(-4, -45, "3");
+    painter.drawText(-4, 55, "4");
 
-    painter.drawText( 20, -45, "5");
-    painter.drawText( 20,  55, "6");
+    painter.drawText(20, -45, "5");
+    painter.drawText(20, 55, "6");
 
     float scaleFactor = 40.0f;
     painter.scale(scaleFactor, -scaleFactor);
 
     // Fait les rails
-    QPen railPen(Qt::black);
-    railPen.setWidthF(0.05);
+    QPen railPen(QColor(32, 40, 58));
+    railPen.setWidthF(0.07);
+    railPen.setCapStyle(Qt::RoundCap);
     painter.setPen(railPen);
 
     painter.drawLine(QPointF(-0.6f, 0.0f), QPointF(0.6f, 0.0f)); // N
     painter.drawLine(QPointF(-0.6f, 1.0f), QPointF(-0.6f, -1.0f)); // 1-2
-    painter.drawLine(QPointF( 0.0f, 1.0f), QPointF( 0.0f, -1.0f)); // 3-4
-    painter.drawLine(QPointF( 0.6f, 1.0f), QPointF( 0.6f, -1.0f)); // 5-6
+    painter.drawLine(QPointF(0.0f, 1.0f), QPointF(0.0f, -1.0f)); // 3-4
+    painter.drawLine(QPointF(0.6f, 1.0f), QPointF(0.6f, -1.0f)); // 5-6
 
     // Fait le curseur
-    painter.setBrush(Qt::red);
-    painter.setPen(Qt::NoPen);
+    QRadialGradient knobGradient(0, 0, 0.28f);
+    knobGradient.setColorAt(0.0, QColor(255, 255, 255));
+    knobGradient.setColorAt(0.45, QColor(255, 70, 95));
+    knobGradient.setColorAt(1.0, QColor(137, 0, 32));
+    painter.setBrush(knobGradient);
+    painter.setPen(QPen(QColor(255, 255, 255), 0.025));
 
     QPointF cursor = m_player.getShifterPosition();
     float knobRadius = 0.2f;
