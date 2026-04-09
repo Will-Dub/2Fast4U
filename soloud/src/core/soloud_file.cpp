@@ -303,7 +303,7 @@ extern "C"
 		return (Soloud_Filehack*)df;
 	}
 
-	int Soloud_Filehack_fopen_s(Soloud_Filehack** f, const char* aFilename, char* /*aMode*/)
+	int Soloud_Filehack_fopen_s(Soloud_Filehack** f, const char* aFilename, const char* mode)
 	{
 		*f = Soloud_Filehack_fopen(aFilename, 0);
 		return 1;

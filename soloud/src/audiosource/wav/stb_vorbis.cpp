@@ -4795,7 +4795,8 @@ stb_vorbis * stb_vorbis_open_filename(const char *filename, int *error, const st
 {
    FILE *f;
 #if defined(_WIN32) && defined(__STDC_WANT_SECURE_LIB__)
-   if (0 != fopen_s(&f, filename, "rb"))
+   char* idk;
+   if (0 != fopen_s(&f, filename, idk))
       f = NULL;
 #else
    f = fopen(filename, "rb");

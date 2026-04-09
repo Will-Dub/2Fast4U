@@ -9,26 +9,18 @@ QT += core gui widgets serialport multimedia
 
 # Compiler Definitions
 DEFINES += WITH_MINIAUDIO
-
-# On garde les hacks Windows confinés à Windows
-win32: DEFINES += NOMINMAX
+DEFINES += NOMINMAX
 
 # Include Directories (Pointing to the sibling SoLoud folder)
 INCLUDEPATH += $$PWD/../soloud/include
 
-# Static Library Linking
+# Static Library Linking (Dynamically handles Debug vs Release builds)
 CONFIG(debug, debug|release) {
-    # On pointe directement vers le dossier soloud généré par le Shadow Build
-    LIBS += -L$$OUT_PWD/../soloud -lsoloud
-
-    win32: PRE_TARGETDEPS += $$OUT_PWD/../soloud/soloud.lib
-    unix:!macx: PRE_TARGETDEPS +=$$OUT_PWD/../soloud/libsoloud.a
+    LIBS += -L$$OUT_PWD/../soloud/debug -lsoloud
+    PRE_TARGETDEPS += $$OUT_PWD/../soloud/debug/soloud.lib
 } else {
-    # Même logique pour le mode release
-    LIBS += -L$$OUT_PWD/../soloud -lsoloud
-
-    win32: PRE_TARGETDEPS +=$$OUT_PWD/../soloud/soloud.lib
-    unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../soloud/libsoloud.a
+    LIBS += -L$$OUT_PWD/../soloud/release -lsoloud
+    PRE_TARGETDEPS += $$OUT_PWD/../soloud/release/soloud.lib
 }
 
 # Project Headers
