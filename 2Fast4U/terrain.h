@@ -23,8 +23,21 @@ public:
     int getTotalLines() const;
 
 private:
+    static constexpr int MAX_DRAW_DISTANCE = 600;
     QVector<Line> lines;
-    QPixmap testSprite;
+
+    float precalcFogFactor[MAX_DRAW_DISTANCE];
+    QColor precalcGrassLight[MAX_DRAW_DISTANCE];
+    QColor precalcGrassDark[MAX_DRAW_DISTANCE];
+    QColor precalcRumbleLight[MAX_DRAW_DISTANCE];
+    QColor precalcRumbleDark[MAX_DRAW_DISTANCE];
+    QColor precalcShoulderLight[MAX_DRAW_DISTANCE];
+    QColor precalcShoulderDark[MAX_DRAW_DISTANCE];
+    QColor precalcRoadLight[MAX_DRAW_DISTANCE];
+    QColor precalcRoadDark[MAX_DRAW_DISTANCE];
+    QColor precalcLine[MAX_DRAW_DISTANCE];
+    QColor precalcEdgeLine[MAX_DRAW_DISTANCE];
+    QColor precalcRoadGlow[MAX_DRAW_DISTANCE];
 
     /**
      * @brief drawQuad Fait un quad sur l'écran
@@ -35,7 +48,7 @@ private:
      * @param y2 y de la ligne du bas
      * @param w2 demi largeur de la ligne du bas
      */
-    void drawQuad(QPainter &painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2);
+    inline void drawQuad(QPainter& painter, const QColor& color, float x1, float y1, float w1, float x2, float y2, float w2);
 };
 
 #endif // TERRAIN_H

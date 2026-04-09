@@ -187,12 +187,12 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
     // --- Ciel ---
-    QLinearGradient skyGradient(0, 0, 0, height() / 2.0f);
+    /*QLinearGradient skyGradient(0, 0, 0, height() / 2.0f);
     skyGradient.setColorAt(0.0, QColor(20, 80, 180));
     skyGradient.setColorAt(1.0, QColor(135, 206, 235));
     painter.fillRect(0, 0, width(), height() / 2.0f, skyGradient);
 
-    painter.setPen(Qt::NoPen);
+    painter.setPen(Qt::NoPen);*/
 
     // --- Terrain ---
     m_terrain.render(painter, m_player, width(), height());
@@ -206,7 +206,7 @@ void GameWidget::paintEvent(QPaintEvent *event){
 
         m_frameCount = 0;
         m_fpsTimer.restart();
-    }
+    }/*
 
     // --- Dessine l'habitacle ---
     m_player.renderHabitacle(&painter, m_raceManager.getState(), width(), height());
@@ -268,7 +268,7 @@ void GameWidget::paintEvent(QPaintEvent *event){
     QPointF cursor = m_player.getShifterPosition();
     float knobRadius = 0.2f;
     painter.drawEllipse(cursor, knobRadius, knobRadius);
-    painter.restore();
+    painter.restore();*/
 
     // --- Affiche les fps ---
     painter.save();

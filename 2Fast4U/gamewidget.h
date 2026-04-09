@@ -16,7 +16,7 @@
 #include "serialcontroller.h"
 #include "racemanager.h"
 
-constexpr static int FRAME_RATE = 120;
+constexpr static int FRAME_RATE = 260;
 
 enum class EndType {
     Crash,

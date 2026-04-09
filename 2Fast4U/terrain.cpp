@@ -1,9 +1,6 @@
 #include "terrain.h"
 
-Terrain::Terrain() {}
-
-void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
-{
+Terrain::Terrain() {
     static const QColor GRASS_LIGHT(34, 164, 83);
     static const QColor GRASS_DARK(20, 130, 72);
     static const QColor RUMBLE_LIGHT(143, 143, 143);
@@ -13,7 +10,38 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     static const QColor ROAD_LIGHT(72, 77, 91);
     static const QColor ROAD_DARK(57, 62, 77);
     static const QColor LINE(255, 220, 70);
+    static const QColor FOG_COLOR(126, 185, 224);
 
+    auto applyFog = [](const QColor& baseColor, const QColor& fogColor, float fogFactor) -> QColor {
+        fogFactor = std::max(0.0f, std::min(1.0f, fogFactor));
+        int r = baseColor.red() + (fogColor.red() - baseColor.red()) * fogFactor;
+        int g = baseColor.green() + (fogColor.green() - baseColor.green()) * fogFactor;
+        int b = baseColor.blue() + (fogColor.blue() - baseColor.blue()) * fogFactor;
+        return QColor(r, g, b, baseColor.alpha());
+        };
+
+    for (int i = 0; i < MAX_DRAW_DISTANCE; i++) {
+        float distanceRatio = (float)i / MAX_DRAW_DISTANCE;
+        float fogFactor = std::pow(distanceRatio, 1.5f);
+        precalcFogFactor[i] = fogFactor;
+
+        precalcGrassLight[i] = applyFog(GRASS_LIGHT, FOG_COLOR, fogFactor);
+        precalcGrassDark[i] = applyFog(GRASS_DARK, FOG_COLOR, fogFactor);
+        precalcRumbleLight[i] = applyFog(RUMBLE_LIGHT, FOG_COLOR, fogFactor);
+        precalcRumbleDark[i] = applyFog(RUMBLE_DARK, FOG_COLOR, fogFactor);
+        precalcShoulderLight[i] = applyFog(SHOULDER_LIGHT, FOG_COLOR, fogFactor);
+        precalcShoulderDark[i] = applyFog(SHOULDER_DARK, FOG_COLOR, fogFactor);
+        precalcRoadLight[i] = applyFog(ROAD_LIGHT, FOG_COLOR, fogFactor);
+        precalcRoadDark[i] = applyFog(ROAD_DARK, FOG_COLOR, fogFactor);
+
+        precalcLine[i] = applyFog(LINE, FOG_COLOR, fogFactor);
+        precalcEdgeLine[i] = applyFog(QColor(250, 250, 255), FOG_COLOR, fogFactor);
+        precalcRoadGlow[i] = applyFog(QColor(255, 255, 255, 22), FOG_COLOR, fogFactor);
+    }
+}
+
+void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
+{
     int startPos = player.getPositionZ() / SEG_L;
     float percent = (player.getPositionZ() - (startPos * SEG_L)) / (float)SEG_L;
 
@@ -51,19 +79,8 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     int maxy = screenHeight;
     float cameraAngle = player.getAngle();
 
-    static const QColor FOG_COLOR(126, 185, 224);
-
-    auto applyFog = [](const QColor& baseColor, const QColor& fogColor, float fogFactor) -> QColor {
-        fogFactor = std::max(0.0f, std::min(1.0f, fogFactor));
-        int r = baseColor.red() + (fogColor.red() - baseColor.red()) * fogFactor;
-        int g = baseColor.green() + (fogColor.green() - baseColor.green()) * fogFactor;
-        int b = baseColor.blue() + (fogColor.blue() - baseColor.blue()) * fogFactor;
-        return QColor(r, g, b, baseColor.alpha());
-        };
-
     // Montre les 600 lignes devant
-    int maxDrawDistance = 600;
-    for (int n = startPos; n < startPos + maxDrawDistance; n++) {
+    for (int n = startPos; n < startPos + MAX_DRAW_DISTANCE; n++) {
         int index = (n % N_LINES + N_LINES) % N_LINES;
         Line& l = lines[index];
 
@@ -90,24 +107,18 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
             p = lines[(n - 1 + N_LINES) % N_LINES];
         }
 
-        float distanceRatio = (float)(n - startPos) / maxDrawDistance;
-        float fogFactor = std::pow(distanceRatio, 1.5f);
         bool isDark = (n / 3) % 2;
+        int distIndex = n - startPos;
 
-        QColor grass = applyFog(isDark ? GRASS_DARK : GRASS_LIGHT, FOG_COLOR, fogFactor);
-        QColor rumble = applyFog(isDark ? RUMBLE_DARK : RUMBLE_LIGHT, FOG_COLOR, fogFactor);
-        QColor shoulder = applyFog(isDark ? SHOULDER_DARK : SHOULDER_LIGHT, FOG_COLOR, fogFactor);
-        QColor road = applyFog(isDark ? ROAD_DARK : ROAD_LIGHT, FOG_COLOR, fogFactor);
+        QColor grass = isDark ? precalcGrassDark[distIndex] : precalcGrassLight[distIndex];
+        QColor rumble = isDark ? precalcRumbleDark[distIndex] : precalcRumbleLight[distIndex];
+        QColor shoulder = isDark ? precalcShoulderDark[distIndex] : precalcShoulderLight[distIndex];
+        QColor road = isDark ? precalcRoadDark[distIndex] : precalcRoadLight[distIndex];
 
         drawQuad(painter, grass, 0, p.Y, screenWidth, 0, l.Y, screenWidth);
         drawQuad(painter, shoulder, p.X, p.Y, p.W * 1.42, l.X, l.Y, l.W * 1.42);
         drawQuad(painter, rumble, p.X, p.Y, p.W * 1.24, l.X, l.Y, l.W * 1.24);
         drawQuad(painter, road, p.X, p.Y, p.W, l.X, l.Y, l.W);
-
-        if ((n / 18) % 2 == 0) {
-            QColor roadGlow = applyFog(QColor(255, 255, 255, 22), FOG_COLOR, fogFactor);
-            drawQuad(painter, roadGlow, p.X, p.Y, p.W * 0.98f, l.X, l.Y, l.W * 0.98f);
-        }
 
         bool isLine = l.isLineFull || (n / 6) % 2;
         if (isLine) {
@@ -120,7 +131,7 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
             float laneWidthP = (p.W * 2) / l.nbLane;
             float laneWidthL = (l.W * 2) / l.nbLane;
 
-            QColor fadedLine = applyFog(LINE, FOG_COLOR, fogFactor);
+            QColor fadedLine = precalcLine[distIndex];
 
             for (int i = 1; i < nbLigne + 1; i++) {
                 float offsetP = -p.W + (laneWidthP * i);
@@ -130,7 +141,7 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
         }
 
         if (l.isLineFull || (n / 10) % 2) {
-            QColor edgeLine = applyFog(QColor(250, 250, 255), FOG_COLOR, fogFactor);
+            QColor edgeLine = precalcEdgeLine[distIndex];
             float widthEdgeP = std::max(1.0f, (float)(p.W * 0.012f));
             float widthEdgeL = std::max(1.0f, (float)(l.W * 0.012f));
             drawQuad(painter, edgeLine, p.X - p.W * 0.92f, p.Y, widthEdgeP, l.X - l.W * 0.92f, l.Y, widthEdgeL);
@@ -139,14 +150,14 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     }
 
     // Affiche les sprites
-    for (int n = startPos + maxDrawDistance; n > startPos; n--) {
+    /*for (int n = startPos + MAX_DRAW_DISTANCE; n > startPos; n--) {
         Line& l = lines[n % N_LINES];
 
-        float distanceRatio = (float)(n - startPos) / maxDrawDistance;
-        float fogFactor = std::pow(distanceRatio, 1.5f);
+        int distIndex = n - startPos;
+        float fogFactor = precalcFogFactor[distIndex];
 
         l.drawSprite(painter, screenWidth, screenHeight, fogFactor);
-    }
+    }*/
 }
 
 void Terrain::generateTerrain()
@@ -401,17 +412,17 @@ int Terrain::getTotalLines() const
     return N_LINES;
 }
 
-void Terrain::drawQuad(QPainter &painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)
+inline void Terrain::drawQuad(QPainter& painter, const QColor& color, float x1, float y1, float w1, float x2, float y2, float w2)
 {
-    // Crée les quatre points
-    QPoint points[4] = {
-        QPoint(x1 - w1, y1),
-        QPoint(x2 - w2, y2),
-        QPoint(x2 + w2, y2),
-        QPoint(x1 + w1, y1)
+    // Utilisation de QPointF pour éviter les conversions float -> int
+    QPointF points[4] = {
+        QPointF(x1 - w1, y1),
+        QPointF(x2 - w2, y2),
+        QPointF(x2 + w2, y2),
+        QPointF(x1 + w1, y1)
     };
 
-    // Dessine
+    // Modification du state et dessin
     painter.setBrush(color);
     painter.drawConvexPolygon(points, 4);
 }
