@@ -264,8 +264,8 @@ void Terrain::generateTerrain()
         }
 
         if (i % 150 == 0 && i > 100 && i < 500) {
-            line.obstacles.append(Obstacle("arbre", 1, 6.0f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre", 1, -6.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, 6.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, -6.0f, 0.025f, 2));
         }
 
         // 2. Danger dans la montée/virage : Roches proches de la piste
@@ -287,14 +287,85 @@ void Terrain::generateTerrain()
 
         // 5. Grosse Montagne : Arbres denses sur les côtés
         if (i % 100 == 0 && i >= 1700 && i < 2300) {
-            line.obstacles.append(Obstacle("arbre", 1, 5.5f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre", 1, -5.5f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, 5.5f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, -5.5f, 0.025f, 2));
         }
 
         // 6. Piège dans la vallée : Combo Roche + Bûche
         if (i == 3000) {
             line.obstacles.append(Obstacle("roche", 1, -2.0f, 0.01f, 2.5f)); // Bloque la gauche
             line.obstacles.append(Obstacle("buche", 1, 1.5f, 0.02f, 2.0f));  // Gêne la droite
+        }
+
+        //Arbre
+        // -----------------------------
+        // GÉNÉRATION DE LA FORÊT (Arbres 0 à 3)
+        // -----------------------------
+        // Moins fréquent que le gazon (1 ligne sur 6 ou 8) pour sauver le CPU
+        if (i % 8 == 0) {
+            // Seulement 2 ou 3 arbres maximum par côté par ligne.
+            // La perspective fera le reste du travail pour rendre ça dense.
+            int treeDensityPerSide = 2;
+
+            for (int t = 0; t < treeDensityPerSide; t++) {
+                // ==========================================
+                // CÔTÉ GAUCHE
+                // ==========================================
+                // On commence plus loin de la route (10.0 au lieu de 6.0) pour éviter les collisions injustes.
+                // Profondeur massive jusqu'à 210.0
+                float randomOffsetLeft = -(10.0f + (rand() % 2000) / 10.0f);
+
+                // Sélectionne au hasard arbre0, arbre1, arbre2 ou arbre3
+                QString typeLeft = "arbre" + QString::number(rand() % 4);
+
+                // L'échelle d'un arbre doit être bien plus grande que celle du gazon.
+                // Modifie ces valeurs (0.025 à 0.040) selon la taille réelle de tes images PNG.
+                float scaleLeft = 0.025f + (rand() % 15) / 1000.0f;
+
+                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+
+                // ==========================================
+                // CÔTÉ DROIT
+                // ==========================================
+                float randomOffsetRight = 10.0f + (rand() % 2000) / 10.0f;
+
+                QString typeRight = "arbre" + QString::number(rand() % 4);
+                float scaleRight = 0.025f + (rand() % 15) / 1000.0f;
+
+                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+            }
+        }
+
+        // Gazon
+        if (i % 2 == 0) {
+            int grassDensityPerSide = 7;
+
+            for (int g = 0; g < grassDensityPerSide; g++) {
+                // ==========================================
+                // CÔTÉ GAUCHE (Indépendant)
+                // ==========================================
+                // On a passé le rand de 800 à 2500. 
+                // Le décalage va maintenant de -6.0 jusqu'à -256.0. C'est immense.
+                float randomOffsetLeft = -(6.0f + (rand() % 2500) / 10.0f);
+                bool isTallLeft = (rand() % 100 < 25);
+
+                QString typeLeft = isTallLeft ? "grass" : "grass";
+                float scaleLeft = isTallLeft ? (0.009f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
+
+                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+
+                // ==========================================
+                // CÔTÉ DROIT (Indépendant)
+                // ==========================================
+                // Décalage entre 6.0 et 256.0.
+                float randomOffsetRight = 6.0f + (rand() % 2500) / 10.0f;
+                bool isTallRight = (rand() % 100 < 25);
+
+                QString typeRight = isTallRight ? "grass" : "grass";
+                float scaleRight = isTallRight ? (0.009f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
+
+                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+            }
         }
 
         lines.push_back(line);

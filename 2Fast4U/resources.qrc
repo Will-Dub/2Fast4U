@@ -1,12 +1,17 @@
 <RCC>
     <qresource prefix="/images">
         <file>penguin.png</file>
-        <file>arbre.png</file>
         <file>pole.png</file>
         <file>buche.png</file>
         <file>roche.png</file>
         <file>habitacle.png</file>
         <file>habitacleCrashed.png</file>
         <file>background.png</file>
+        <file>grass.png</file>
+        <file>tallGrass.png</file>
+        <file>arbre2.png</file>
+        <file>arbre3.png</file>
+        <file>arbre0.png</file>
+        <file>arbre1.png</file>
     </qresource>
 </RCC>
