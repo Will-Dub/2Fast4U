@@ -42,6 +42,7 @@ Terrain::Terrain() {
 
 void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
 {
+    painter.setPen(Qt::NoPen);
     int startPos = player.getPositionZ() / SEG_L;
     float percent = (player.getPositionZ() - (startPos * SEG_L)) / (float)SEG_L;
 
@@ -150,14 +151,14 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     }
 
     // Affiche les sprites
-    /*for (int n = startPos + MAX_DRAW_DISTANCE; n > startPos; n--) {
+    for (int n = startPos + MAX_DRAW_DISTANCE; n > startPos; n--) {
         Line& l = lines[n % N_LINES];
 
         int distIndex = n - startPos;
         float fogFactor = precalcFogFactor[distIndex];
 
         l.drawSprite(painter, screenWidth, screenHeight, fogFactor);
-    }*/
+    }
 }
 
 void Terrain::generateTerrain()
@@ -412,17 +413,17 @@ int Terrain::getTotalLines() const
     return N_LINES;
 }
 
-inline void Terrain::drawQuad(QPainter& painter, const QColor& color, float x1, float y1, float w1, float x2, float y2, float w2)
+void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)
 {
-    // Utilisation de QPointF pour éviter les conversions float -> int
-    QPointF points[4] = {
-        QPointF(x1 - w1, y1),
-        QPointF(x2 - w2, y2),
-        QPointF(x2 + w2, y2),
-        QPointF(x1 + w1, y1)
+    // Crée les quatre points
+    QPoint points[4] = {
+        QPoint(x1 - w1, y1),
+        QPoint(x2 - w2, y2),
+        QPoint(x2 + w2, y2),
+        QPoint(x1 + w1, y1)
     };
 
-    // Modification du state et dessin
+    // Dessine
     painter.setBrush(color);
     painter.drawConvexPolygon(points, 4);
 }

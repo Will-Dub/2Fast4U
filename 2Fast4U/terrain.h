@@ -48,7 +48,7 @@ private:
      * @param y2 y de la ligne du bas
      * @param w2 demi largeur de la ligne du bas
      */
-    inline void drawQuad(QPainter& painter, const QColor& color, float x1, float y1, float w1, float x2, float y2, float w2);
+    inline void drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2);
 };
 
 #endif // TERRAIN_H
