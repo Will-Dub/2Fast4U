@@ -1,221 +1,227 @@
 <mxfile host="65bd71144e">
     <diagram id="ijF1YM0arL4fCx2Bu2h7" name="Page-1">
-        <mxGraphModel dx="1085" dy="907" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="5025" dy="2495" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="2" value="Mainwindow" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="80" width="160" height="86" as="geometry"/>
+                <mxCell id="2" value="MainWindow" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-840" y="10" width="320" height="290" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="2">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="3" value="- m_stack: QStackedWidget*&lt;br&gt;- m_menuWidget: MenuWidget*&lt;br&gt;- m_gameWidget: GameWidget*&lt;br&gt;- m_optionsWidget: OptionsWidget*&lt;br&gt;- m_startWidget: StartWidget*&lt;br&gt;- m_pauseWidget: PauseWidget*&lt;br&gt;- m_endWidget: EndWidget*" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="2">
+                    <mxGeometry y="26" width="320" height="104" as="geometry"/>
                 </mxCell>
                 <mxCell id="4" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="2">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="130" width="320" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="2">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="5" value="+ MainWindow(QWidget*):&lt;br&gt;- showMenuScreen(): void&lt;br&gt;- showOptionsScreen(): void&lt;br&gt;- showStartScreen(): void&lt;br&gt;- startGame(const QString): void&lt;br&gt;- pauseGame(): void&lt;br&gt;- quitter(): void&lt;br&gt;- resumeGame(): void&lt;br&gt;- showEndWidget(EndType, const QString&amp;amp;, double): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="2">
+                    <mxGeometry y="138" width="320" height="152" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="Menuwidget&lt;span style=&quot;font-family: monospace; font-size: 0px; font-weight: 400; text-align: start; text-wrap-mode: nowrap;&quot;&gt;%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22Mainwindow%22%20style%3D%22swimlane%3BfontStyle%3D1%3Balign%3Dcenter%3BverticalAlign%3Dtop%3BchildLayout%3DstackLayout%3Bhorizontal%3D1%3BstartSize%3D26%3BhorizontalStack%3D0%3BresizeParent%3D1%3BresizeParentMax%3D0%3BresizeLast%3D0%3Bcollapsible%3D1%3BmarginBottom%3D0%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%2280%22%20y%3D%22170%22%20width%3D%22160%22%20height%3D%2286%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3CmxCell%20id%3D%223%22%20value%3D%22%2B%20field%3A%20type%22%20style%3D%22text%3BstrokeColor%3Dnone%3BfillColor%3Dnone%3Balign%3Dleft%3BverticalAlign%3Dtop%3BspacingLeft%3D4%3BspacingRight%3D4%3Boverflow%3Dhidden%3Brotatable%3D0%3Bpoints%3D%5B%5B0%2C0.5%5D%2C%5B1%2C0.5%5D%5D%3BportConstraint%3Deastwest%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3B%22%20vertex%3D%221%22%20parent%3D%222%22%3E%3CmxGeometry%20y%3D%2226%22%20width%3D%22160%22%20height%3D%2226%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3CmxCell%20id%3D%224%22%20value%3D%22%22%20style%3D%22line%3BstrokeWidth%3D1%3BfillColor%3Dnone%3Balign%3Dleft%3BverticalAlign%3Dmiddle%3BspacingTop%3D-1%3BspacingLeft%3D3%3BspacingRight%3D3%3Brotatable%3D0%3BlabelPosition%3Dright%3Bpoints%3D%5B%5D%3BportConstraint%3Deastwest%3BstrokeColor%3Dinherit%3B%22%20vertex%3D%221%22%20parent%3D%222%22%3E%3CmxGeometry%20y%3D%2252%22%20width%3D%22160%22%20height%3D%228%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3CmxCell%20id%3D%225%22%20value%3D%22%2B%20method(type)%3A%20type%22%20style%3D%22text%3BstrokeColor%3Dnone%3BfillColor%3Dnone%3Balign%3Dleft%3BverticalAlign%3Dtop%3BspacingLeft%3D4%3BspacingRight%3D4%3Boverflow%3Dhidden%3Brotatable%3D0%3Bpoints%3D%5B%5B0%2C0.5%5D%2C%5B1%2C0.5%5D%5D%3BportConstraint%3Deastwest%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3B%22%20vertex%3D%221%22%20parent%3D%222%22%3E%3CmxGeometry%20y%3D%2260%22%20width%3D%22160%22%20height%3D%2226%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E&lt;/span&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="80" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="-320" y="10" width="200" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="6">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="8" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="6">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
-                </mxCell>
-                <mxCell id="9" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="6">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="9" value="+ MenuWidget(QWidget*): explicit&lt;br&gt;+ commencerPressed(): void&lt;br&gt;+ optionPressed(): void&lt;br&gt;+ quitterPressed(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="6">
+                    <mxGeometry y="26" width="200" height="64" as="geometry"/>
                 </mxCell>
                 <mxCell id="10" value="Gamewidget" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="80" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="-320" y="120" width="270" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="10">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="11" value="- m_player: Player&lt;br&gt;- m_terrain: Terrain&lt;br&gt;- m_serialController: SerialController&lt;br&gt;- m_raceManager: RaceManager&lt;br&gt;- m_frameCount: int&lt;br&gt;- m_currentFps: int&lt;br&gt;- m_timer: QElapsedTimer&lt;br&gt;- m_fpsTimer: QElapsedTimer&lt;br&gt;- m_loopTimer: QTimer&lt;br&gt;- m_isEscapePressed: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="10">
+                    <mxGeometry y="26" width="270" height="154" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="10">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="180" width="270" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="10">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="13" value="+ GameWidget(QWidget*):&lt;br&gt;+ setNom(const QString&amp;amp;): void&lt;br&gt;# paintEvent(QPaintEvent*) override: void&lt;br&gt;# keyPressEvent(QKeyEvent*) override: void&lt;br&gt;# keyReleaseEvent(QKeyEvent*) override: void&lt;br&gt;+ restartGame(): void&lt;br&gt;+ resumeGame(): void&lt;br&gt;+ pauseGame(): void&lt;br&gt;- gameLoop(): void&lt;br&gt;+ pausePressed(): void&lt;br&gt;+ endGame(EndType, QString, double): void&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="10">
+                    <mxGeometry y="188" width="270" height="172" as="geometry"/>
                 </mxCell>
                 <mxCell id="14" value="Optionswidget" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="200" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="-320" y="500" width="210" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="14">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="16" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="14">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
-                </mxCell>
-                <mxCell id="17" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="14">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="17" value="+ OptionsWidget(QWidget*): explicit&lt;br&gt;+ retourPressed(): void&lt;br&gt;+ sauvegarderPressed(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="14">
+                    <mxGeometry y="26" width="210" height="54" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" value="Startwidget" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="200" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="-320" y="640" width="240" height="160" as="geometry"/>
                 </mxCell>
-                <mxCell id="19" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="18">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="19" value="- m_nomInput: QLineEdit*&lt;br&gt;- m_commencerButton: HoverButton*" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="18">
+                    <mxGeometry y="26" width="240" height="34" as="geometry"/>
                 </mxCell>
                 <mxCell id="20" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="18">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="60" width="240" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="21" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="18">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="21" value="+ StartWidget(QWidget*): explicit&lt;br&gt;+ resetInput(): void&lt;br&gt;- isValidInput(const QString&amp;amp;): bool&lt;br&gt;- nomTextChanged(const QString&amp;amp;): void&lt;br&gt;+ commcerPressed(const QString&amp;amp;): void&lt;br&gt;+ retourPressed(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="18">
+                    <mxGeometry y="68" width="240" height="92" as="geometry"/>
                 </mxCell>
                 <mxCell id="22" value="Pausewidget" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="200" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="-320" y="820" width="250" height="170" as="geometry"/>
                 </mxCell>
-                <mxCell id="23" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="22">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="23" value="- m_gameSnapshot: QPixmap" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="22">
+                    <mxGeometry y="26" width="250" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="24" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="22">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="52" width="250" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="25" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="22">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="25" value="+ PauseWidget(QWidget*): explicit&lt;br&gt;+ setGameSnapshot(const QPixmap&amp;amp;): void&lt;br&gt;# paintEvent(QPaintEvent*) override: void&lt;br&gt;# keyPressEvent(QKeyEvent*) override: void&lt;br&gt;# showEvent(QShowEvent*) override: void&lt;br&gt;+ reprendrePressed(): void&lt;br&gt;+ quitterPressed(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="22">
+                    <mxGeometry y="60" width="250" height="110" as="geometry"/>
                 </mxCell>
                 <mxCell id="26" value="Endwidget" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="320" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="-320" y="1010" width="270" height="210" as="geometry"/>
                 </mxCell>
-                <mxCell id="27" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="26">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="27" value="- m_nom: QString&lt;br&gt;- m_titre: QLabel*&lt;br&gt;- m_sousTitre: QLabel*&lt;br&gt;- m_gameSnapshot: QPixmap" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="26">
+                    <mxGeometry y="26" width="270" height="64" as="geometry"/>
                 </mxCell>
                 <mxCell id="28" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="26">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="90" width="270" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="29" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="26">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="29" value="+ EndWidget(QWidget*): explicit&lt;br&gt;+ setText(const QString&amp;amp;, const QString&amp;amp;): void&lt;br&gt;+ setNom(const Qstring&amp;amp;): void&lt;br&gt;+ setGameSnapshot(const QPixmap&amp;amp;): void&lt;br&gt;# paintEvent(QPaintEvent*) override: void&lt;br&gt;+ quitterPressed(): void&lt;br&gt;+ recommencerPressed(const QString&amp;amp;): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="26">
+                    <mxGeometry y="98" width="270" height="112" as="geometry"/>
                 </mxCell>
-                <mxCell id="30" value="Hoverbutton" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="80" width="160" height="86" as="geometry"/>
+                <mxCell id="30" value="HoverButton" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="10" width="280" height="140" as="geometry"/>
                 </mxCell>
-                <mxCell id="31" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="30">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="31" value="- m_isEnabled: bool&lt;br&gt;- m_clickSound: *QSoundEffect" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="30">
+                    <mxGeometry y="26" width="280" height="34" as="geometry"/>
                 </mxCell>
                 <mxCell id="32" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="30">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="60" width="280" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="33" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="30">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="33" value="+ HoverButton(const QString&amp;amp;, QWidget*): explicit&lt;br&gt;+ setEnabled(bool): void&lt;br&gt;# enterEvent(QEnterEvent*) override: void&lt;br&gt;# leaveEvent(QEvent*) override: void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="30">
+                    <mxGeometry y="68" width="280" height="72" as="geometry"/>
                 </mxCell>
                 <mxCell id="34" value="Obstacle" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="320" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="960" y="10" width="220" height="280" as="geometry"/>
                 </mxCell>
-                <mxCell id="35" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="34">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="35" value="- m_currentFrame: int&lt;br&gt;- m_maxFrame: int&lt;br&gt;- m_spriteName: QString&lt;br&gt;- m_spriteX: float&lt;br&gt;- m_spriteScale: float&lt;br&gt;- m_hitboxWidth: float&lt;br&gt;- m_movingSpeed: float&lt;br&gt;- m_timeElapsed: float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="34">
+                    <mxGeometry y="26" width="220" height="124" as="geometry"/>
                 </mxCell>
                 <mxCell id="36" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="34">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="150" width="220" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="37" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="34">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="38" value="Line" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="520" y="320" width="160" height="86" as="geometry"/>
-                </mxCell>
-                <mxCell id="39" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="38">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="40" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="38">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
-                </mxCell>
-                <mxCell id="41" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="38">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="37" value="+ Obstacle([tous sauf currentFrame]):&lt;br&gt;+ Obstacle():&lt;br&gt;+ update(float): void&lt;br&gt;+ getSpriteName() const: QString&lt;br&gt;+ getCurrentFrame() const: int&lt;br&gt;+ getSpriteX() const: float&lt;br&gt;+ getSpriteScale() const: float&lt;br&gt;+ getHitboxWidth() const: float" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="34">
+                    <mxGeometry y="158" width="220" height="122" as="geometry"/>
                 </mxCell>
                 <mxCell id="43" value="Spritemanager" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="440" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="960" y="304" width="260" height="82" as="geometry"/>
                 </mxCell>
-                <mxCell id="44" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="43">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="45" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="43">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
-                </mxCell>
-                <mxCell id="46" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="43">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="46" value="+ get(const QString&amp;amp;): static const QPixmap&amp;amp;&lt;br&gt;- loadSprite(QHash&amp;lt;QString, QPixmap&amp;gt;&amp;amp;, const QString&amp;amp;, const QString&amp;amp;): static void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="43">
+                    <mxGeometry y="26" width="260" height="56" as="geometry"/>
                 </mxCell>
                 <mxCell id="47" value="Terrain" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="520" y="440" width="160" height="86" as="geometry"/>
+                    <mxGeometry x="150" y="210" width="370" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="48" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="47">
-                    <mxGeometry y="26" width="160" height="26" as="geometry"/>
+                <mxCell id="48" value="+ N_LINES: constexpr static int&lt;br&gt;- MAX_DRAW_DISTANCE: static constexpr int&lt;br&gt;- lines: QVector&amp;lt;Line&amp;gt;&lt;br&gt;- precalcFogFactor[MAX_DRAW_DISTANCE]: float&lt;br&gt;- precalcGrassLight[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcGrassDark[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcRumbleLight[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcRumbleDark[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcShoulderLight[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcShoulderDark[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcRoadLight[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcRoadDark[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcLine[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcEdgeLine[MAX_DRAW_DISTANCE]: QColor&lt;br&gt;- precalcRoadGlow[MAX_DRAW_DISTANCE]: QColor" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="47">
+                    <mxGeometry y="26" width="370" height="206" as="geometry"/>
                 </mxCell>
                 <mxCell id="49" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="47">
-                    <mxGeometry y="52" width="160" height="8" as="geometry"/>
+                    <mxGeometry y="232" width="370" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="50" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="47">
-                    <mxGeometry y="60" width="160" height="26" as="geometry"/>
+                <mxCell id="50" value="+ Terrain():&lt;br&gt;+ render(QPainter&amp;amp;, Player&amp;amp;, int, int): void&lt;br&gt;+ generateTerrain(): void&lt;br&gt;+ tick(Player&amp;amp;, float): void&lt;br&gt;+ getLine(int): Line&amp;amp;&lt;br&gt;+ getLine(int) const: const Line&amp;amp;&lt;br&gt;+ getTotalLines() const: int&lt;br&gt;- drawQuad(QPainters&amp;amp;, QColor, int, int, int, int, int, int): inline void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="47">
+                    <mxGeometry y="240" width="370" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="151" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QImageReader&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="960" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="530" y="290" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="152" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QSoundEffect&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="520" y="880" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="440" y="160" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="153" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QString&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="960" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="1000" y="400" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="155" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QPixmap&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="880" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="1150" y="970" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="156" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QHash&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="960" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="1230" y="390" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="157" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QEvent&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="880" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="440" y="120" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="158" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QPushButton&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="880" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="440" y="80" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="159" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QLineEdit&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="880" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-75" y="720" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="160" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QMessageBox&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="800" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-110" y="600" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="161" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QDebug&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="520" y="800" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="990" y="890" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="162" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QTextDocument&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="800" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-40" y="420" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="163" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QElapsedTimer&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="800" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-40" y="380" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="164" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QKeyEvent&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="800" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-280" y="1400" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="165" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QVector&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="720" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="1150" y="810" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="166" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QPainter&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="520" y="720" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="990" y="810" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="168" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QTimer&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="720" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-40" y="340" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="169" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QObject&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="720" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-40" y="300" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="171" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QVBoxLayout&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="720" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-280" y="1360" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="172" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QTextEdit&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="680" y="640" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-280" y="1320" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="173" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QLabel&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="520" y="640" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-280" y="1280" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="174" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QWidget&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="360" y="640" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-280" y="1240" width="160" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="175" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QStackWidget&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="200" y="640" width="160" height="30" as="geometry"/>
+                <mxCell id="175" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QStackedWidget&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-510" y="190" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="177" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;QMainWindow&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
-                    <mxGeometry x="40" y="640" width="160" height="30" as="geometry"/>
+                    <mxGeometry x="-510" y="150" width="160" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="178" value="QPushbutton&lt;div&gt;QEvent&lt;br&gt;QSoundEffect&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="430" y="20" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="179" value="QString" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="1180" y="20" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="180" value="QPixmap&lt;div&gt;QHash&lt;/div&gt;&lt;div&gt;QString&lt;/div&gt;&lt;div&gt;QDebug&lt;/div&gt;&lt;div&gt;QPainter&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="1220" y="310" width="110" height="74" as="geometry"/>
+                </mxCell>
+                <mxCell id="181" value="QVector&lt;div&gt;QPainter&lt;/div&gt;&lt;div&gt;QImageReader&lt;br&gt;Line&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="220" width="110" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="182" value="QMainWindow&lt;div&gt;MenuWidget&lt;/div&gt;&lt;div&gt;QStackedWidget&lt;/div&gt;&lt;div&gt;GameWidget&lt;/div&gt;&lt;div&gt;OptionsWidget&lt;/div&gt;&lt;div&gt;StartWidget&lt;/div&gt;&lt;div&gt;PauseWidget&lt;/div&gt;&lt;div&gt;EndWidget&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-520" y="20" width="110" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="183" value="&lt;div&gt;QWidget&lt;/div&gt;&lt;div&gt;HoverButton&lt;/div&gt;&lt;div&gt;QLabel&lt;/div&gt;&lt;div&gt;QTextEdit&lt;/div&gt;&lt;div&gt;QVBoxLayout&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-120" y="20" width="110" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="184" value="&lt;div&gt;QObject&lt;br&gt;QWidget&lt;br&gt;QTimer&lt;br&gt;QPainter&lt;br&gt;QVector&lt;br&gt;QKeyEvent&lt;br&gt;QElapsedTimer&lt;br&gt;QTextDocument&lt;br&gt;QDebug&lt;/div&gt;&lt;div&gt;Terrain&lt;br&gt;Line&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-50" y="130" width="110" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="186" value="QWidget&lt;div&gt;HoverButton&lt;/div&gt;&lt;div&gt;QLabel&lt;/div&gt;&lt;div&gt;QTextEdit&lt;/div&gt;&lt;div&gt;QVBoxLayout&lt;/div&gt;&lt;div&gt;QVMessageBox&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-110" y="505" width="110" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="187" value="QWidget&lt;div&gt;HoverButton&lt;/div&gt;&lt;div&gt;QLabel&lt;/div&gt;&lt;div&gt;QLineEdit&lt;/div&gt;&lt;div&gt;QVBoxLayout&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-80" y="646" width="110" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="188" value="QWidget&lt;div&gt;HoverButton&lt;/div&gt;&lt;div&gt;QLabel&lt;/div&gt;&lt;div&gt;QTextEdit&lt;/div&gt;&lt;div&gt;QVBoxLayout&lt;br&gt;QPainter&lt;br&gt;QKeyEvent&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-70" y="826" width="110" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="189" value="QWidget&lt;div&gt;HoverButton&lt;/div&gt;&lt;div&gt;QLabel&lt;/div&gt;&lt;div&gt;QTextEdit&lt;/div&gt;&lt;div&gt;QVBoxLayout&lt;br&gt;QPainter&lt;br&gt;&lt;/div&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="-50" y="1016" width="110" height="84" as="geometry"/>
+                </mxCell>
+                <mxCell id="193" value="&lt;b&gt;&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;Line (struct)&lt;/font&gt;&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+                    <mxGeometry x="720" y="10" width="160" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
