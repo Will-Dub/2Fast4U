@@ -1,9 +1,6 @@
 #include "terrain.h"
 
-Terrain::Terrain() {}
-
-void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
-{
+Terrain::Terrain() {
     static const QColor GRASS_LIGHT(34, 164, 83);
     static const QColor GRASS_DARK(20, 130, 72);
     static const QColor RUMBLE_LIGHT(143, 143, 143);
@@ -13,7 +10,39 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     static const QColor ROAD_LIGHT(72, 77, 91);
     static const QColor ROAD_DARK(57, 62, 77);
     static const QColor LINE(255, 220, 70);
+    static const QColor FOG_COLOR(126, 185, 224);
 
+    auto applyFog = [](const QColor& baseColor, const QColor& fogColor, float fogFactor) -> QColor {
+        fogFactor = std::max(0.0f, std::min(1.0f, fogFactor));
+        int r = baseColor.red() + (fogColor.red() - baseColor.red()) * fogFactor;
+        int g = baseColor.green() + (fogColor.green() - baseColor.green()) * fogFactor;
+        int b = baseColor.blue() + (fogColor.blue() - baseColor.blue()) * fogFactor;
+        return QColor(r, g, b, baseColor.alpha());
+        };
+
+    for (int i = 0; i < MAX_DRAW_DISTANCE; i++) {
+        float distanceRatio = (float)i / MAX_DRAW_DISTANCE;
+        float fogFactor = std::pow(distanceRatio, 1.5f);
+        precalcFogFactor[i] = fogFactor;
+
+        precalcGrassLight[i] = applyFog(GRASS_LIGHT, FOG_COLOR, fogFactor);
+        precalcGrassDark[i] = applyFog(GRASS_DARK, FOG_COLOR, fogFactor);
+        precalcRumbleLight[i] = applyFog(RUMBLE_LIGHT, FOG_COLOR, fogFactor);
+        precalcRumbleDark[i] = applyFog(RUMBLE_DARK, FOG_COLOR, fogFactor);
+        precalcShoulderLight[i] = applyFog(SHOULDER_LIGHT, FOG_COLOR, fogFactor);
+        precalcShoulderDark[i] = applyFog(SHOULDER_DARK, FOG_COLOR, fogFactor);
+        precalcRoadLight[i] = applyFog(ROAD_LIGHT, FOG_COLOR, fogFactor);
+        precalcRoadDark[i] = applyFog(ROAD_DARK, FOG_COLOR, fogFactor);
+
+        precalcLine[i] = applyFog(LINE, FOG_COLOR, fogFactor);
+        precalcEdgeLine[i] = applyFog(QColor(250, 250, 255), FOG_COLOR, fogFactor);
+        precalcRoadGlow[i] = applyFog(QColor(255, 255, 255, 22), FOG_COLOR, fogFactor);
+    }
+}
+
+void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
+{
+    painter.setPen(Qt::NoPen);
     int startPos = player.getPositionZ() / SEG_L;
     float percent = (player.getPositionZ() - (startPos * SEG_L)) / (float)SEG_L;
 
@@ -51,19 +80,8 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     int maxy = screenHeight;
     float cameraAngle = player.getAngle();
 
-    static const QColor FOG_COLOR(126, 185, 224);
-
-    auto applyFog = [](const QColor& baseColor, const QColor& fogColor, float fogFactor) -> QColor {
-        fogFactor = std::max(0.0f, std::min(1.0f, fogFactor));
-        int r = baseColor.red() + (fogColor.red() - baseColor.red()) * fogFactor;
-        int g = baseColor.green() + (fogColor.green() - baseColor.green()) * fogFactor;
-        int b = baseColor.blue() + (fogColor.blue() - baseColor.blue()) * fogFactor;
-        return QColor(r, g, b, baseColor.alpha());
-        };
-
     // Montre les 600 lignes devant
-    int maxDrawDistance = 600;
-    for (int n = startPos; n < startPos + maxDrawDistance; n++) {
+    for (int n = startPos; n < startPos + MAX_DRAW_DISTANCE; n++) {
         int index = (n % N_LINES + N_LINES) % N_LINES;
         Line& l = lines[index];
 
@@ -90,24 +108,18 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
             p = lines[(n - 1 + N_LINES) % N_LINES];
         }
 
-        float distanceRatio = (float)(n - startPos) / maxDrawDistance;
-        float fogFactor = std::pow(distanceRatio, 1.5f);
         bool isDark = (n / 3) % 2;
+        int distIndex = n - startPos;
 
-        QColor grass = applyFog(isDark ? GRASS_DARK : GRASS_LIGHT, FOG_COLOR, fogFactor);
-        QColor rumble = applyFog(isDark ? RUMBLE_DARK : RUMBLE_LIGHT, FOG_COLOR, fogFactor);
-        QColor shoulder = applyFog(isDark ? SHOULDER_DARK : SHOULDER_LIGHT, FOG_COLOR, fogFactor);
-        QColor road = applyFog(isDark ? ROAD_DARK : ROAD_LIGHT, FOG_COLOR, fogFactor);
+        QColor grass = isDark ? precalcGrassDark[distIndex] : precalcGrassLight[distIndex];
+        QColor rumble = isDark ? precalcRumbleDark[distIndex] : precalcRumbleLight[distIndex];
+        QColor shoulder = isDark ? precalcShoulderDark[distIndex] : precalcShoulderLight[distIndex];
+        QColor road = isDark ? precalcRoadDark[distIndex] : precalcRoadLight[distIndex];
 
         drawQuad(painter, grass, 0, p.Y, screenWidth, 0, l.Y, screenWidth);
         drawQuad(painter, shoulder, p.X, p.Y, p.W * 1.42, l.X, l.Y, l.W * 1.42);
         drawQuad(painter, rumble, p.X, p.Y, p.W * 1.24, l.X, l.Y, l.W * 1.24);
         drawQuad(painter, road, p.X, p.Y, p.W, l.X, l.Y, l.W);
-
-        if ((n / 18) % 2 == 0) {
-            QColor roadGlow = applyFog(QColor(255, 255, 255, 22), FOG_COLOR, fogFactor);
-            drawQuad(painter, roadGlow, p.X, p.Y, p.W * 0.98f, l.X, l.Y, l.W * 0.98f);
-        }
 
         bool isLine = l.isLineFull || (n / 6) % 2;
         if (isLine) {
@@ -120,7 +132,7 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
             float laneWidthP = (p.W * 2) / l.nbLane;
             float laneWidthL = (l.W * 2) / l.nbLane;
 
-            QColor fadedLine = applyFog(LINE, FOG_COLOR, fogFactor);
+            QColor fadedLine = precalcLine[distIndex];
 
             for (int i = 1; i < nbLigne + 1; i++) {
                 float offsetP = -p.W + (laneWidthP * i);
@@ -130,7 +142,7 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
         }
 
         if (l.isLineFull || (n / 10) % 2) {
-            QColor edgeLine = applyFog(QColor(250, 250, 255), FOG_COLOR, fogFactor);
+            QColor edgeLine = precalcEdgeLine[distIndex];
             float widthEdgeP = std::max(1.0f, (float)(p.W * 0.012f));
             float widthEdgeL = std::max(1.0f, (float)(l.W * 0.012f));
             drawQuad(painter, edgeLine, p.X - p.W * 0.92f, p.Y, widthEdgeP, l.X - l.W * 0.92f, l.Y, widthEdgeL);
@@ -139,11 +151,11 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     }
 
     // Affiche les sprites
-    for (int n = startPos + maxDrawDistance; n > startPos; n--) {
+    for (int n = startPos + MAX_DRAW_DISTANCE; n > startPos; n--) {
         Line& l = lines[n % N_LINES];
 
-        float distanceRatio = (float)(n - startPos) / maxDrawDistance;
-        float fogFactor = std::pow(distanceRatio, 1.5f);
+        int distIndex = n - startPos;
+        float fogFactor = precalcFogFactor[distIndex];
 
         l.drawSprite(painter, screenWidth, screenHeight, fogFactor);
     }
@@ -264,8 +276,8 @@ void Terrain::generateTerrain()
         }
 
         if (i % 150 == 0 && i > 100 && i < 500) {
-            line.obstacles.append(Obstacle("arbre", 1, 6.0f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre", 1, -6.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, 6.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, -6.0f, 0.025f, 2));
         }
 
         // 2. Danger dans la montée/virage : Roches proches de la piste
@@ -287,14 +299,85 @@ void Terrain::generateTerrain()
 
         // 5. Grosse Montagne : Arbres denses sur les côtés
         if (i % 100 == 0 && i >= 1700 && i < 2300) {
-            line.obstacles.append(Obstacle("arbre", 1, 5.5f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre", 1, -5.5f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, 5.5f, 0.025f, 2));
+            line.obstacles.append(Obstacle("arbre0", 1, -5.5f, 0.025f, 2));
         }
 
         // 6. Piège dans la vallée : Combo Roche + Bûche
         if (i == 3000) {
             line.obstacles.append(Obstacle("roche", 1, -2.0f, 0.01f, 2.5f)); // Bloque la gauche
             line.obstacles.append(Obstacle("buche", 1, 1.5f, 0.02f, 2.0f));  // Gêne la droite
+        }
+
+        //Arbre
+        // -----------------------------
+        // GÉNÉRATION DE LA FORÊT (Arbres 0 à 3)
+        // -----------------------------
+        // Moins fréquent que le gazon (1 ligne sur 6 ou 8) pour sauver le CPU
+        if (i % 8 == 0) {
+            // Seulement 2 ou 3 arbres maximum par côté par ligne.
+            // La perspective fera le reste du travail pour rendre ça dense.
+            int treeDensityPerSide = 2;
+
+            for (int t = 0; t < treeDensityPerSide; t++) {
+                // ==========================================
+                // CÔTÉ GAUCHE
+                // ==========================================
+                // On commence plus loin de la route (10.0 au lieu de 6.0) pour éviter les collisions injustes.
+                // Profondeur massive jusqu'à 210.0
+                float randomOffsetLeft = -(10.0f + (rand() % 2000) / 10.0f);
+
+                // Sélectionne au hasard arbre0, arbre1, arbre2 ou arbre3
+                QString typeLeft = "arbre" + QString::number(rand() % 4);
+
+                // L'échelle d'un arbre doit être bien plus grande que celle du gazon.
+                // Modifie ces valeurs (0.025 à 0.040) selon la taille réelle de tes images PNG.
+                float scaleLeft = 0.025f + (rand() % 15) / 1000.0f;
+
+                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+
+                // ==========================================
+                // CÔTÉ DROIT
+                // ==========================================
+                float randomOffsetRight = 10.0f + (rand() % 2000) / 10.0f;
+
+                QString typeRight = "arbre" + QString::number(rand() % 4);
+                float scaleRight = 0.025f + (rand() % 15) / 1000.0f;
+
+                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+            }
+        }
+
+        // Gazon
+        if (i % 2 == 0) {
+            int grassDensityPerSide = 7;
+
+            for (int g = 0; g < grassDensityPerSide; g++) {
+                // ==========================================
+                // CÔTÉ GAUCHE (Indépendant)
+                // ==========================================
+                // On a passé le rand de 800 à 2500. 
+                // Le décalage va maintenant de -6.0 jusqu'à -256.0. C'est immense.
+                float randomOffsetLeft = -(6.0f + (rand() % 2500) / 10.0f);
+                bool isTallLeft = (rand() % 100 < 25);
+
+                QString typeLeft = isTallLeft ? "grass" : "grass";
+                float scaleLeft = isTallLeft ? (0.009f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
+
+                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+
+                // ==========================================
+                // CÔTÉ DROIT (Indépendant)
+                // ==========================================
+                // Décalage entre 6.0 et 256.0.
+                float randomOffsetRight = 6.0f + (rand() % 2500) / 10.0f;
+                bool isTallRight = (rand() % 100 < 25);
+
+                QString typeRight = isTallRight ? "grass" : "grass";
+                float scaleRight = isTallRight ? (0.009f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
+
+                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+            }
         }
 
         lines.push_back(line);
@@ -330,7 +413,7 @@ int Terrain::getTotalLines() const
     return N_LINES;
 }
 
-void Terrain::drawQuad(QPainter &painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)
+void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)
 {
     // Crée les quatre points
     QPoint points[4] = {

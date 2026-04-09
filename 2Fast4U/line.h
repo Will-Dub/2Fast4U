@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <QDebug>
 #include "obstacle.h"
+#include "spritemanager.h"
 
 constexpr static float ROAD_W = 9.5f;
 constexpr static float SEG_L = 3.0f;
@@ -44,9 +45,11 @@ struct Line {
 
         static const QColor FOG_COLOR(135, 206, 235);
 
+        int fogIndex = std::max(0, std::min(9, (int)(fogFactor * 10)));
+
         for(const Obstacle& obstacle : obstacles){
-            QPixmap sprite = obstacle.getCurrentFrame();
-            if(sprite.isNull()) continue;
+            QString cacheKey = obstacle.getSpriteName() + QString::number(obstacle.getCurrentFrame()) + "_fog" + QString::number(fogIndex);
+            const QPixmap& sprite = SpriteManager::get(cacheKey);
 
             int w = sprite.width();
             int h = sprite.height();
@@ -71,12 +74,9 @@ struct Line {
 
             float srcVisibleH = (visibleH / destH) * h;
 
-            // Applique le brouillard
-            QPixmap finalSprite = obstacle.getFoggedFrame(fogFactor);
-
             painter.drawPixmap(
                 QRectF(destX, destY, destW, visibleH),
-                finalSprite,
+                sprite,
                 QRectF(0, 0, w, srcVisibleH)
             );
 
