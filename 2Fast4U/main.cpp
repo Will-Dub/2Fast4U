@@ -6,6 +6,8 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName("UDeS");
+    QCoreApplication::setApplicationName("2Fast4U");
     QImageReader::setAllocationLimit(0);
 
     QApplication a(argc, argv);

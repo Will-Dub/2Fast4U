@@ -56,6 +56,7 @@ void MainWindow::showOptionsScreen()
 {
     m_stack->setCurrentIndex(3);
     m_optionsWidget->setFocus();
+    m_optionsWidget->resetValueChanged();
 }
 
 void MainWindow::showStartScreen()

@@ -24,9 +24,51 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     title->setFont(titleFont);
     title->setStyleSheet("color: white; background: transparent;");
     title->setAlignment(Qt::AlignCenter);
-    layout->addWidget(title);
+    layout->addWidget(title);;
 
-    layout->addStretch(8);
+    QVBoxLayout* settingsLayout = new QVBoxLayout();
+    settingsLayout->setAlignment(Qt::AlignCenter);
+
+    QHBoxLayout* volumeLayout = new QHBoxLayout();
+    volumeLayout->setAlignment(Qt::AlignCenter);
+    volumeLayout->setSpacing(20);
+
+    volumeLayout->addStretch();
+
+    QLabel* volumeLabel = new QLabel(QString::fromUtf8("Volume :"), darkOverlay);
+    volumeLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
+    volumeLabel->setStyleSheet("color: white; background: transparent;");
+
+    QSlider* volumeSlider = new QSlider(Qt::Horizontal, darkOverlay);
+    volumeSlider->setRange(0, 100);
+    volumeSlider->setValue(m_settings.value("sonds", 50).toInt());
+    volumeSlider->setFixedWidth(300);
+
+    volumeSlider->setStyleSheet(
+        "QSlider::groove:horizontal { border: 1px solid #bbb; background: white; height: 10px; border-radius: 4px; }"
+        "QSlider::sub-page:horizontal { background: #4CAF50; height: 10px; border-radius: 4px; }"
+        "QSlider::add-page:horizontal { background: #555; height: 10px; border-radius: 4px; }"
+        "QSlider::handle:horizontal { background: white; border: 2px solid #777; width: 20px; margin-top: -6px; margin-bottom: -6px; border-radius: 10px; }"
+    );
+
+    QLabel* volumeValueLabel = new QLabel(QString::number(volumeSlider->value()) + "%", darkOverlay);
+    volumeValueLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
+    volumeValueLabel->setStyleSheet("color: white; background: transparent;");
+    volumeValueLabel->setFixedWidth(70);
+
+    connect(volumeSlider, &QSlider::valueChanged, this, [=](int value) {
+        volumeValueLabel->setText(QString::number(value) + "%");
+    });
+
+    volumeLayout->addWidget(volumeLabel);
+    volumeLayout->addWidget(volumeSlider);
+    volumeLayout->addWidget(volumeValueLabel);
+    volumeLayout->addStretch();
+
+    settingsLayout->addLayout(volumeLayout);
+    layout->addLayout(settingsLayout);
+
+    layout->addStretch(4);
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
 
@@ -41,10 +83,10 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     boutonLayout->addWidget(boutonRetour);
 
     // Bouton sauvegarder
-    HoverButton* boutonSauvegarder = new HoverButton("Sauvegarder", darkOverlay);
-    boutonSauvegarder->setFixedSize(250, 80);
-    boutonSauvegarder->setFont(fontBoutons);
-    boutonLayout->addWidget(boutonSauvegarder);
+    m_boutonSauvegarder = new HoverButton("Sauvegarder", darkOverlay);
+    m_boutonSauvegarder->setFixedSize(250, 80);
+    m_boutonSauvegarder->setFont(fontBoutons);
+    boutonLayout->addWidget(m_boutonSauvegarder);
 
     layout->addLayout(boutonLayout);
 
@@ -53,15 +95,33 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 
     // Connection signal et slots
     connect(boutonRetour, &HoverButton::clicked, this, [=]() {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Confirme", "Voulez-vous quitter sans sauvegarder?",
-            QMessageBox::Yes | QMessageBox::No);
 
-        if (reply == QMessageBox::Yes) {
-            emit retourPressed();
+        if (m_didValueChange) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Confirme", "Voulez-vous quitter sans sauvegarder?",
+                QMessageBox::Yes | QMessageBox::No);
+
+            if (reply == QMessageBox::No) {
+                return;
+            }
         }
+        emit retourPressed();
     });
-    connect(boutonSauvegarder, &HoverButton::clicked, this, [=]() {
+    connect(m_boutonSauvegarder, &HoverButton::clicked, this, [=]() {
+        m_settings.setValue("sonds", volumeSlider->value());
+        resetValueChanged();
         emit sauvegarderPressed();
     });
+    connect(volumeSlider, &QSlider::valueChanged, this, &OptionsWidget::valueChanged);
+}
+
+void OptionsWidget::valueChanged() {
+    m_didValueChange = true;
+    m_boutonSauvegarder->setEnabled(true);
+}
+
+void OptionsWidget::resetValueChanged()
+{
+    m_didValueChange = false;
+    m_boutonSauvegarder->setEnabled(false);
 }
