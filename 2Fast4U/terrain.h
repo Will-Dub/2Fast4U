@@ -22,6 +22,8 @@ public:
     const Line& getLine(int index) const;
     int getTotalLines() const;
 
+    void generateRandomObstacle(Player& player);
+
 private:
     static constexpr int MAX_DRAW_DISTANCE = 600;
     QVector<Line> lines;

@@ -74,6 +74,15 @@ InputState SerialController::getState()
     return state;
 }
 
+bool SerialController::getMuonFlag()
+{
+    if (m_muonFlag) {
+        m_muonFlag = false;
+        return true;
+    }
+    return false;
+}
+
 void SerialController::sendInformation(float dt, int vitesse, int rpm, bool isStarted, bool force)
 {
 
@@ -197,6 +206,9 @@ void SerialController::parsePacket(const QByteArray& packet) {
             m_isStarted = jsonObj["s"].toBool();
         }
         break;
+    case PacketType::MUON:
+        m_muonFlag = true;
+		break;
     default:
         qWarning() << "WARNING: Type de packet inconnu (" << type << ").";
         break;

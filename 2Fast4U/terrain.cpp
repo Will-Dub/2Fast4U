@@ -267,18 +267,9 @@ void Terrain::generateTerrain()
             line.curve = 0.0f;
         }
 
-        if (i == 50){
-            line.obstacles.append(Obstacle("buche", 1, 0.0f, 0.02f, 2.0f));
-        }
-
         if (i % 150 == 0 && i > 100 && i < 500) {
             line.obstacles.append(Obstacle("arbre0", 1, 6.0f, 0.025f, 2));
             line.obstacles.append(Obstacle("arbre0", 1, -6.0f, 0.025f, 2));
-        }
-
-        // 3. Bûche en plein milieu de la descente (Section 4)
-        if (i == 1100) {
-            line.obstacles.append(Obstacle("buche", 1, 0.0f, 0.02f, 2.0f));
         }
 
         // 4. LES POLES (Section 5) - Intouchés
@@ -296,14 +287,13 @@ void Terrain::generateTerrain()
         // 6. Piège dans la vallée : Combo Roche + Bûche
         if (i == 3000) {
             line.obstacles.append(Obstacle("roche", 1, -2.0f, 0.01f, 2.5f)); // Bloque la gauche
-            line.obstacles.append(Obstacle("buche", 1, 1.5f, 0.02f, 2.0f));  // Gêne la droite
         }
 
         //Arbre
         if (i % 8 == 0) {
             // Seulement 2 ou 3 arbres maximum par côté par ligne.
             // La perspective fera le reste du travail pour rendre ça dense.
-            int treeDensityPerSide = 2;
+            int treeDensityPerSide = 1;
 
             for (int t = 0; t < treeDensityPerSide; t++) {
                 // ==========================================
@@ -430,6 +420,15 @@ const Line &Terrain::getLine(int index) const
 int Terrain::getTotalLines() const
 {
     return N_LINES;
+}
+
+void Terrain::generateRandomObstacle(Player& player)
+{
+    int startPos = player.getPositionZ() / SEG_L;
+    int index = ((startPos + 50 + rand() % 50) % N_LINES + N_LINES) % N_LINES;
+    Line& line = lines[index];
+
+    line.obstacles.append(Obstacle("buche", 1.0f, 0.0f, 0.02f, 2.0f));
 }
 
 void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)

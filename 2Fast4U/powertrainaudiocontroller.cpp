@@ -17,8 +17,8 @@ void PowertrainAudioController::initSounds() {
 
     sources.insert("tranny_on", {":/audio/audio/trany_power_high.wav", 0.0, 0.4});
     sources.insert("tranny_off", {":/audio/audio/tw_offlow_4.wav", 0.0, 0.2});
-    sources.insert("snap", {":/audio/audio/explosion_cable_break.wav", 0.0, 1.5});
-    sources.insert("thud", {":/audio/audio/explosion_base.wav", 0.0, 1.2});
+    sources.insert("snap", {":/audio/audio/explosion_cable_break.wav", -1.0, 1.5});
+    sources.insert("thud", {":/audio/audio/explosion_base.wav", -1.0, 1.2});
 
     m_audioManager.init(sources);
 }
@@ -102,10 +102,13 @@ void PowertrainAudioController::start() {
     m_isPlaying = true;
 
     for (auto& node : m_audioManager.samples) {
-        if (node.wav) {
-            // Dereference the pointer with *
-            node.handle = m_audioManager.engine.play(*node.wav, 0.0);
-        }
+        if (!node.wav) continue;
+
+        if (node.rpm < 0.0)
+            continue;
+
+        node.handle = m_audioManager.engine.play(*node.wav, 0.0f);
+        m_audioManager.engine.setLooping(node.handle, true);
     }
 }
 
@@ -122,26 +125,25 @@ void PowertrainAudioController::stop() {
             node.handle = 0;
         }
     }
+
+    m_audioManager.engine.stopAll();
 }
 
 void PowertrainAudioController::handleCatastrophicFailure() {
-    // 1. Trigger the "Snap" (High frequency peak)
-    if (m_audioManager.samples.contains("snap")) {
-        m_audioManager.engine.play(*m_audioManager.samples["snap"].wav);
-    }
-
-    // 2. Trigger the "Thrud" (Low frequency weight)
-    if (m_audioManager.samples.contains("thud")) {
-        SoLoud::handle h = m_audioManager.engine.play(*m_audioManager.samples["thud"].wav);
-        m_audioManager.engine.setRelativePlaySpeed(h, 0.9f); // Slightly lower pitch for more "oomph"
-    }
-
-    // 3. Trigger the Debris (The "Gravel Drop")
-    if (m_audioManager.samples.contains("debris")) {
-        // Delay this slightly or play it at 1.0 volume to simulate parts hitting the floor
-        m_audioManager.engine.play(*m_audioManager.samples["debris"].wav);
-    }
-
-    // 4. Kill the standard engine loops
     stop();
+
+    // SNAP
+    if (m_audioManager.samples.contains("snap")) {
+        auto& s = m_audioManager.samples["snap"];
+        SoLoud::handle h = m_audioManager.engine.play(*s.wav);
+        m_audioManager.engine.setLooping(h, false);
+    }
+
+    // THUD
+    if (m_audioManager.samples.contains("thud")) {
+        auto& s = m_audioManager.samples["thud"];
+        SoLoud::handle h = m_audioManager.engine.play(*s.wav);
+        m_audioManager.engine.setLooping(h, false);
+        m_audioManager.engine.setRelativePlaySpeed(h, 0.9f);
+    }
 }

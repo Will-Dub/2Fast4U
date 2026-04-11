@@ -170,6 +170,11 @@ void GameWidget::gameLoop(){
     // --- Bouge les obstacles du terrain ---
     m_terrain.tick(m_player, dt);
 
+    // --- Ajoute un obstacle si les muon le veulent ---
+    if(m_serialController.getMuonFlag()){
+        m_terrain.generateRandomObstacle(m_player);
+	}
+
     // --- Envoie les données au arduino ---
     m_serialController.sendInformation(dt, m_player.getSpeed(), m_player.getRevs());
 

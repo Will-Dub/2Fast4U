@@ -39,13 +39,15 @@ public:
         BUTTONS = 1,
         PEDALES = 2,
         STEERING = 3,
-        STATUS = 4
+        STATUS = 4,
+        MUON = 5
     };
 
     explicit SerialController(QObject* parent = nullptr);
     ~SerialController() override;
 
     InputState getState();
+    bool getMuonFlag();
     void sendInformation(float dt, int vitesse, int rpm, bool isStarted=true, bool force=false);
 
 private slots:
@@ -71,6 +73,8 @@ private:
     float m_joystickX = 0.0f;
     float m_joystickY = 0.0f;
     bool m_isJoystickBtnPressed = false;
+
+    bool m_muonFlag = false;
 
     float m_timeElapsedSinceSend = 0.0f;
     bool m_isStarted = false;
