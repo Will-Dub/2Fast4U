@@ -1,8 +1,14 @@
+/*==================================================
+* NOM: menuwidget.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans menuwidget.h
+===================================================*/
 #include "menuwidget.h"
 
 MenuWidget::MenuWidget(QWidget* parent) : QWidget(parent)
 {
-    // Fond d'�cran
+    // Fond d'�cran
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setStyleSheet("MenuWidget { border-image: url(:/images/background.png) 0 0 0 0 stretch stretch; }");
 

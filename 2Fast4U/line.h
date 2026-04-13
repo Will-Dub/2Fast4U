@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: line.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: 
+===================================================*/
+
 #ifndef LINE_H
 #define LINE_H
 

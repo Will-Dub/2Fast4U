@@ -1,0 +1,25 @@
+x = semi-confident
+if no x, then not done/unsure what to put
+
+mainwindow.h        x
+mainwindow.cpp      x
+gamewidget.h        x
+gamewidget.cpp      x
+pausewidget.h       x
+pausewidget.cpp     x
+endwidget.h         x
+endwidget.cpp       x
+menuwidget.h        x
+menuwidget.cpp      x
+optionswidget.h     x
+optionswidget.cpp   x
+startwidget.h       x
+startwidget.cpp     x
+line.h              
+terrain.h           
+terrain.cpp         
+hoverbutton.h       x
+hoverbutton.cpp     x
+spritemanager.h     
+spritemanager.cpp   
+obstacle.h          

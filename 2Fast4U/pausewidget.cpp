@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: pausewidget.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans pausewidget.h
+===================================================*/
+
 #include "pausewidget.h"
 
 PauseWidget::PauseWidget(QWidget* parent) : QWidget(parent)

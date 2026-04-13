@@ -1,3 +1,9 @@
+/*==================================================
+* NOM: endwidget.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans endwidget.h
+===================================================*/
 #include "endwidget.h"
 
 EndWidget::EndWidget(QWidget* parent) : QWidget(parent)

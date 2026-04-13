@@ -1,8 +1,15 @@
+/*==================================================
+* NOM: optionswidget.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans optionswidget.h
+===================================================*/
+
 #include "optionswidget.h"
 
 OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 {
-    // Fond d'�cran
+    // Fond d'�cran
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setStyleSheet("OptionsWidget { border-image: url(:/images/background.png) 0 0 0 0 stretch stretch; }");
 
@@ -90,7 +97,7 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     hauteurCameraLayout->setSpacing(20);
     hauteurCameraLayout->addStretch();
 
-    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur cam�ra :"), darkOverlay);
+    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur cam�ra :"), darkOverlay);
     hauteurCameraLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
     hauteurCameraLabel->setStyleSheet("color: white; background: transparent;");
     hauteurCameraLabel->setFixedWidth(300);

@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: terrain.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans terrain.h
+===================================================*/
+
 #include "terrain.h"
 
 Terrain::Terrain() {

@@ -1,3 +1,14 @@
+/*==================================================
+* NOM: mainwindow.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les méthodes et la classe pour la fenêtre principale du menu
+===================================================*/
+
+
+
+
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

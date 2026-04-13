@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: endwidget.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les méthodes et la classe pour l'écran de fin de jeu
+===================================================*/
+
 #pragma once
 #include <QWidget>
 #include "hoverbutton.h"

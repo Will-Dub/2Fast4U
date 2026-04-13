@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: obstacle.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les méthodes et la classe pour générer des obstacles durant le jeu
+===================================================*/
+
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 

@@ -1,3 +1,9 @@
+/*==================================================
+* NOM: terrain.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: 
+===================================================*/
 #ifndef TERRAIN_H
 #define TERRAIN_H
 

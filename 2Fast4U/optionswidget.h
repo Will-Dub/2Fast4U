@@ -1,3 +1,9 @@
+/*==================================================
+* NOM: optionswidget.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les méthodes et la classe pour l'écran des options
+===================================================*/
 #pragma once
 #include <QWidget>
 #include "hoverbutton.h"

@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: spritemanager.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implÃ©mentations des mÃ©thodes et de la classe dÃ©clarÃ© dans spritemanager.h
+===================================================*/
+
 #include "spritemanager.h"
 
 
@@ -20,7 +27,7 @@ const QPixmap &SpriteManager::get(const QString &id)
 
         static const QColor FOG_COLOR(126, 185, 224); // Ta couleur de brouillard
 
-        // On prend une copie des clés pour ne pas crasher le QHash en ajoutant des éléments
+        // On prend une copie des clï¿½s pour ne pas crasher le QHash en ajoutant des ï¿½lï¿½ments
         QStringList baseKeys = sprites.keys();
 
         for (const QString& key : baseKeys) {
@@ -29,7 +36,7 @@ const QPixmap &SpriteManager::get(const QString &id)
 
             QPixmap baseSprite = sprites[key];
 
-            // Génère 10 niveaux de brouillard
+            // Gï¿½nï¿½re 10 niveaux de brouillard
             for (int i = 0; i < 10; ++i) {
                 float fogFactor = i / 10.0f;
 
@@ -45,7 +52,7 @@ const QPixmap &SpriteManager::get(const QString &id)
                 p.fillRect(tintedPixmap.rect(), currentFog);
                 p.end();
 
-                // Sauvegarde avec la clé de brouillard (ex: "arbre00_fog5")
+                // Sauvegarde avec la clï¿½ de brouillard (ex: "arbre00_fog5")
                 QString fogKey = key + "_fog" + QString::number(i);
                 sprites[fogKey] = tintedPixmap;
             }

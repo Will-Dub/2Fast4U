@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: hoverbutton.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans hoverbutton.h
+===================================================*/
+
 #include "hoverbutton.h"
 
 HoverButton::HoverButton(const QString& text, QWidget* parent)

@@ -1,10 +1,17 @@
+/*==================================================
+* NOM: startwidget.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans startwidget.h
+===================================================*/
+
 #include "startwidget.h"
 
 StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
 {
     this->setFocusPolicy(Qt::StrongFocus);
 
-    // Fond d'�cran
+    // Fond d'�cran
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setStyleSheet("StartWidget { border-image: url(:/images/background.png) 0 0 0 0 stretch stretch; }");
 

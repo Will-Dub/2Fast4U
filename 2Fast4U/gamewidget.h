@@ -1,3 +1,9 @@
+/*==================================================
+* NOM: gamewidget.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les méthodes et la classe pour l'écran du jeu
+===================================================*/
 #ifndef GAMEWIDGET_H
 #define GAMEWIDGET_H
 

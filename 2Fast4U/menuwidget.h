@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: menuwidget.h
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les méthodes et la classe pour l'écran du menu principal
+===================================================*/
+
 #pragma once
 #include <QWidget>
 #include "hoverbutton.h"
