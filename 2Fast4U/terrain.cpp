@@ -20,8 +20,8 @@ Terrain::Terrain() {
         return QColor(r, g, b, baseColor.alpha());
         };
 
-    for (int i = 0; i < MAX_DRAW_DISTANCE; i++) {
-        float distanceRatio = (float)i / MAX_DRAW_DISTANCE;
+    for (int i = 0; i < m_max_draw_distance; i++) {
+        float distanceRatio = (float)i / m_max_draw_distance;
         float fogFactor = std::pow(distanceRatio, 1.5f);
         precalcFogFactor[i] = fogFactor;
 
@@ -81,7 +81,7 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     float cameraAngle = player.getAngle();
 
     // Montre les 600 lignes devant
-    for (int n = startPos; n < startPos + MAX_DRAW_DISTANCE; n++) {
+    for (int n = startPos; n < startPos + m_max_draw_distance; n++) {
         int index = (n % N_LINES + N_LINES) % N_LINES;
         Line& l = lines[index];
 
@@ -151,7 +151,7 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
     }
 
     // Affiche les sprites
-    for (int n = startPos + MAX_DRAW_DISTANCE; n > startPos; n--) {
+    for (int n = startPos + m_max_draw_distance; n > startPos; n--) {
         Line& l = lines[n % N_LINES];
 
         int distIndex = n - startPos;

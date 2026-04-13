@@ -12,6 +12,7 @@
 #include "line.h"
 #include <QTextDocument>
 #include <QDebug>
+#include <QSettings>
 #include "terrain.h"
 #include "serialcontroller.h"
 #include "racemanager.h"
@@ -40,6 +41,7 @@ public slots:
     void restartGame();
     void resumeGame();
     void pauseGame();
+    void reloadSettings();
 
 private slots:
     void gameLoop();
@@ -53,6 +55,7 @@ private:
     Terrain m_terrain;
     SerialController m_serialController;
     RaceManager m_raceManager;
+    QSettings m_settings;
 
     int m_frameCount = 0;
     int m_currentFps = 0;

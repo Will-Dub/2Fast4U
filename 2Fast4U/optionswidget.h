@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QSlider>
 #include <QSettings>
+#include <QLineEdit>
+#include <QIntValidator>
 
 class OptionsWidget : public QWidget
 {
