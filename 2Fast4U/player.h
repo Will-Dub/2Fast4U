@@ -24,8 +24,6 @@ class Player
 public:
     Player();
 
-    constexpr static int MIN_PLAYER_Y = 15;
-
     bool keyLeft = false;
     bool keyRight = false;
     bool keyUp = false;
@@ -58,13 +56,16 @@ public:
     void allumer();
     void eteindre();
 
+	void setMinPlayerY(float minY) { m_minPlayerY = minY; }
+
     float getHitboxHalfWidth() const;
     QPointF getShifterPosition() const;
 
 private:
     // Position
+    float m_minPlayerY = 15.0f;
     float m_positionX = 0;
-    float m_positionY = MIN_PLAYER_Y;
+    float m_positionY = m_minPlayerY;
     float m_positionZ = 0;
 
     float m_angle = 0.0f;

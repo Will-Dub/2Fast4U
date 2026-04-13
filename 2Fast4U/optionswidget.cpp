@@ -24,11 +24,12 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     title->setFont(titleFont);
     title->setStyleSheet("color: white; background: transparent;");
     title->setAlignment(Qt::AlignCenter);
-    layout->addWidget(title);;
+    layout->addWidget(title);
 
     QVBoxLayout* settingsLayout = new QVBoxLayout();
     settingsLayout->setAlignment(Qt::AlignCenter);
 
+     // Volume
     QHBoxLayout* volumeLayout = new QHBoxLayout();
     volumeLayout->setAlignment(Qt::AlignCenter);
     volumeLayout->setSpacing(20);
@@ -41,15 +42,8 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 
     QSlider* volumeSlider = new QSlider(Qt::Horizontal, darkOverlay);
     volumeSlider->setRange(0, 100);
-    volumeSlider->setValue(m_settings.value("sonds", 50).toInt());
+    volumeSlider->setValue(m_settings.value("sons", 50).toInt());
     volumeSlider->setFixedWidth(300);
-
-    volumeSlider->setStyleSheet(
-        "QSlider::groove:horizontal { border: 1px solid #bbb; background: white; height: 10px; border-radius: 4px; }"
-        "QSlider::sub-page:horizontal { background: #4CAF50; height: 10px; border-radius: 4px; }"
-        "QSlider::add-page:horizontal { background: #555; height: 10px; border-radius: 4px; }"
-        "QSlider::handle:horizontal { background: white; border: 2px solid #777; width: 20px; margin-top: -6px; margin-bottom: -6px; border-radius: 10px; }"
-    );
 
     QLabel* volumeValueLabel = new QLabel(QString::number(volumeSlider->value()) + "%", darkOverlay);
     volumeValueLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
@@ -66,9 +60,65 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     volumeLayout->addStretch();
 
     settingsLayout->addLayout(volumeLayout);
+
+	// Distance d'affichage
+	QHBoxLayout* distanceAffichageLayout = new QHBoxLayout();
+	distanceAffichageLayout->setAlignment(Qt::AlignCenter);
+	distanceAffichageLayout->setSpacing(20);
+	distanceAffichageLayout->addStretch();
+
+	QLabel* distanceAffichageLabel = new QLabel(QString::fromUtf8("Distance d'affichage :"), darkOverlay);
+	distanceAffichageLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
+	distanceAffichageLabel->setStyleSheet("color: white; background: transparent;");
+	distanceAffichageLabel->setFixedWidth(300);
+
+	QLineEdit* distanceAffichageInput = new QLineEdit(darkOverlay);
+	distanceAffichageInput->setValidator(new QIntValidator(20, 1000, distanceAffichageInput));
+	distanceAffichageInput->setText(QString::number(m_settings.value("distance_affichage", 600).toInt()));
+	distanceAffichageInput->setFixedWidth(100);
+	distanceAffichageInput->setAlignment(Qt::AlignCenter);
+	distanceAffichageInput->setFont(QFont("Helvetica", 20, QFont::Bold));
+
+	distanceAffichageLayout->addWidget(distanceAffichageLabel);
+	distanceAffichageLayout->addWidget(distanceAffichageInput);
+	distanceAffichageLayout->addStretch();
+	settingsLayout->addLayout(distanceAffichageLayout);
+
+    // hauteur camera
+    QHBoxLayout* hauteurCameraLayout = new QHBoxLayout();
+    hauteurCameraLayout->setAlignment(Qt::AlignCenter);
+    hauteurCameraLayout->setSpacing(20);
+    hauteurCameraLayout->addStretch();
+
+    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur caméra :"), darkOverlay);
+    hauteurCameraLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
+    hauteurCameraLabel->setStyleSheet("color: white; background: transparent;");
+    hauteurCameraLabel->setFixedWidth(300);
+
+    QLineEdit* hauteurCameraInput = new QLineEdit(darkOverlay);
+    hauteurCameraInput->setValidator(new QIntValidator(20, 700, hauteurCameraInput));
+    hauteurCameraInput->setText(QString::number(m_settings.value("hauteur_camera", 15).toInt()));
+    hauteurCameraInput->setFixedWidth(100);
+    hauteurCameraInput->setAlignment(Qt::AlignCenter);
+    hauteurCameraInput->setFont(QFont("Helvetica", 20, QFont::Bold));
+
+    hauteurCameraLayout->addWidget(hauteurCameraLabel);
+    hauteurCameraLayout->addWidget(hauteurCameraInput);
+    hauteurCameraLayout->addStretch();
+    settingsLayout->addLayout(hauteurCameraLayout);
+
     layout->addLayout(settingsLayout);
 
     layout->addStretch(4);
+
+    auto validateInputs = [=]() {
+        m_didValueChange = true;
+
+        bool distanceValid = distanceAffichageInput->hasAcceptableInput();
+        bool hauteurValid = hauteurCameraInput->hasAcceptableInput();
+
+        m_boutonSauvegarder->setEnabled(distanceValid && hauteurValid);
+    };
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
 
@@ -95,7 +145,6 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 
     // Connection signal et slots
     connect(boutonRetour, &HoverButton::clicked, this, [=]() {
-
         if (m_didValueChange) {
             QMessageBox::StandardButton reply;
             reply = QMessageBox::question(this, "Confirme", "Voulez-vous quitter sans sauvegarder?",
@@ -108,11 +157,22 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
         emit retourPressed();
     });
     connect(m_boutonSauvegarder, &HoverButton::clicked, this, [=]() {
-        m_settings.setValue("sonds", volumeSlider->value());
-        resetValueChanged();
-        emit sauvegarderPressed();
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Confirme", "Voulez-vous vraiment sauvegarder?",
+            QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            m_settings.setValue("volume", volumeSlider->value());
+            m_settings.setValue("distance_affichage", distanceAffichageInput->text().toInt());
+            m_settings.setValue("hauteur_camera", hauteurCameraInput->text().toInt());
+            resetValueChanged();
+            emit sauvegarderPressed();
+            return;
+        }
     });
-    connect(volumeSlider, &QSlider::valueChanged, this, &OptionsWidget::valueChanged);
+    connect(volumeSlider, &QSlider::valueChanged, this, validateInputs);
+    connect(distanceAffichageInput, &QLineEdit::textChanged, this, validateInputs);
+    connect(hauteurCameraInput, &QLineEdit::textChanged, this, validateInputs);
 }
 
 void OptionsWidget::valueChanged() {

@@ -21,25 +21,26 @@ public:
     Line& getLine(int index);
     const Line& getLine(int index) const;
     int getTotalLines() const;
+	void setMaxDrawDistance(int distance) { m_max_draw_distance = distance; }
 
     void generateRandomObstacle(Player& player);
 
 private:
-    static constexpr int MAX_DRAW_DISTANCE = 600;
+    int m_max_draw_distance = 600;
     QVector<Line> lines;
 
-    float precalcFogFactor[MAX_DRAW_DISTANCE];
-    QColor precalcGrassLight[MAX_DRAW_DISTANCE];
-    QColor precalcGrassDark[MAX_DRAW_DISTANCE];
-    QColor precalcRumbleLight[MAX_DRAW_DISTANCE];
-    QColor precalcRumbleDark[MAX_DRAW_DISTANCE];
-    QColor precalcShoulderLight[MAX_DRAW_DISTANCE];
-    QColor precalcShoulderDark[MAX_DRAW_DISTANCE];
-    QColor precalcRoadLight[MAX_DRAW_DISTANCE];
-    QColor precalcRoadDark[MAX_DRAW_DISTANCE];
-    QColor precalcLine[MAX_DRAW_DISTANCE];
-    QColor precalcEdgeLine[MAX_DRAW_DISTANCE];
-    QColor precalcRoadGlow[MAX_DRAW_DISTANCE];
+    float precalcFogFactor[1000];
+    QColor precalcGrassLight[1000];
+    QColor precalcGrassDark[1000];
+    QColor precalcRumbleLight[1000];
+    QColor precalcRumbleDark[1000];
+    QColor precalcShoulderLight[1000];
+    QColor precalcShoulderDark[1000];
+    QColor precalcRoadLight[1000];
+    QColor precalcRoadDark[1000];
+    QColor precalcLine[1000];
+    QColor precalcEdgeLine[1000];
+    QColor precalcRoadGlow[1000];
 
     /**
      * @brief drawQuad Fait un quad sur l'écran

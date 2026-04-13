@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Options
     connect(m_optionsWidget, &OptionsWidget::retourPressed, this, &MainWindow::showMenuScreen);
+    connect(m_optionsWidget, &OptionsWidget::sauvegarderPressed, m_gameWidget, &GameWidget::reloadSettings);
 
     // Commencer
     connect(m_startWidget, &StartWidget::retourPressed, this, &MainWindow::showMenuScreen);

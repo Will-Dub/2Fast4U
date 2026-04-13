@@ -12,6 +12,7 @@ GameWidget::GameWidget(QWidget *parent): m_serialController(), QWidget(parent) {
     m_terrain.generateTerrain();
 
     setFocusPolicy(Qt::StrongFocus);
+    reloadSettings();
 }
 
 void GameWidget::setNom(const QString& nom)
@@ -61,6 +62,12 @@ void GameWidget::pauseGame()
 {
     m_raceManager.pauseRace();
     m_player.pause();
+}
+
+void GameWidget::reloadSettings()
+{
+	m_terrain.setMaxDrawDistance(m_settings.value("distance_affichage", 600).toInt());
+	m_player.setMinPlayerY(m_settings.value("hauteur_camera", 15.0f).toFloat());
 }
 
 void GameWidget::gameLoop(){

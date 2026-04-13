@@ -132,7 +132,7 @@ void Player::restart()
     m_powertrain.reset();
     m_positionX=0;
     m_positionZ=0;
-    m_positionY=MIN_PLAYER_Y;
+    m_positionY=m_minPlayerY;
     m_shifter.resetPosition();
     m_powertrainAudioController.start();
 }
