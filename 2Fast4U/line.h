@@ -2,7 +2,8 @@
 * NOM: line.h
 * AUTEUR(S): William Dubuc, Samuel Guertin
 * Date: Avril 2026
-* Description: 
+* Description: Contient les méthodes et la classe qui permet de stocker
+  et afficher une ligne et ses obstacles
 ===================================================*/
 
 #ifndef LINE_H
@@ -81,11 +82,27 @@ struct Line {
 
             float srcVisibleH = (visibleH / destH) * h;
 
+            bool needsFlip = (obstacle.getDirectionX() == -1);
+
+            if (needsFlip) {
+                painter.save();
+
+                painter.translate(destX + (destW / 2.0f), 0);
+
+                painter.scale(-1, 1);
+
+                painter.translate(-(destX + (destW / 2.0f)), 0);
+            }
+
             painter.drawPixmap(
                 QRectF(destX, destY, destW, visibleH),
                 sprite,
                 QRectF(0, 0, w, srcVisibleH)
             );
+
+            if (needsFlip) {
+                painter.restore();
+            }
 
 #ifdef QT_DEBUG
             painter.save();

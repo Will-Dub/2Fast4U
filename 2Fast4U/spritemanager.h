@@ -2,7 +2,8 @@
 * NOM: spritemanager.h
 * AUTEUR(S): William Dubuc, Samuel Guertin
 * Date: Avril 2026
-* Description: 
+* Description: Contient les méthodes et la classe pour
+  controller le chargement et l'accès des images
 ===================================================*/
 
 #ifndef SPRITEMANAGER_H

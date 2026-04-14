@@ -9,7 +9,7 @@
 
 OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 {
-    // Fond d'�cran
+    // Fond d'écran
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setStyleSheet("OptionsWidget { border-image: url(:/images/background.png) 0 0 0 0 stretch stretch; }");
 
@@ -79,15 +79,15 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 	distanceAffichageLabel->setStyleSheet("color: white; background: transparent;");
 	distanceAffichageLabel->setFixedWidth(300);
 
-	QLineEdit* distanceAffichageInput = new QLineEdit(darkOverlay);
-	distanceAffichageInput->setValidator(new QIntValidator(20, 1000, distanceAffichageInput));
-	distanceAffichageInput->setText(QString::number(m_settings.value("distance_affichage", 600).toInt()));
-	distanceAffichageInput->setFixedWidth(100);
-	distanceAffichageInput->setAlignment(Qt::AlignCenter);
-	distanceAffichageInput->setFont(QFont("Helvetica", 20, QFont::Bold));
+	m_distanceAffichageInput = new QSpinBox(darkOverlay);
+	m_distanceAffichageInput->setRange(20, 1000);
+	m_distanceAffichageInput->setValue(m_settings.value("distance_affichage", 600).toInt());
+	m_distanceAffichageInput->setFixedWidth(175);
+	m_distanceAffichageInput->setAlignment(Qt::AlignCenter);
+	m_distanceAffichageInput->setFont(QFont("Helvetica", 20, QFont::Bold));
 
 	distanceAffichageLayout->addWidget(distanceAffichageLabel);
-	distanceAffichageLayout->addWidget(distanceAffichageInput);
+	distanceAffichageLayout->addWidget(m_distanceAffichageInput);
 	distanceAffichageLayout->addStretch();
 	settingsLayout->addLayout(distanceAffichageLayout);
 
@@ -97,35 +97,26 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     hauteurCameraLayout->setSpacing(20);
     hauteurCameraLayout->addStretch();
 
-    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur cam�ra :"), darkOverlay);
+    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur caméra :"), darkOverlay);
     hauteurCameraLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
     hauteurCameraLabel->setStyleSheet("color: white; background: transparent;");
     hauteurCameraLabel->setFixedWidth(300);
 
-    QLineEdit* hauteurCameraInput = new QLineEdit(darkOverlay);
-    hauteurCameraInput->setValidator(new QIntValidator(20, 700, hauteurCameraInput));
-    hauteurCameraInput->setText(QString::number(m_settings.value("hauteur_camera", 15).toInt()));
-    hauteurCameraInput->setFixedWidth(100);
-    hauteurCameraInput->setAlignment(Qt::AlignCenter);
-    hauteurCameraInput->setFont(QFont("Helvetica", 20, QFont::Bold));
+    m_hauteurCameraInput = new QSpinBox(darkOverlay);
+    m_hauteurCameraInput->setRange(1, 40);
+    m_hauteurCameraInput->setValue(m_settings.value("hauteur_camera", 15).toInt());
+    m_hauteurCameraInput->setFixedWidth(175);
+    m_hauteurCameraInput->setAlignment(Qt::AlignCenter);
+    m_hauteurCameraInput->setFont(QFont("Helvetica", 20, QFont::Bold));
 
     hauteurCameraLayout->addWidget(hauteurCameraLabel);
-    hauteurCameraLayout->addWidget(hauteurCameraInput);
+    hauteurCameraLayout->addWidget(m_hauteurCameraInput);
     hauteurCameraLayout->addStretch();
     settingsLayout->addLayout(hauteurCameraLayout);
 
     layout->addLayout(settingsLayout);
 
     layout->addStretch(4);
-
-    auto validateInputs = [=]() {
-        m_didValueChange = true;
-
-        bool distanceValid = distanceAffichageInput->hasAcceptableInput();
-        bool hauteurValid = hauteurCameraInput->hasAcceptableInput();
-
-        m_boutonSauvegarder->setEnabled(distanceValid && hauteurValid);
-    };
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
 
@@ -170,25 +161,32 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
 
         if (reply == QMessageBox::Yes) {
             m_settings.setValue("volume", volumeSlider->value());
-            m_settings.setValue("distance_affichage", distanceAffichageInput->text().toInt());
-            m_settings.setValue("hauteur_camera", hauteurCameraInput->text().toInt());
+            m_settings.setValue("distance_affichage", m_distanceAffichageInput->value());
+            m_settings.setValue("hauteur_camera", m_hauteurCameraInput->value());
             resetValueChanged();
             emit sauvegarderPressed();
             return;
         }
     });
-    connect(volumeSlider, &QSlider::valueChanged, this, validateInputs);
-    connect(distanceAffichageInput, &QLineEdit::textChanged, this, validateInputs);
-    connect(hauteurCameraInput, &QLineEdit::textChanged, this, validateInputs);
+    connect(volumeSlider, &QSlider::valueChanged, this, &OptionsWidget::valueChanged);
+    connect(m_distanceAffichageInput, &QSpinBox::valueChanged, this, &OptionsWidget::valueChanged);
+    connect(m_hauteurCameraInput, &QSpinBox::valueChanged, this, &OptionsWidget::valueChanged);
 }
 
 void OptionsWidget::valueChanged() {
     m_didValueChange = true;
-    m_boutonSauvegarder->setEnabled(true);
+
+    bool distanceValid = m_distanceAffichageInput->hasAcceptableInput();
+    bool hauteurValid = m_hauteurCameraInput->hasAcceptableInput();
+
+    m_boutonSauvegarder->setEnabled(distanceValid && hauteurValid);
 }
 
 void OptionsWidget::resetValueChanged()
 {
+	m_hauteurCameraInput->setValue(m_settings.value("hauteur_camera", 15).toInt());
+	m_distanceAffichageInput->setValue(m_settings.value("distance_affichage", 600).toInt());
+
     m_didValueChange = false;
     m_boutonSauvegarder->setEnabled(false);
 }

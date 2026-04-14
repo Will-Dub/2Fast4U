@@ -1,3 +1,10 @@
+/*==================================================
+* NOM: serialcontroller.cpp
+* AUTEUR(S): William Dubuc, Samuel Guertin
+* Date: Avril 2026
+* Description: Contient les implémentations des méthodes et de la classe déclaré dans serialcontroller.h
+===================================================*/
+
 #include "serialcontroller.h"
 
 SerialController::SerialController(QObject *parent)

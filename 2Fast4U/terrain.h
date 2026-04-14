@@ -2,7 +2,7 @@
 * NOM: terrain.h
 * AUTEUR(S): William Dubuc, Samuel Guertin
 * Date: Avril 2026
-* Description: 
+* Description: Contient les méthodes et la classe qui permet de stocker le terrain et d'afficher le terrain
 ===================================================*/
 #ifndef TERRAIN_H
 #define TERRAIN_H

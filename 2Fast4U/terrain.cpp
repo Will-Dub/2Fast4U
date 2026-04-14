@@ -274,26 +274,21 @@ void Terrain::generateTerrain()
             line.curve = 0.0f;
         }
 
-        if (i % 150 == 0 && i > 100 && i < 500) {
-            line.obstacles.append(Obstacle("arbre0", 1, 6.0f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre0", 1, -6.0f, 0.025f, 2));
+        if (i == 80) {
+            line.obstacles.append(Obstacle("cerf", ObstacleType::Cerf, 4.0f, 0.01f, 2.5f, ObstacleState::Idle, line.z));
         }
 
-        // 4. LES POLES (Section 5) - Intouchés
+        if (i == 40) {
+            line.obstacles.append(Obstacle("cerf", ObstacleType::Cerf, 4.0f, 0.01f, 2.5f, ObstacleState::Idle, line.z));
+        }
+
+        if (i == 20) {
+            line.obstacles.append(Obstacle("cerf", ObstacleType::Cerf, -4.0f, 0.01f, 2.5f, ObstacleState::Idle, line.z, -1));
+        }
+
         if (i == 175) {
-            line.obstacles.append(Obstacle("pole", 1, 5.0f, 0.025f, 2));
-            line.obstacles.append(Obstacle("pole", 1, -5.0f, 0.025f, 2));
-        }
-
-        // 5. Grosse Montagne : Arbres denses sur les côtés
-        if (i % 100 == 0 && i >= 1700 && i < 2300) {
-            line.obstacles.append(Obstacle("arbre0", 1, 5.5f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre0", 1, -5.5f, 0.025f, 2));
-        }
-
-        // 6. Piège dans la vallée : Combo Roche + Bûche
-        if (i == 3000) {
-            line.obstacles.append(Obstacle("roche", 1, -2.0f, 0.01f, 2.5f)); // Bloque la gauche
+            line.obstacles.append(Obstacle("pole", ObstacleType::Pole, 5.0f, 0.025f, 2));
+            line.obstacles.append(Obstacle("pole", ObstacleType::Pole, -5.0f, 0.025f, 2));
         }
 
         //Arbre
@@ -317,7 +312,7 @@ void Terrain::generateTerrain()
                 // Modifie ces valeurs (0.025 à 0.040) selon la taille réelle de tes images PNG.
                 float scaleLeft = 0.04f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+                line.obstacles.append(Obstacle(typeLeft, ObstacleType::Arbre, randomOffsetLeft, scaleLeft, 2.0f));
 
                 // ==========================================
                 // CÔTÉ DROIT
@@ -327,7 +322,7 @@ void Terrain::generateTerrain()
                 QString typeRight = "arbre" + QString::number(rand() % 4);
                 float scaleRight = 0.04f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+                line.obstacles.append(Obstacle(typeRight, ObstacleType::Arbre, randomOffsetRight, scaleRight, 2.0f));
             }
         }
 
@@ -347,7 +342,7 @@ void Terrain::generateTerrain()
                 QString typeLeft = isTallLeft ? "grass" : "grass";
                 float scaleLeft = isTallLeft ? (0.006f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
 
-                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 0.0f));
+                line.obstacles.append(Obstacle(typeLeft, ObstacleType::Grass, randomOffsetLeft, scaleLeft, 0.0f));
 
                 // ==========================================
                 // CÔTÉ DROIT (Indépendant)
@@ -359,7 +354,7 @@ void Terrain::generateTerrain()
                 QString typeRight = isTallRight ? "grass" : "grass";
                 float scaleRight = isTallRight ? (0.006f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
 
-                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 0.0f));
+                line.obstacles.append(Obstacle(typeRight, ObstacleType::Grass, randomOffsetRight, scaleRight, 0.0f));
             }
         }
 
@@ -382,7 +377,7 @@ void Terrain::generateTerrain()
                 // Modifie ces valeurs (0.025 à 0.040) selon la taille réelle de tes images PNG.
                 float scaleLeft = 0.01f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+                line.obstacles.append(Obstacle(typeLeft, ObstacleType::Roche, randomOffsetLeft, scaleLeft, 2.0f));
 
                 // ==========================================
                 // CÔTÉ DROIT
@@ -392,7 +387,7 @@ void Terrain::generateTerrain()
                 QString typeRight = "roche";
                 float scaleRight = 0.01f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+                line.obstacles.append(Obstacle(typeRight, ObstacleType::Roche, randomOffsetRight, scaleRight, 2.0f));
             }
         }
 
@@ -409,7 +404,7 @@ void Terrain::tick(Player &player, float dt)
         Line& l = lines[index];
 
         for(Obstacle& obstacle : l.obstacles){
-            obstacle.update(dt);
+            obstacle.update(dt, player.getPositionY());
         }
     }
 }
@@ -435,7 +430,7 @@ void Terrain::generateRandomObstacle(Player& player)
     int index = ((startPos + 50 + rand() % 50) % N_LINES + N_LINES) % N_LINES;
     Line& line = lines[index];
 
-    line.obstacles.append(Obstacle("buche", 1.0f, 0.0f, 0.02f, 2.0f));
+    line.obstacles.append(Obstacle("buche", ObstacleType::Buche, 0.0f, 0.02f, 2.0f));
 }
 
 void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)

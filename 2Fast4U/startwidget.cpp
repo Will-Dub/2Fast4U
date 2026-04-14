@@ -11,7 +11,7 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
 {
     this->setFocusPolicy(Qt::StrongFocus);
 
-    // Fond d'�cran
+    // Fond d'écran
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setStyleSheet("StartWidget { border-image: url(:/images/background.png) 0 0 0 0 stretch stretch; }");
 
@@ -50,9 +50,9 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
 
     // Aucun score
     if (scores.isEmpty()) {
-        QLabel* aucunScoreLabel = new QLabel("Aucun temps enregistre", darkOverlay);
+        QLabel* aucunScoreLabel = new QLabel("Aucun temps enregistré", darkOverlay);
         aucunScoreLabel->setFont(scoreFont);
-        aucunScoreLabel->setStyleSheet("color: gray; background: transparent;");
+        aucunScoreLabel->setStyleSheet("color: black; background: transparent;");
         aucunScoreLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(aucunScoreLabel);
     }
