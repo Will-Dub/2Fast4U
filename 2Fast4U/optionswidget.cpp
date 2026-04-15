@@ -145,7 +145,7 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     connect(boutonRetour, &HoverButton::clicked, this, [=]() {
         if (m_didValueChange) {
             QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "Confirme", "Voulez-vous quitter sans sauvegarder?",
+            reply = QMessageBox::question(this, "Confirmer", "Voulez-vous quitter sans sauvegarder?",
                 QMessageBox::Yes | QMessageBox::No);
 
             if (reply == QMessageBox::No) {
@@ -156,7 +156,7 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     });
     connect(m_boutonSauvegarder, &HoverButton::clicked, this, [=]() {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Confirme", "Voulez-vous vraiment sauvegarder?",
+        reply = QMessageBox::question(this, "Confirmer", "Voulez-vous vraiment sauvegarder?",
             QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes) {

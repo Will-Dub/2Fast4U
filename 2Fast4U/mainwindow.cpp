@@ -72,6 +72,7 @@ void MainWindow::showStartScreen()
     m_stack->setCurrentIndex(2);
     m_startWidget->setFocus();
     m_startWidget->resetInput();
+    m_startWidget->refreshLeaderboard();
 }
 
 void MainWindow::startGame(const QString& nom)
@@ -120,10 +121,10 @@ void MainWindow::showEndWidget(EndType type, const QString& nom, double temps)
         break;
     case EndType::MotorExploded:
         titre = "Vous avez perdu";
-        sousTitre = "Le moteur a explose";
+        sousTitre = "Le moteur à explosé";
         break;
     case EndType::Win:
-        titre = "Bravo avez gagne!";
+        titre = "Bravo vous avez gagne!";
 
         qint64 totalMillis = static_cast<qint64>(temps * 1000.0);
         QTime t(0, 0, 0);

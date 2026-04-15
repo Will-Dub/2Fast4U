@@ -45,52 +45,12 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     classementLabel->setAlignment(Qt::AlignCenter);
     layout->addWidget(classementLabel);
 
-    QList<Score> scores = RaceManager::getTop();
-    QFont scoreFont("Courier", 24, QFont::Bold);
+    m_leaderboardLayout = new QVBoxLayout();
+    layout->addLayout(m_leaderboardLayout);
 
-    // Aucun score
-    if (scores.isEmpty()) {
-        QLabel* aucunScoreLabel = new QLabel("Aucun temps enregistré", darkOverlay);
-        aucunScoreLabel->setFont(scoreFont);
-        aucunScoreLabel->setStyleSheet("color: black; background: transparent;");
-        aucunScoreLabel->setAlignment(Qt::AlignCenter);
-        layout->addWidget(aucunScoreLabel);
-    }
-    else {
-        for (int i = 0; i < scores.size(); i++) {
-            QString texteColor;
-            if (i == 0) {
-                texteColor = "#FFD700";
-            }
-            else if (i == 1) {
-                texteColor = "#C0C0C0";
-            }
-            else if (i == 2) {
-                texteColor = "#B87333";
-            }
-            else {
-                texteColor = "white";
-            }
-
-            QString texteScore = QString("%1. %2 - %3")
-                .arg(i + 1)
-                .arg(scores[i].nom)
-                .arg(scores[i].temps);
-
-            QLabel* scoreLabel = new QLabel(texteScore, darkOverlay);
-            scoreLabel->setFont(scoreFont);
-            scoreLabel->setStyleSheet(QString("color: %1; background: transparent;").arg(texteColor));
-            scoreLabel->setAlignment(Qt::AlignCenter);
-            layout->addWidget(scoreLabel);
-
-            if (i < scores.size() - 1) {
-                layout->addSpacing(5);
-            }
-        }
-    }
+    refreshLeaderboard();
 
     layout->addStretch(2);
-
 
     // Input nom
     QLabel* nomInputLabel = new QLabel("Entrez votre nom:");
@@ -124,8 +84,7 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     // Bouton sauvegarder
     m_commencerButton = new HoverButton("Commencer", darkOverlay);
     m_commencerButton->setEnabled(true);
-    // TODO: Remettre
-    //m_commencerButton->setEnabled(false);
+    m_commencerButton->setEnabled(false);
     m_commencerButton->setFixedSize(250, 80);
     m_commencerButton->setFont(fontBoutons);
     boutonLayout->addWidget(m_commencerButton);
@@ -139,11 +98,61 @@ StartWidget::StartWidget(QWidget* parent) : QWidget(parent)
     connect(m_nomInput, &QLineEdit::textChanged, this, &StartWidget::nomTextChanged);
     connect(m_commencerButton, &QPushButton::clicked, this, [this]() {
         const QString nom = m_nomInput->text();
-        // TODO: Remettre
-        //if (!isValidInput(nom)) return;
+
+        if (!isValidInput(nom)) return;
 
         emit commencerPressed(nom);
     });
+}
+
+void StartWidget::refreshLeaderboard() {
+    QLayoutItem* item;
+    while ((item = m_leaderboardLayout->takeAt(0)) != nullptr) {
+        if (item->widget()) {
+            delete item->widget();
+        }
+        delete item;
+    }
+
+    QList<Score> scores = RaceManager::getTop();
+    QFont scoreFont("Courier", 24, QFont::Bold);
+
+    // Aucun score
+    if (scores.isEmpty()) {
+        QLabel* aucunScoreLabel = new QLabel("Aucun temps enregistré");
+        aucunScoreLabel->setFont(scoreFont);
+        aucunScoreLabel->setStyleSheet("color: black; background: transparent;");
+        aucunScoreLabel->setAlignment(Qt::AlignCenter);
+        m_leaderboardLayout ->addWidget(aucunScoreLabel);
+    }
+    else {
+        for (int i = 0; i < scores.size(); i++) {
+            QString texteColor;
+            if (i == 0) {
+                texteColor = "#FFD700";
+            }
+            else if (i == 1) {
+                texteColor = "#C0C0C0";
+            }
+            else if (i == 2) {
+                texteColor = "#B87333";
+            }
+            else {
+                texteColor = "white";
+            }
+
+            QString texteScore = QString("%1. %2 - %3")
+                .arg(i + 1)
+                .arg(scores[i].nom)
+                .arg(scores[i].temps);
+
+            QLabel* scoreLabel = new QLabel(texteScore);
+            scoreLabel->setFont(scoreFont);
+            scoreLabel->setStyleSheet(QString("color: %1; background: transparent;").arg(texteColor));
+            scoreLabel->setAlignment(Qt::AlignCenter);
+            m_leaderboardLayout->addWidget(scoreLabel);
+        }
+    }
 }
 
 void StartWidget::nomTextChanged(const QString& newNom) {
