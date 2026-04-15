@@ -10,11 +10,13 @@
 HoverButton::HoverButton(const QString& text, QWidget* parent)
     : QPushButton(text, parent)
 {
+    // Style du bouton
     this->setStyleSheet("background-color: white; color: #1a1a1a; border-radius: 10px;");
 
     QFont fontBoutons("Helvetica", 24, QFont::Bold);
     this->setFont(fontBoutons);
 
+    // Son du bouton
     m_clickSound = new QSoundEffect(this);
     m_clickSound->setSource(QUrl("qrc:/audio/audio/click.wav"));
 

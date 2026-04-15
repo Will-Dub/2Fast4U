@@ -8,7 +8,7 @@
 
 MenuWidget::MenuWidget(QWidget* parent) : QWidget(parent)
 {
-    // Fond d'�cran
+    // Fond d'écran
     this->setAttribute(Qt::WA_StyledBackground, true);
     this->setStyleSheet("MenuWidget { border-image: url(:/images/background.png) 0 0 0 0 stretch stretch; }");
 
