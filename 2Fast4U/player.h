@@ -74,7 +74,7 @@ private:
     float m_potAccel = 0;
     float m_potSteering = 0;
 
-    float m_hitboxHalfWidth = 1.0f;
+    float m_hitboxHalfWidth = 0.5f;
 
     Powertrain m_powertrain;
     VirtualShifter m_shifter;

@@ -31,6 +31,7 @@ const QPixmap &SpriteManager::get(const QString &id)
         loadSprite(sprites, "cerf4", ":/images/cerf4.png");
         loadSprite(sprites, "cerf5", ":/images/cerf5.png");
         loadSprite(sprites, "cerf6", ":/images/cerf6.png");
+        loadSprite(sprites, "cerf7", ":/images/cerf7.png");
 
         static const QColor FOG_COLOR(126, 185, 224); // Ta couleur de brouillard
 

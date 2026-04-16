@@ -47,9 +47,9 @@ public:
 
     void update(float dt, float carY) {
 		if (m_type != ObstacleType::Cerf) return;
+        qInfo() << carY;
 
 		float distance = std::abs(carY - m_spriteY);
-        qInfo() << distance;
         static const float runningTriggerDistance = 50.0f;
         static const float walkingTriggerDistance = 110.0f;
 
@@ -108,6 +108,9 @@ public:
 
                 m_timeElapsed -= currentAnimationDelay;
             }
+        }
+        else {
+            m_currentFrame = 7;
         }
 
     }

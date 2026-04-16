@@ -16,7 +16,7 @@ private:
     double m_limiter;
     double m_rpmPitchFactor;
 
-    bool m_isPlaying = true;
+    bool m_isPlaying = false;
 
 public:
     PowertrainAudioController(Powertrain* powertrain);

@@ -27,7 +27,7 @@ void PowertrainAudioController::update() {
     if (!m_isPlaying || !m_powertrainPtr) return;
 
     double currentRevs = m_powertrainPtr->getRevs();
-    double currentThrottle = m_powertrainPtr->getThrottle();
+    double currentThrottle = std::clamp(m_powertrainPtr->getGasPedalPercent() / 100.0, 0.0, 1.0);
     int gearIndex = m_powertrainPtr->getGear();
     double currentGearRatio = m_powertrainPtr->getGearRatio();
 
@@ -99,6 +99,8 @@ void PowertrainAudioController::update() {
 }
 
 void PowertrainAudioController::start() {
+	if (m_isPlaying) return;
+
     m_isPlaying = true;
 
     for (auto& node : m_audioManager.samples) {

@@ -1,6 +1,8 @@
 #include "player.h"
+#include <algorithm>
+#include <cmath>
 
-Player::Player(): m_powertrainAudioController(&m_powertrain) {
+Player::Player() : m_powertrainAudioController(&m_powertrain) {
     m_powertrainAudioController.initSounds();
     m_powertrainAudioController.start();
     m_powertrain.setStarted(true);
@@ -20,7 +22,8 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     }
     else if (keyDown) {
         m_potAccel -= ACCEL_SPEED * dt;
-    } else{
+    }
+    else {
         m_potAccel = 0;
     }
 
@@ -29,58 +32,74 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     }
     else if (keyRight) {
         m_potSteering += STEERING_SPEED * dt;
-    } else {
+    }
+    else {
         // Retoune au centre quand pas appuyé
         if (m_potSteering > 0.0f) {
             m_potSteering = std::max(0.0f, m_potSteering - (STEERING_SPEED * dt));
-        } else if (m_potSteering < 0.0f) {
+        }
+        else if (m_potSteering < 0.0f) {
             m_potSteering = std::min(0.0f, m_potSteering + (STEERING_SPEED * dt));
         }
     }
 
-    if(m_potAccel > 1.0f) m_potAccel = 1.0f;
-    if(m_potAccel < -1.0f) m_potAccel = -1.0f;
-    if(m_potSteering > 1.0f) m_potSteering = 1.0f;
-    if(m_potSteering < -1.0f) m_potSteering = -1.0f;
+    if (m_potAccel > 1.0f) m_potAccel = 1.0f;
+    if (m_potAccel < -1.0f) m_potAccel = -1.0f;
+    if (m_potSteering > 1.0f) m_potSteering = 1.0f;
+    if (m_potSteering < -1.0f) m_potSteering = -1.0f;
 
-    float potAccelBrake = m_potAccel < 0.0f ? -1*m_potAccel : 0;
+    float potAccelBrake = m_potAccel < 0.0f ? -1 * m_potAccel : 0;
     float potAccelAccel = m_potAccel > 0.0f ? m_potAccel : 0;
 
     // Met à jour le shifter
-    if(input.clutch >= 0.95){
+    if (input.clutch >= 0.95) {
         m_shifter.updatePosition(input.joystickX, input.joystickY);
     }
 
     // Met à jour le gear
-    if(key1){
+    if (key1) {
         m_shifter.setGear(Node::GEAR_1);
-    }else if(key2){
+    }
+    else if (key2) {
         m_shifter.setGear(Node::GEAR_2);
-    }else if(key3){
+    }
+    else if (key3) {
         m_shifter.setGear(Node::GEAR_3);
-    }else if(key4){
+    }
+    else if (key4) {
         m_shifter.setGear(Node::GEAR_4);
-    }else if(key5){
+    }
+    else if (key5) {
         m_shifter.setGear(Node::GEAR_5);
-    }else if(key6){
+    }
+    else if (key6) {
         m_shifter.setGear(Node::GEAR_6);
-    }else if(keyN){
+    }
+    else if (keyN) {
         m_shifter.setGear(Node::NEUTRAL_CENTER);
     }
-    m_powertrain.setGear(m_shifter.getGear());
+    int selectedGear = m_shifter.getGear();
+    if (selectedGear != m_powertrain.getGear()) {
+        m_powertrain.Shift(selectedGear);
+    }
 
-    float inputAcceleration = input.clutch>=0.95 ? 0.0f : input.acceleration*100;
+    float serialAcceleration = std::clamp(input.acceleration, 0.0f, 1.0f);
+    float serialBrake = std::clamp(input.brake, 0.0f, 1.0f);
+    bool clutchEngaged = input.clutch < 0.95f;
+    float inputAcceleration = clutchEngaged ? std::max(serialAcceleration, potAccelAccel) * 100.0f : 0.0f;
+    float inputBrake = std::max(serialBrake, potAccelBrake) * 100.0f;
 
     m_powertrain.setStarted(input.isStarted);
-    m_powertrain.everyRefresh(inputAcceleration, input.brake*100, currentSlopeAngle);
+
+    m_powertrain.everyRefresh(static_cast<int>(inputAcceleration), static_cast<int>(inputBrake), currentSlopeAngle, terrainFriction, clutchEngaged);
 
     float velocite = m_powertrain.getSpeed() / 3.6f;
 
-    if(qIsNaN(velocite)){
+    if (qIsNaN(velocite)) {
         return;
     }
 
-    m_positionZ += velocite * dt;
+    m_positionZ += velocite * dt * 2.5f;
 
     if (std::abs(velocite) > 0.1f) {
         float reverseMultiplier = (velocite < 0) ? -1.0f : 1.0f;
@@ -91,10 +110,10 @@ void Player::tick(float dt, float currentCurve, float currentSlopeAngle, float t
     m_positionX -= forceCentrifuge * dt;
 
     float targetAngle = (STEERING_INPUT * velocite * STEERING_LEAN_RATIO) +
-                        (currentCurve * velocite * CURVE_LEAN_RATIO);
+        (currentCurve * velocite * CURVE_LEAN_RATIO);
     m_angle += (targetAngle - m_angle) * CHASSIS_ROLL_STIFFNESS * dt;
 
-    m_powertrainAudioController.update();
+    if(input.isStarted) m_powertrainAudioController.update();
 }
 
 int Player::getSpeed()
@@ -129,20 +148,21 @@ void Player::restart()
 {
     m_powertrainAudioController.stop();
     m_powertrain.reset();
-    m_positionX=0;
-    m_positionZ=0;
-    m_positionY=m_minPlayerY;
+    m_positionX = 0;
+    m_positionZ = 0;
+    m_positionY = m_minPlayerY;
     m_shifter.resetPosition();
     m_powertrainAudioController.start();
 }
 
-void Player::renderHabitacle(QPainter *painter, RaceState raceState, int screenWidth, int screenHeight)
+void Player::renderHabitacle(QPainter* painter, RaceState raceState, int screenWidth, int screenHeight)
 {
     QPixmap sprite;
 
-    if(raceState == RaceState::CRASHED){
+    if (raceState == RaceState::CRASHED) {
         sprite = SpriteManager::get("habitacleCrashed");
-    }else{
+    }
+    else {
         sprite = SpriteManager::get("habitacle");
     }
 
