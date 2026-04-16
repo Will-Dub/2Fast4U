@@ -430,7 +430,9 @@ void Terrain::generateRandomObstacle(Player& player)
     int index = ((startPos + 50 + rand() % 50) % N_LINES + N_LINES) % N_LINES;
     Line& line = lines[index];
 
-    line.obstacles.append(Obstacle("buche", ObstacleType::Buche, 0.0f, 0.02f, 2.0f));
+	float randomX = (rand() % 4) - 2.0f;
+
+    line.obstacles.append(Obstacle("buche", ObstacleType::Buche, randomX, 0.02f, 2.0f));
 }
 
 void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)

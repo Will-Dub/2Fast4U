@@ -113,7 +113,7 @@ void GameWidget::gameLoop(){
         // Joueur à l'extérieure de la route
         float playerX = m_player.getPositionX();
         if (std::abs(playerX) > 1.0f * currentLine.nbLane) {
-            terrainFriction = 3.5f;
+            terrainFriction = 10.5f;
         }
     }
 
@@ -140,7 +140,7 @@ void GameWidget::gameLoop(){
                 float minimumSafeDistance = playerHalfWidth + obstacleHalfWidth;
 
                 // Si leur distance du milieu est plus petit que leur demi combiner
-                if (std::abs(finalPlayerX - obstacleX) < minimumSafeDistance) {
+                if (std::abs(finalPlayerX - obstacleX) < minimumSafeDistance && obstacle.getHitboxWidth() > 0) {
                     isCrashed = true;
                     break;
                 }
