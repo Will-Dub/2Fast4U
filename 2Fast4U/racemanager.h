@@ -9,7 +9,7 @@
 #include <QDir>
 #include <algorithm>
 
-enum class RaceState{
+enum class RaceState {
     PAUSED,
     RACING,
     CRASHED,
@@ -26,21 +26,22 @@ struct Score {
 class RaceManager : public QObject
 {
     Q_OBJECT
-    RaceState m_state = RaceState::PAUSED;
+        RaceState m_state = RaceState::PAUSED;
     QString m_nom = "";
-    double m_finishLineZ = 515.0;
+    double m_finishLineZ = 100000.0;
 
     double m_elapsedTime = 0.0;
     double m_finalTime = 0.0;
 public:
-    explicit RaceManager(QObject *parent = nullptr);
+    explicit RaceManager(QObject* parent = nullptr);
 
     void update(float positionX, bool isCrashed, bool isMotorExploded, float deltaTime);
 
     RaceState getState() const;
     double getElapsedTime() const { return m_elapsedTime; }
     double getFinalTime() const { return m_finalTime; }
-	QString getNom() const { return m_nom; }
+    double getFinishLineZ() const { return m_finishLineZ; }
+    QString getNom() const { return m_nom; }
 
     void setNom(const QString& nom);
 

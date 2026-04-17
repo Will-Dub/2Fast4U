@@ -6,6 +6,8 @@
 ===================================================*/
 
 #include "terrain.h"
+#include <algorithm>
+#include <cmath>
 
 Terrain::Terrain() {
     static const QColor GRASS_LIGHT(34, 164, 83);
@@ -47,11 +49,12 @@ Terrain::Terrain() {
     }
 }
 
-void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight)
+void Terrain::render(QPainter& painter, Player& player, int screenWidth, int screenHeight, float finishLineZ)
 {
     painter.setPen(Qt::NoPen);
     int startPos = player.getPositionZ() / SEG_L;
     float percent = (player.getPositionZ() - (startPos * SEG_L)) / (float)SEG_L;
+    const int finishSegment = static_cast<int>(finishLineZ / SEG_L);
 
     int safeStart = (startPos % N_LINES + N_LINES) % N_LINES;
     int safeNext = ((startPos + 1) % N_LINES + N_LINES) % N_LINES;
@@ -155,6 +158,10 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
             drawQuad(painter, edgeLine, p.X - p.W * 0.92f, p.Y, widthEdgeP, l.X - l.W * 0.92f, l.Y, widthEdgeL);
             drawQuad(painter, edgeLine, p.X + p.W * 0.92f, p.Y, widthEdgeP, l.X + l.W * 0.92f, l.Y, widthEdgeL);
         }
+
+        if (n == finishSegment) {
+            drawFinishRoadMarking(painter, p, l);
+        }
     }
 
     // Affiche les sprites
@@ -170,11 +177,9 @@ void Terrain::render(QPainter& painter, Player& player, int screenWidth, int scr
 
 void Terrain::generateTerrain()
 {
-    lines.clear();
+    constexpr float halfPi = 1.5707963267948966f;
 
-    int mountainStart = 100;
-    int mountainLength = 300;
-    float mountainHeight = 500.0f; // baisse un peu la hauteur pour éviter les gaps
+    lines.clear();
 
     for (int i = 0; i < N_LINES; i++) {
         Line line;
@@ -198,7 +203,7 @@ void Terrain::generateTerrain()
         // -----------------------------
         else if (i >= 200 && i < 500) {
             float t = float(i - 200) / float(500 - 200);
-            line.y = 300.0f * sin(M_PI * 0.5f * t); // monte progressivement
+            line.y = 300.0f * std::sin(halfPi * t); // 0 -> 300
             line.curve = 0.0f;
         }
 
@@ -207,7 +212,7 @@ void Terrain::generateTerrain()
         // -----------------------------
         else if (i >= 500 && i < 900) {
             float t = float(i - 500) / float(900 - 500);
-            line.y = 300.0f;
+            line.y = 300.0f; // Reste à 300
             line.curve = 0.015f + 0.01f * t;
         }
 
@@ -216,7 +221,7 @@ void Terrain::generateTerrain()
         // -----------------------------
         else if (i >= 900 && i < 1300) {
             float t = float(i - 900) / float(1300 - 900);
-            line.y = 300.0f * cos(M_PI * 0.5f * t); // redescend vers 0
+            line.y = 300.0f * std::cos(halfPi * t); // 300 -> 0
             line.curve = 0.02f;
         }
 
@@ -224,7 +229,7 @@ void Terrain::generateTerrain()
         // SECTION 5 : ligne droite plate
         // -----------------------------
         else if (i >= 1300 && i < 1700) {
-            line.y = 0.0f;
+            line.y = 0.0f; // Reste à 0
             line.curve = 0.0f;
         }
 
@@ -234,7 +239,7 @@ void Terrain::generateTerrain()
         else if (i >= 1700 && i < 2300) {
             float t = float(i - 1700) / float(2300 - 1700);
             float x = 2.0f * t - 1.0f;
-            line.y = 500.0f * (1.0f - x * x); // parabole inversée
+            line.y = 500.0f * (1.0f - x * x); // 0 -> 500 -> 0
             line.curve = -0.01f;
         }
 
@@ -243,26 +248,25 @@ void Terrain::generateTerrain()
         // -----------------------------
         else if (i >= 2300 && i < 2800) {
             float t = float(i - 2300) / float(2800 - 2300);
-            line.y = 150.0f;
+            line.y = 0.0f; // FIX: Doit rester à 0 pour matcher la fin de la section 6
             line.curve = -0.03f * t;
         }
 
         // -----------------------------
-        // SECTION 8 : vallée
+        // SECTION 8 : descente dans la vallée
         // -----------------------------
         else if (i >= 2800 && i < 3400) {
             float t = float(i - 2800) / float(3400 - 2800);
-            float x = 2.0f * t - 1.0f;
-            line.y = -250.0f * (1.0f - x * x); // creux
+            line.y = -250.0f * std::sin(halfPi * t); // FIX: Descend doucement de 0 à -250
             line.curve = -0.02f;
         }
 
         // -----------------------------
-        // SECTION 9 : remontée légère
+        // SECTION 9 : remontée de la vallée
         // -----------------------------
         else if (i >= 3400 && i < 3900) {
             float t = float(i - 3400) / float(3900 - 3400);
-            line.y = -250.0f + 250.0f * t;
+            line.y = -250.0f * std::cos(halfPi * t); // FIX: Remonte doucement de -250 à 0
             line.curve = 0.01f;
         }
 
@@ -270,30 +274,20 @@ void Terrain::generateTerrain()
         // SECTION 10 : longue fin droite
         // -----------------------------
         else if (i >= 3900 && i < N_LINES) {
-            line.y = 0.0f;
+            line.y = 0.0f; // Rejoint parfaitement le 0 de la section 9
             line.curve = 0.0f;
         }
 
-        if (i % 150 == 0 && i > 100 && i < 500) {
-            line.obstacles.append(Obstacle("arbre0", 1, 6.0f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre0", 1, -6.0f, 0.025f, 2));
+        if (i == 80) {
+            line.obstacles.append(Obstacle("cerf", ObstacleType::Cerf, 4.0f, 0.01f, 1.2f, ObstacleState::Idle, line.z));
         }
 
-        // 4. LES POLES (Section 5) - Intouchés
-        if (i == 175) {
-            line.obstacles.append(Obstacle("pole", 1, 5.0f, 0.025f, 2));
-            line.obstacles.append(Obstacle("pole", 1, -5.0f, 0.025f, 2));
+        if (i == 40) {
+            line.obstacles.append(Obstacle("cerf", ObstacleType::Cerf, 4.0f, 0.01f, 1.2f, ObstacleState::Idle, line.z));
         }
 
-        // 5. Grosse Montagne : Arbres denses sur les côtés
-        if (i % 100 == 0 && i >= 1700 && i < 2300) {
-            line.obstacles.append(Obstacle("arbre0", 1, 5.5f, 0.025f, 2));
-            line.obstacles.append(Obstacle("arbre0", 1, -5.5f, 0.025f, 2));
-        }
-
-        // 6. Piège dans la vallée : Combo Roche + Bûche
-        if (i == 3000) {
-            line.obstacles.append(Obstacle("roche", 1, -2.0f, 0.01f, 2.5f)); // Bloque la gauche
+        if (i == 20) {
+            line.obstacles.append(Obstacle("cerf", ObstacleType::Cerf, -4.0f, 0.01f, 1.2f, ObstacleState::Idle, line.z, -1));
         }
 
         //Arbre
@@ -317,7 +311,7 @@ void Terrain::generateTerrain()
                 // Modifie ces valeurs (0.025 à 0.040) selon la taille réelle de tes images PNG.
                 float scaleLeft = 0.04f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+                line.obstacles.append(Obstacle(typeLeft, ObstacleType::Arbre, randomOffsetLeft, scaleLeft, 2.0f));
 
                 // ==========================================
                 // CÔTÉ DROIT
@@ -327,7 +321,7 @@ void Terrain::generateTerrain()
                 QString typeRight = "arbre" + QString::number(rand() % 4);
                 float scaleRight = 0.04f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+                line.obstacles.append(Obstacle(typeRight, ObstacleType::Arbre, randomOffsetRight, scaleRight, 2.0f));
             }
         }
 
@@ -347,7 +341,7 @@ void Terrain::generateTerrain()
                 QString typeLeft = isTallLeft ? "grass" : "grass";
                 float scaleLeft = isTallLeft ? (0.006f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
 
-                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 0.0f));
+                line.obstacles.append(Obstacle(typeLeft, ObstacleType::Grass, randomOffsetLeft, scaleLeft, 0.0f));
 
                 // ==========================================
                 // CÔTÉ DROIT (Indépendant)
@@ -359,7 +353,7 @@ void Terrain::generateTerrain()
                 QString typeRight = isTallRight ? "grass" : "grass";
                 float scaleRight = isTallRight ? (0.006f + (rand() % 9) / 1000.0f) : (0.004f + (rand() % 3) / 1000.0f);
 
-                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 0.0f));
+                line.obstacles.append(Obstacle(typeRight, ObstacleType::Grass, randomOffsetRight, scaleRight, 0.0f));
             }
         }
 
@@ -382,7 +376,7 @@ void Terrain::generateTerrain()
                 // Modifie ces valeurs (0.025 à 0.040) selon la taille réelle de tes images PNG.
                 float scaleLeft = 0.01f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeLeft, 1, randomOffsetLeft, scaleLeft, 2.0f));
+                line.obstacles.append(Obstacle(typeLeft, ObstacleType::Roche, randomOffsetLeft, scaleLeft, 2.0f));
 
                 // ==========================================
                 // CÔTÉ DROIT
@@ -392,7 +386,7 @@ void Terrain::generateTerrain()
                 QString typeRight = "roche";
                 float scaleRight = 0.01f + (rand() % 15) / 1000.0f;
 
-                line.obstacles.append(Obstacle(typeRight, 1, randomOffsetRight, scaleRight, 2.0f));
+                line.obstacles.append(Obstacle(typeRight, ObstacleType::Roche, randomOffsetRight, scaleRight, 2.0f));
             }
         }
 
@@ -400,26 +394,26 @@ void Terrain::generateTerrain()
     }
 }
 
-void Terrain::tick(Player &player, float dt)
+void Terrain::tick(Player& player, float dt)
 {
-    int startPos = player.getPositionZ()/SEG_L;
+    int startPos = player.getPositionZ() / SEG_L;
 
-    for(int n=startPos; n<startPos+600;n++){
+    for (int n = startPos; n < startPos + 600; n++) {
         int index = (n % N_LINES + N_LINES) % N_LINES;
         Line& l = lines[index];
 
-        for(Obstacle& obstacle : l.obstacles){
-            obstacle.update(dt);
+        for (Obstacle& obstacle : l.obstacles) {
+            obstacle.update(dt, player.getPositionY());
         }
     }
 }
 
-Line &Terrain::getLine(int index)
+Line& Terrain::getLine(int index)
 {
     return lines[index];
 }
 
-const Line &Terrain::getLine(int index) const
+const Line& Terrain::getLine(int index) const
 {
     return lines[index];
 }
@@ -435,7 +429,9 @@ void Terrain::generateRandomObstacle(Player& player)
     int index = ((startPos + 50 + rand() % 50) % N_LINES + N_LINES) % N_LINES;
     Line& line = lines[index];
 
-    line.obstacles.append(Obstacle("buche", 1.0f, 0.0f, 0.02f, 2.0f));
+    float randomX = (rand() % 4) - 2.0f;
+
+    line.obstacles.append(Obstacle("buche", ObstacleType::Buche, randomX, 0.01f, 1.0f));
 }
 
 void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, int x2, int y2, int w2)
@@ -451,4 +447,38 @@ void Terrain::drawQuad(QPainter& painter, QColor color, int x1, int y1, int w1, 
     // Dessine
     painter.setBrush(color);
     painter.drawConvexPolygon(points, 4);
+}
+
+void Terrain::drawFinishRoadMarking(QPainter& painter, const Line& previousLine, const Line& line)
+{
+    if (line.scale <= 0.0f || line.W <= 1.0f) {
+        return;
+    }
+
+    const int squares = 12;
+    const float roadLeftPrevious = previousLine.X - previousLine.W;
+    const float roadRightPrevious = previousLine.X + previousLine.W;
+    const float roadLeft = line.X - line.W;
+    const float roadRight = line.X + line.W;
+
+    painter.save();
+    painter.setPen(Qt::NoPen);
+
+    for (int i = 0; i < squares; ++i) {
+        const float t0 = i / static_cast<float>(squares);
+        const float t1 = (i + 1) / static_cast<float>(squares);
+        const bool isWhite = (i % 2) == 0;
+
+        QPointF points[4] = {
+            QPointF(roadLeftPrevious + ((roadRightPrevious - roadLeftPrevious) * t0), previousLine.Y),
+            QPointF(roadLeft + ((roadRight - roadLeft) * t0), line.Y),
+            QPointF(roadLeft + ((roadRight - roadLeft) * t1), line.Y),
+            QPointF(roadLeftPrevious + ((roadRightPrevious - roadLeftPrevious) * t1), previousLine.Y)
+        };
+
+        painter.setBrush(isWhite ? QColor(245, 245, 245, 230) : QColor(12, 12, 16, 230));
+        painter.drawPolygon(points, 4);
+    }
+
+    painter.restore();
 }

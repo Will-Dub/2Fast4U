@@ -19,12 +19,14 @@ class StartWidget : public QWidget
 public:
 	explicit StartWidget(QWidget* parent = nullptr);
 	void resetInput();
+	void refreshLeaderboard();
 
 private:
 	bool isValidInput(const QString& nom);
 
 	QLineEdit* m_nomInput;
 	HoverButton* m_commencerButton;
+	QVBoxLayout* m_leaderboardLayout;
 
 private slots:
 	void nomTextChanged(const QString& newNom);

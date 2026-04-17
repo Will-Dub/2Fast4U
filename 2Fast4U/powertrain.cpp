@@ -1,7 +1,145 @@
 #include "powertrain.h"
 
-int revDownCounter = 1;
-int instanceCounter = 0;
+namespace {
+    constexpr float pi = 3.14159265358979323846f;
+    constexpr int minGear = 0;
+    constexpr int maxGear = 6;
+
+    int revDownCounter = 1;
+    int instanceCounter = 0;
+
+    int clampPercent(int value)
+    {
+        return std::clamp(value, 0, 100);
+    }
+
+    float gearRatioForGear(int gear)
+    {
+        float returnGearValue = gearRatioFinalDrive;
+
+        switch (gear) {
+        case 1: return returnGearValue * gearRatio1;
+        case 2: return returnGearValue * gearRatio2;
+        case 3: return returnGearValue * gearRatio3;
+        case 4: return returnGearValue * gearRatio4;
+        case 5: return returnGearValue * gearRatio5;
+        case 6: return returnGearValue * gearRatio6;
+        default: return 0.0f;
+        }
+    }
+
+    int rpmForSpeedAndGear(float speed, int gear)
+    {
+        const float gearRatio = gearRatioForGear(gear);
+        if (gearRatio <= 0.0f || !std::isfinite(speed)) {
+            return 0;
+        }
+
+        const float tireCircumferenceInches = tireDiameter * 12.0f * pi;
+        return static_cast<int>((gearRatio * speed) / (0.00152f * tireCircumferenceInches));
+    }
+
+    float slopeForce(float angleDegrees)
+    {
+        if (!std::isfinite(angleDegrees)) {
+            return 0.0f;
+        }
+
+        const float angleRadians = angleDegrees * pi / 180.0f;
+        return carWeight * std::sin(angleRadians);
+    }
+
+    float aerodynamicDragForce(float speedKmh)
+    {
+        if (!std::isfinite(speedKmh) || speedKmh <= 0.0f) {
+            return 0.0f;
+        }
+
+        const float speedMs = speedKmh / 3.6f;
+        const float dragNewtons = 0.5f * airDensity * dragCoefficient * frontalArea * speedMs * speedMs;
+        return dragNewtons / newtonsPerPoundForce;
+    }
+
+    float rollingResistanceForce(float terrainFriction, float angleDegrees)
+    {
+        const float safeFriction = std::max(1.0f, std::isfinite(terrainFriction) ? terrainFriction : 1.0f);
+        const float angleRadians = std::isfinite(angleDegrees) ? angleDegrees * pi / 180.0f : 0.0f;
+        const float normalForce = carWeight * std::max(0.0f, std::cos(angleRadians));
+        return rollingResistanceCoefficient * safeFriction * normalForce;
+    }
+
+    float engineBrakingForce(int revs, int gear)
+    {
+        const float gearRatio = gearRatioForGear(gear);
+        if (gearRatio <= 0.0f || revs <= idleRevs) {
+            return 0.0f;
+        }
+
+        const float rpmFactor = std::clamp((revs - idleRevs) / static_cast<float>(redLine - idleRevs), 0.25f, 1.0f);
+        const float axleTorque = engineBrakingTorque * rpmFactor * gearRatio * drivetrainEfficiency;
+        return axleTorque / (tireDiameter * 0.5f);
+    }
+
+    float tractionLimitedDriveForce(float axleTorque)
+    {
+        if (axleTorque <= 0.0f) {
+            return 0.0f;
+        }
+
+        const float tireRadiusFeet = tireDiameter * 0.5f;
+        const float requestedForce = axleTorque / tireRadiusFeet;
+        const float maxDriveForce = carWeight * drivenWheelLoadRatio * tireGripCoefficient;
+        return std::min(requestedForce, maxDriveForce);
+    }
+
+    float throttleLoad(int gasPedalPercent)
+    {
+        return std::clamp((gasPedalPercent - gasPedalDeadZone) / static_cast<float>(100 - gasPedalDeadZone), 0.0f, 1.0f);
+    }
+
+    float clutchSlipAllowance(int gear)
+    {
+        switch (gear) {
+        case 1: return 1.0f;
+        case 2: return 0.35f;
+        case 3: return 0.12f;
+        default: return 0.0f;
+        }
+    }
+
+    float idleSpeedForGear(int gear)
+    {
+        const float gearRatio = gearRatioForGear(gear);
+        if (gearRatio <= 0.0f) {
+            return 0.0f;
+        }
+
+        return (idleRevs / gearRatio) * (tireDiameter * 12.0f * pi) * 0.00152f;
+    }
+
+    float launchTorqueMultiplier(float speedKmh, int gear, int gasPedalPercent)
+    {
+        const float throttleFactor = throttleLoad(gasPedalPercent);
+        if (gear <= 0 || throttleFactor <= 0.0f) {
+            return 0.0f;
+        }
+
+        const float idleGearSpeed = std::max(1.0f, idleSpeedForGear(gear));
+        const float rollingFactor = std::clamp(speedKmh / idleGearSpeed, 0.0f, 1.0f);
+        const float launchSlip = clutchSlipAllowance(gear) * throttleFactor;
+
+        return std::max(rollingFactor, launchSlip);
+    }
+
+    float surfaceDriveGripMultiplier(float terrainFriction)
+    {
+        if (!std::isfinite(terrainFriction) || terrainFriction <= 1.0f) {
+            return 1.0f;
+        }
+
+        return std::clamp(1.0f / (1.0f + ((terrainFriction - 1.0f) * 0.08f)), 0.25f, 1.0f);
+    }
+}
 
 Powertrain::Powertrain() {
     this->m_revs = idleRevs;
@@ -13,6 +151,7 @@ Powertrain::Powertrain() {
     this->m_outputTorque = 0;
     this->m_redLineTickCounter = 0;
     this->m_started = true;
+    this->m_isMotorExploded = false;
     this->m_gasPedalPercent = 0;
     this->m_brakePedalPercent = 0;
 }
@@ -33,7 +172,7 @@ int Powertrain::getRevs() {
     return m_revs;
 }
 void Powertrain::setRevs(int revs) {
-    m_revs = revs;
+    m_revs = std::clamp(revs, 0, maxRevs);
 }
 
 int Powertrain::getThrottle()
@@ -42,38 +181,42 @@ int Powertrain::getThrottle()
 }
 void Powertrain::setThrottle(int throttle)
 {
-    m_throttle = throttle;
+    m_throttle = clampPercent(throttle);
 }
 
 int Powertrain::getGear() {
     return m_gear;
 }
 void Powertrain::setGear(int gear) {
-    m_gear = gear;
+    m_gear = std::clamp(gear, minGear, maxGear);
 }
 
 void Powertrain::Shift(int gear) {
-    if (gear < m_gear && getRevs() > moneyShiftRevThreshold)
+    const int targetGear = std::clamp(gear, minGear, maxGear);
+    if (targetGear == m_gear) {
+        return;
+    }
+
+    if (targetGear == 0) {
+        setGear(targetGear);
+        return;
+    }
+
+    const int projectedRevs = rpmForSpeedAndGear(getSpeed(), targetGear);
+    const bool isDownshift = targetGear < m_gear || m_gear == 0;
+
+    if (isDownshift && projectedRevs > moneyShiftRevThreshold)
     {
         //[Money shift implementation trigger]
         qInfo() << "KABOOM (money shift)";
-        setStarted(false);
+        explodeMotor();
         return;
     }
-    else if (gear < m_gear)
-    {
-        setGear(gear);
-        int newRevs = ((getGearRatio() * getSpeed()) / (0.00152 * (tireDiameter * 12 * M_PI)));
 
-        if (newRevs > getRevs())
-        {
-            setRevs(newRevs);
-        }
-        
-    }
-    else
+    setGear(targetGear);
+    if (projectedRevs > getRevs())
     {
-        setGear(gear);
+        setRevs(projectedRevs);
     }
 }
 
@@ -82,8 +225,11 @@ float Powertrain::getAcceleration() {
 }
 
 void Powertrain::setAcceleration(float acceleration) {
-    if (!qIsInf(acceleration)) {
+    if (std::isfinite(acceleration)) {
         m_acceleration = acceleration;
+    }
+    else {
+        m_acceleration = 0.0f;
     }
 }
 
@@ -94,37 +240,41 @@ float Powertrain::getSpeed()
 
 void Powertrain::setSpeed(float speed)
 {
-    m_speed = speed;
+    if (std::isfinite(speed)) {
+        m_speed = std::max(0.0f, speed);
+    }
+    else {
+        m_speed = 0.0f;
+    }
 }
 
 void Powertrain::setStarted(bool started)
 {
-    /*if (started == false && m_started == true)
-    {
-        setSpeed(0);
-        setRevs(0);
-        setAcceleration(0);
-        setGear(defaultGear);
+    if (m_isMotorExploded) {
+        m_started = false;
+        return;
+    }
+
+    if (started && !m_started) {
+        if (getRevs() < idleRevs) {
+            setRevs(idleRevs);
+        }
+        setThrottle(gasPedalDeadZone);
+    }
+
+    if (!started) {
         setThrottle(0);
+        setAcceleration(0);
         setOutputPower(0);
         setOutputTorque(0);
+        setRedLineTickCounter(0);
     }
-    if (started == true && m_started == false)
-    {
-        setSpeed(defaultSpeed);
-        setRevs(idleRevs);
-        setGear(defaultGear);
-        setThrottle(gasPedalDeadZone);
-    }*/
-    if (!m_isMotorExploded) {
-        m_started = started;
-    }
-    else {
-		m_started = false;
-    }
+
+    m_started = started;
 }
 
-void Powertrain::explodeMotor(){
+void Powertrain::explodeMotor() {
+    m_isMotorExploded = true;
     setSpeed(0);
     setRevs(0);
     setAcceleration(0);
@@ -132,19 +282,22 @@ void Powertrain::explodeMotor(){
     setOutputPower(0);
     setOutputTorque(0);
     m_started = false;
-    m_isMotorExploded = true;
 }
 
-void Powertrain::reset(){
+void Powertrain::reset() {
+    m_isMotorExploded = false;
+    m_started = false;
     setSpeed(0);
-    setRevs(0);
+    setRevs(idleRevs);
     setAcceleration(0);
-    setThrottle(0);
+    setThrottle(gasPedalDeadZone);
     setOutputPower(0);
     setOutputTorque(0);
     setGear(defaultGear);
-    m_started = false;
-    m_isMotorExploded = false;
+    setGasPedalPercent(0);
+    setBrakePedalPercent(0);
+    setRedLineTickCounter(0);
+    revDownCounter = 1;
 }
 
 bool Powertrain::getStarted()
@@ -164,12 +317,22 @@ void Powertrain::setRedLineTickCounter(int redLineTickCounter)
 
 float Powertrain::getEnginePower()
 {
-    int powerPosition = ((getRevs() - (getRevs() % 100)) / 100) - 8;
+    if (getRevs() <= 0 || m_isMotorExploded) {
+        return 0.0f;
+    }
+
+    const int safeRevs = std::clamp(getRevs(), idleRevs, maxRevs);
+    int powerPosition = ((safeRevs - (safeRevs % 100)) / 100) - 8;
+    powerPosition = std::clamp(powerPosition, 0, static_cast<int>((sizeof(powerCurve) / sizeof(powerCurve[0])) - 1));
     return powerCurve[powerPosition];
 }
 
 float Powertrain::getEngineTorque()
 {
+    if (getRevs() <= 0 || m_isMotorExploded) {
+        return 0.0f;
+    }
+
     return (5252 * getEnginePower() / getRevs());
 }
 
@@ -200,7 +363,7 @@ int Powertrain::getGasPedalPercent()
 
 void Powertrain::setGasPedalPercent(int gasPedalPercent)
 {
-    m_gasPedalPercent = gasPedalPercent;
+    m_gasPedalPercent = clampPercent(gasPedalPercent);
 }
 
 int Powertrain::getBrakePedalPercent()
@@ -210,13 +373,13 @@ int Powertrain::getBrakePedalPercent()
 
 void Powertrain::setBrakePedalPercent(int brakePedalPercent)
 {
-    m_brakePedalPercent = brakePedalPercent;
+    m_brakePedalPercent = clampPercent(brakePedalPercent);
 }
 
-void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle)
+void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle, float terrainFriction, bool clutchEngaged)
 {
     setGasPedalPercent(gasPedalPercent);
-    if (brakePedalPercent > 0/*brakePedalDeadZone*/)
+    if (brakePedalPercent > brakePedalDeadZone)
     {
         setBrakePedalPercent(brakePedalPercent);
     }
@@ -226,6 +389,7 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
     }
     if (m_started)
     {
+        const bool drivetrainConnected = clutchEngaged && getGear() != 0;
         //[find a way to receive pedal inputs]!!!!!
         /*
         if(-key pressed)
@@ -282,7 +446,14 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
 
         //sets engine revs every tick
         //rev modification trigger here
-        revSetter();
+        revSetter(drivetrainConnected);
+        if (drivetrainConnected && getSpeed() > 1.0f) {
+            const int wheelLockedRevs = std::max(idleRevs, rpmForSpeedAndGear(getSpeed(), getGear()));
+            if (wheelLockedRevs > getRevs()) {
+                setRevs(wheelLockedRevs);
+            }
+        }
+
         if (getRevs() > redLine)
         {
             setRedLineTickCounter(getRedLineTickCounter() + 1);
@@ -302,10 +473,13 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
         float axlePower = 0;
         float axleTorque = 0;
 
-        if (getGear() != 0) {
+        if (drivetrainConnected) {
+            const float throttleFactor = throttleLoad(getGasPedalPercent());
+            const float launchMultiplier = launchTorqueMultiplier(getSpeed(), getGear(), getGasPedalPercent());
+
             //sets output power and torque at the axle.
-            axlePower = (getEnginePower() / getGearRatio());
-            axleTorque = (getEngineTorque() * getGearRatio());
+            axlePower = (getEnginePower() * throttleFactor * launchMultiplier) / getGearRatio();
+            axleTorque = getEngineTorque() * throttleFactor * launchMultiplier * getGearRatio();
 
             //takes away all the theoredical losses into account
             axlePower *= drivetrainEfficiency;
@@ -314,15 +488,18 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
 
         setOutputPower(axlePower);
         setOutputTorque(axleTorque);
-        float force = (getOutputTorque() / tireDiameter); //power in feet
-        if (angle > 0)
-        {
-            force -= (gravitationnalAccelerationFt) / sin(angle);
+        float force = tractionLimitedDriveForce(getOutputTorque()) * surfaceDriveGripMultiplier(terrainFriction);
+        force -= slopeForce(angle);
+
+        if (getSpeed() > 0.0f || force > 0.0f) {
+            force -= rollingResistanceForce(terrainFriction, angle);
+            force -= aerodynamicDragForce(getSpeed());
         }
-        else if (angle < 0)
-        {
-            force += (gravitationnalAccelerationFt) / sin(angle);
+
+        if (drivetrainConnected && getGasPedalPercent() <= gasPedalDeadZone && getSpeed() > 0.5f) {
+            force -= engineBrakingForce(getRevs(), getGear());
         }
+
         float acceleration = (force / carWeight) * gravitationnalAcceleration; //returns acceleration in m/s^2 (4.44... converts lbs to N)
         setAcceleration(acceleration);
 
@@ -333,8 +510,8 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
         }
         float vf = (getSpeed() + (getAcceleration() / refreshRate) * 3.6);
 
-        if (getGear() != 0) {
-            float maxSpeed = ((getRevs() / getGearRatio()) * (tireDiameter * 12 * M_PI) * 0.00152);
+        if (drivetrainConnected) {
+            float maxSpeed = ((getRevs() / getGearRatio()) * (tireDiameter * 12 * pi) * 0.00152f);
             if (vf > maxSpeed) {
                 //std::cout << "limiting factor is maxSpeed: " << maxSpeed << std::endl;
                 vf = maxSpeed;
@@ -359,6 +536,9 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
     }
     else
     {
+        setAcceleration(0);
+        setOutputPower(0);
+        setOutputTorque(0);
         //qInfo() << "Moteur arrêté! Veuillez démarrer afin de continuer!";
     }
 
@@ -381,29 +561,28 @@ void Powertrain::everyRefresh(int gasPedalPercent, int brakePedalPercent, float 
 //tp
 void Powertrain::braking()
 {
-    int brakePedalForce = brakePedalDeadZone + getBrakePedalPercent();
+    float brakePedalForce = brakePedalOffset + getBrakePedalPercent();
     float caliperPressure = ((brakePedalForce * brakePedalRatio)) / masterCylinderAreaOfSystem; //(result in PSI)
     float clampingForce = caliperPressure * brakePadArea; //-> ~7200 for 70 pounds of pedal (+100 from booster)
     float brakeTorque = clampingForce * frictionCoefficient; //in ft-lbs most likely?
-    std::cout << "brakeTorque : " << brakeTorque << std::endl;
     float brakeTorqueN = 1.35582 * brakeTorque; //converts ft-lbs to N*m
     //Done: get speedratio between wheel and brakes...??? -> ignored, done * 1 since we don't use front vs rear wheel braking effort (hoping that's what it is)
     float brakeForce = 4 * (brakeTorqueN * brakeSpeedRatio) / tireRadiusM; //force in N, *4 because 4 wheels
-    std::cout << "brakeForce : " << brakeForce << std::endl;
     float deceleration = brakeForce / (carWeight * gravitationnalAcceleration); //in m/s^2
-    deceleration = deceleration;
-    std::cout << "decel : " << deceleration << std::endl;
-    std::cout << "oldAccel : " << getAcceleration() << std::endl;
+    deceleration = std::clamp(deceleration, 0.0f, maxBrakeDeceleration);
     float newAccel = getAcceleration() - deceleration;
-    std::cout << "newAccel : " << newAccel << std::endl;
     setAcceleration(newAccel);
 }
 
 //TODO:
 // Find how to implement this by setting new revs and potentially adding more math.
 //Figure out realistic way for revs to behave and change
-void Powertrain::revSetter()
+void Powertrain::revSetter(bool drivetrainConnected)
 {
+    if (getRevs() < idleRevs) {
+        setRevs(idleRevs);
+    }
+
     int revTarget = 0;
     if (getThrottle() == gasPedalDeadZone)
     {
@@ -437,12 +616,12 @@ void Powertrain::revSetter()
             revDownCounter++;
         }
     }
-    else if (getRevs() < revTarget + 100)
+    else if (getRevs() < revTarget - 100)
     {
         //rev acceleration will be reduced based on which gear you're in, and how open the throttle is
         float revGearResistance;
 
-        if (getGear() == 0) {
+        if (!drivetrainConnected || getGear() == 0) {
             revGearResistance = 2.5;
         }
         else {
@@ -463,44 +642,10 @@ void Powertrain::revSetter()
         newRevs = getRevs();
     }
     setRevs(newRevs);
-
-    float power = getEnginePower();
-    float torque = getEngineTorque();
 }
 
 //returns the gear ratio depending on what gear the car is in.
 float Powertrain::getGearRatio()
 {
-    float returnGearValue = gearRatioFinalDrive;
-    if (getGear() == 1)
-    {
-        return (returnGearValue * gearRatio1);
-    }
-    else if (getGear() == 2)
-    {
-        return (returnGearValue * gearRatio2);
-    }
-    else if (getGear() == 3)
-    {
-        return (returnGearValue * gearRatio3);
-    }
-    else if (getGear() == 4)
-    {
-        return (returnGearValue * gearRatio4);
-    }
-    else if (getGear() == 5)
-    {
-        return (returnGearValue * gearRatio5);
-    }
-    else if (getGear() == 6)
-    {
-        return (returnGearValue * gearRatio6);
-    }
-    else if (getGear() == 0)
-    {
-        return 0;
-    }
-
-    //if this returns, something went wrong
-    return 0;
+    return gearRatioForGear(getGear());
 }

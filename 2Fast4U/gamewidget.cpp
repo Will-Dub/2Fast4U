@@ -5,13 +5,16 @@
 * Description: Contient les implémentations des méthodes et de la classe déclaré dans gamewidget.h
 ===================================================*/
 #include "gamewidget.h"
+#include <algorithm>
+#include <cmath>
+#include <QPainterPath>
 
-GameWidget::GameWidget(QWidget *parent): m_serialController(), QWidget(parent) {
+GameWidget::GameWidget(QWidget* parent) : m_serialController(), QWidget(parent) {
     m_loopTimer.setTimerType(Qt::PreciseTimer);
 
     connect(&m_loopTimer, &QTimer::timeout, this, &GameWidget::gameLoop);
 
-    m_loopTimer.start(1000/FRAME_RATE);
+    m_loopTimer.start(1000 / FRAME_RATE);
     m_timer.start();
 
     // Génère la map
@@ -26,7 +29,7 @@ void GameWidget::setNom(const QString& nom)
     m_raceManager.setNom(nom);
 }
 
-void GameWidget::keyPressEvent(QKeyEvent *event) {
+void GameWidget::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Left)  m_player.keyLeft = true;
     if (event->key() == Qt::Key_Right) m_player.keyRight = true;
     if (event->key() == Qt::Key_Up) m_player.keyUp = true;
@@ -42,7 +45,7 @@ void GameWidget::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Escape) m_isEscapePressed = true;
 }
 
-void GameWidget::keyReleaseEvent(QKeyEvent *event) {
+void GameWidget::keyReleaseEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Left)  m_player.keyLeft = false;
     if (event->key() == Qt::Key_Right) m_player.keyRight = false;
     if (event->key() == Qt::Key_Up) m_player.keyUp = false;
@@ -72,12 +75,12 @@ void GameWidget::pauseGame()
 
 void GameWidget::reloadSettings()
 {
-	m_terrain.setMaxDrawDistance(m_settings.value("distance_affichage", 600).toInt());
-	m_player.setMinPlayerY(m_settings.value("hauteur_camera", 15.0f).toFloat());
+    m_terrain.setMaxDrawDistance(m_settings.value("distance_affichage", 600).toInt());
+    m_player.setMinPlayerY(m_settings.value("hauteur_camera", 15.0f).toFloat());
 }
 
-void GameWidget::gameLoop(){
-    if(m_raceManager.getState() != RaceState::RACING) return;
+void GameWidget::gameLoop() {
+    if (m_raceManager.getState() != RaceState::RACING) return;
 
     if (m_isEscapePressed) {
         m_isEscapePressed = false;
@@ -108,12 +111,12 @@ void GameWidget::gameLoop(){
 
         currentCurve = currentLine.curve;
         float currentSlopeDelta = nextLine.y - currentLine.y;
-        currentSlopeAngle = qAtan(currentSlopeDelta/SEG_L) * 180 / M_PI;
+        currentSlopeAngle = qAtan(currentSlopeDelta / SEG_L) * 180.0f / 3.14159265358979323846f;
 
         // Joueur à l'extérieure de la route
         float playerX = m_player.getPositionX();
         if (std::abs(playerX) > 1.0f * currentLine.nbLane) {
-            terrainFriction = 3.5f;
+            terrainFriction = 35.0f;
         }
     }
 
@@ -140,7 +143,7 @@ void GameWidget::gameLoop(){
                 float minimumSafeDistance = playerHalfWidth + obstacleHalfWidth;
 
                 // Si leur distance du milieu est plus petit que leur demi combiner
-                if (std::abs(finalPlayerX - obstacleX) < minimumSafeDistance) {
+                if (std::abs(finalPlayerX - obstacleX) < minimumSafeDistance && obstacle.getHitboxWidth() > 0) {
                     isCrashed = true;
                     break;
                 }
@@ -151,30 +154,35 @@ void GameWidget::gameLoop(){
     }
 
     // --- Manage la race et le temps ---
-    m_raceManager.update(m_player.getPositionZ(), isCrashed,  m_player.getIsMotorExploded(), dt);
+    m_raceManager.update(m_player.getPositionZ(), isCrashed, m_player.getIsMotorExploded(), dt);
 
     // Vérifie si le joueur a perdu ou gagné
-    if(m_raceManager.getState() != RaceState::RACING){
-        m_player.crash();
+    if (m_raceManager.getState() != RaceState::RACING) {
+        if (m_raceManager.getState() == RaceState::FINISHED) {
+            m_player.pause();
+        }
+        else {
+            m_player.crash();
+        }
         QTimer::singleShot(2000, [=]() {
             EndType endType;
 
             switch (m_raceManager.getState()) {
             case RaceState::CRASHED:
                 endType = EndType::Crash;
-				break;
-            case RaceState::MOTOR_EXPLODED:
-				endType = EndType::MotorExploded;
                 break;
-			case RaceState::FINISHED:
+            case RaceState::MOTOR_EXPLODED:
+                endType = EndType::MotorExploded;
+                break;
+            case RaceState::FINISHED:
                 endType = EndType::Win;
                 break;
             default:
-				endType = EndType::Crash;
+                endType = EndType::Crash;
             }
 
-			emit endGame(endType, m_raceManager.getNom(), m_raceManager.getFinalTime());
-        });
+            emit endGame(endType, m_raceManager.getNom(), m_raceManager.getFinalTime());
+            });
         m_serialController.sendInformation(dt, 0, 0, false, true);
         update();
         return;
@@ -184,12 +192,14 @@ void GameWidget::gameLoop(){
     m_terrain.tick(m_player, dt);
 
     // --- Ajoute un obstacle si les muon le veulent ---
-    if(m_serialController.getMuonFlag()){
-        m_terrain.generateRandomObstacle(m_player);
-	}
+    if (m_serialController.getMuonFlag()) {
+        if (rand() % 6 == 1) {
+            m_terrain.generateRandomObstacle(m_player);
+        }
+    }
 
     // --- Envoie les données au arduino ---
-    m_serialController.sendInformation(dt, m_player.getSpeed(), m_player.getRevs());
+    m_serialController.sendInformation(dt, m_player.getSpeed(), m_player.getRevs(), m_player.getIsMotorStarted());
 
     // --- Appel update de QWidget ---
     update();
@@ -201,24 +211,40 @@ void GameWidget::restartGame()
     m_player.restart();
 }
 
-void GameWidget::paintEvent(QPaintEvent *event){
+void GameWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
 
     // --- Ciel ---
-    QLinearGradient skyGradient(0, 0, 0, height() / 2.0f);
-    skyGradient.setColorAt(0.0, QColor(20, 80, 180));
-    skyGradient.setColorAt(1.0, QColor(135, 206, 235));
-    painter.fillRect(0, 0, width(), height() / 2.0f, skyGradient);
+    QLinearGradient skyGradient(0, 0, 0, height() * 0.68f);
+    skyGradient.setColorAt(0.0, QColor(20, 64, 150));
+    skyGradient.setColorAt(0.45, QColor(94, 164, 218));
+    skyGradient.setColorAt(1.0, QColor(177, 219, 238));
+    painter.fillRect(rect(), skyGradient);
+
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    const float pitchHorizonOffset = std::clamp(m_player.pitch, -0.16f, 0.16f) * height() * 0.5f;
+    const float horizonY = height() * 0.48f + pitchHorizonOffset;
+    const float parallax = std::fmod(m_player.getPositionZ() * 0.012f, 480.0f);
+
+    painter.setPen(Qt::NoPen);
+
+    QLinearGradient meadowGradient(0, horizonY, 0, height() / 2.0f);
+    meadowGradient.setColorAt(0.0, QColor(78, 160, 86, 180));
+    meadowGradient.setColorAt(1.0, QColor(34, 124, 78, 210));
+    painter.setBrush(meadowGradient);
+    painter.drawRect(QRectF(0, horizonY + height() * 0.05f, width(), height() * 0.10f));
 
     painter.setPen(Qt::NoPen);
 
     // --- Terrain ---
-    m_terrain.render(painter, m_player, width(), height());
+    m_terrain.render(painter, m_player, width(), height(), static_cast<float>(m_raceManager.getFinishLineZ()));
 
     // --- Calcul des fps ---
     m_frameCount++;
     if (!m_fpsTimer.isValid()) m_fpsTimer.start();
-    if(m_fpsTimer.elapsed() > 1000){
+    if (m_fpsTimer.elapsed() > 1000) {
         int fps = m_frameCount / (m_fpsTimer.elapsed() / 1000.0);
         m_currentFps = fps;
 
@@ -228,6 +254,7 @@ void GameWidget::paintEvent(QPaintEvent *event){
 
     // --- Dessine l'habitacle ---
     m_player.renderHabitacle(&painter, m_raceManager.getState(), width(), height());
+    painter.restore();
 
     // --- Shifter ---
     painter.save();
@@ -296,19 +323,16 @@ void GameWidget::paintEvent(QPaintEvent *event){
 
     // --- Affiche le temps ---
     painter.save();
-
-    QTextDocument doc;
     qint64 totalMillis = static_cast<qint64>(m_raceManager.getElapsedTime() * 1000.0);
     QTime t(0, 0, 0);
     t = t.addMSecs(totalMillis);
     QString timeStr = t.toString("mm:ss.zzz");
 
     QFont timerFont("Arial", 20);
-    doc.setDefaultFont(timerFont);
+    painter.setFont(timerFont);
+    painter.setPen(QColor(255, 0, 0));
 
-    doc.setTextWidth(width());
-    doc.setHtml(QStringLiteral("<div align='center'><font color='#f00'>%1</font></div>").arg(timeStr));
-    doc.drawContents(&painter);
+    painter.drawText(0, 10, width(), 40, Qt::AlignHCenter | Qt::AlignTop, timeStr);
 
     painter.restore();
 }

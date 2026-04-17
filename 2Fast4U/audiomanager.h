@@ -38,7 +38,7 @@ public:
     explicit AudioManager(QObject *parent = nullptr);
     ~AudioManager();
 
-    SoLoud::Soloud engine; // The core audio engine
+    SoLoud::Soloud engine;
     QMap<QString, DynamicAudioNode> samples;
 
     void init(const QMap<QString, AudioSource>& sources);

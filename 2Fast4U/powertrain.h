@@ -25,16 +25,17 @@
 */
 
 #define _USE_MATH_DEFINES
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <QDebug>
-#include <math.h>
 
 int const refreshRate = 50; //number of executions per second
 int const idleRevs = 800;   //sets the idle (do not set lower than 800, the powercurve is not defined past that)
 int const moneyShiftRevThreshold = 6000;  //sets the rev limit before shifting will break the gearbox
 int const redLine = 7000;   //sets the redline
 int const maxRevs = 8000;   //sets the max number of revs (do not go higher than 8000, the powercurve is not defined past that)
-int const redLineTimeLimit = 1; //sets the number of seconds past redline before engine breaks
+int const redLineTimeLimit = 5; //sets the number of seconds past redline before engine breaks
 int const redLineTickLimit = (refreshRate * redLineTimeLimit); //sets the number of ticks past redline before engine breaks
 int const gasPedalDeadZone = 5; //used to adjust throttle % for idle, but also means the beginning of the pedal is a dead zone (does nothing)
 int const brakePedalDeadZone = 3; //used to elimite parasitic pedal values
@@ -52,6 +53,15 @@ int const brakeBoosterAdd = 100; //amount of force in pounds added by the brake 
 float const masterCylinderAreaOfSystem = 0.7; //if other brake value are changed, this will need adjusting using this: https://motionraceworks.com/en-ca/pages/brake-system-setup-and-calculations
 float const gravitationnalAcceleration = 9.8; //in m/s^2
 float const gravitationnalAccelerationFt = 32.19; //->32.18503937007874, in feet/s^2, for math in imperial
+float const rollingResistanceCoefficient = 0.015f;
+float const maxBrakeDeceleration = 12.0f; //m/s^2, keeps braking in a plausible and stable range
+float const airDensity = 1.225f; //kg/m^3
+float const dragCoefficient = 0.29f;
+float const frontalArea = 2.1f; //m^2
+float const newtonsPerPoundForce = 4.44822f;
+float const engineBrakingTorque = 35.0f; //ft-lb before gearing
+float const tireGripCoefficient = 1.05f;
+float const drivenWheelLoadRatio = 0.55f;
 int const brakeSpeedRatio = 1; // set to 1, would normally be for front vs rear wheels, but not used in our case
 //^think this is incorrect, but can't find what the website wants (BIBLE)
 
@@ -95,10 +105,10 @@ public:
 
     void Shift(int gear);            //used to change gears, with checks for money shifts etc.
 
-    void everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle);   //called every 'tick' to adjust the speed dynamically
+    void everyRefresh(int gasPedalPercent, int brakePedalPercent, float angle, float terrainFriction = 1.0f, bool clutchEngaged = true);   //called every 'tick' to adjust the speed dynamically
 
     void braking();
-    void revSetter();                   //sets the revs every tick, adjusting it based on throttle opening.
+    void revSetter(bool drivetrainConnected = true);                   //sets the revs every tick, adjusting it based on throttle opening.
     float getGearRatio();               //returns the gear ratio of the gearbox;
     float getEnginePower();             //returns horsepower depending on the RPM.
     float getEngineTorque();            //return torque, calculated from horsepower.

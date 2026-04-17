@@ -24,6 +24,14 @@ const QPixmap &SpriteManager::get(const QString &id)
         loadSprite(sprites, "habitacleCrashed", ":/images/habitacleCrashed.png");
         loadSprite(sprites, "grass0", ":/images/grass.png");
         loadSprite(sprites, "tallGrass0", ":/images/tallGrass.png");
+        loadSprite(sprites, "cerf0", ":/images/cerf0.png");
+        loadSprite(sprites, "cerf1", ":/images/cerf1.png");
+        loadSprite(sprites, "cerf2", ":/images/cerf2.png");
+        loadSprite(sprites, "cerf3", ":/images/cerf3.png");
+        loadSprite(sprites, "cerf4", ":/images/cerf4.png");
+        loadSprite(sprites, "cerf5", ":/images/cerf5.png");
+        loadSprite(sprites, "cerf6", ":/images/cerf6.png");
+        loadSprite(sprites, "cerf7", ":/images/cerf7.png");
 
         static const QColor FOG_COLOR(126, 185, 224); // Ta couleur de brouillard
 

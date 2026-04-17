@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include <QSlider>
 #include <QSettings>
-#include <QLineEdit>
+#include <QSpinBox>
 #include <QIntValidator>
 
 class OptionsWidget : public QWidget
@@ -27,6 +27,8 @@ private:
 	bool m_didValueChange = false;
 	HoverButton* m_boutonSauvegarder;
 	QSettings m_settings;
+	QSpinBox* m_distanceAffichageInput;
+	QSpinBox* m_hauteurCameraInput;
 
 private slots:
 	void valueChanged();
