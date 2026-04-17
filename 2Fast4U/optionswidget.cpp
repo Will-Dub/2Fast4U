@@ -97,7 +97,7 @@ OptionsWidget::OptionsWidget(QWidget* parent) : QWidget(parent)
     hauteurCameraLayout->setSpacing(20);
     hauteurCameraLayout->addStretch();
 
-    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur cam�ra :"), darkOverlay);
+    QLabel* hauteurCameraLabel = new QLabel(QString::fromUtf8("Hauteur caméra :"), darkOverlay);
     hauteurCameraLabel->setFont(QFont("Helvetica", 20, QFont::Bold));
     hauteurCameraLabel->setStyleSheet("color: white; background: transparent;");
     hauteurCameraLabel->setFixedWidth(300);
